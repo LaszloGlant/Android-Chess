@@ -14,11 +14,13 @@ import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
-    public int numHits = 0;
-    public int currImage = R.drawable.rbishop;
+    int numHits = 0;
+    int currImage = R.drawable.rbishop;
 
-    public int prevR;
-    public int prevC;
+    int prevR;
+    int prevC;
+
+    Piece[][] board = new Piece[8][8];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,6 +351,9 @@ public class MainActivity extends AppCompatActivity {
 
             srcButton.setVisibility(View.INVISIBLE);
             System.out.println("Have made " + r + "," + c + " a bqueen and took out " + prevR + "," + prevC);
+
+            ImageButton destButton = (ImageButton) findViewById(makeButtonId(r, c));
+            destButton.setVisibility(View.VISIBLE);
         }
 
         numHits++;
