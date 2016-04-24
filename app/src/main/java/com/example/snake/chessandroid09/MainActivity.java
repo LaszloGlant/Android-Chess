@@ -14,6 +14,9 @@ import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    public int numHits = 0;
+    public int currImage = R.drawable.rbishop;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +64,15 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Button 00");
         }
         if (id == R.id.b01) {
-            currButton.setImageResource(R.drawable.bpawn);
-            System.out.println("should have set 01 to bpawn");
+            if (numHits % 2 == 0){
+                currButton.setImageResource(R.drawable.bpawn);
+                numHits++;
+            }
+            else{
+                currButton.setImageResource(R.drawable.bknight);
+                numHits++;
+            }
+
         }
         if (id == R.id.b02) {
 
