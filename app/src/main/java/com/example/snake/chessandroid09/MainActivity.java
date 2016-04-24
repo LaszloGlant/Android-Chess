@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+        Board.initWhite(board);
+        Board.initBoard(board);
     }
 
     @Override
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hit(View v) {
+        System.out.println("in hit");
         int id = v.getId();
         ImageButton currButton = (ImageButton) v;
 
@@ -345,17 +348,17 @@ public class MainActivity extends AppCompatActivity {
         if (numHits % 2 == 0) {
             // hitting source
 
-            if (currButton.getDrawable().isVisible() == false) {
-                // clicking on an invisible square, bad source
-                System.out.println("You have clicked on an invisible square, please set a visible square as src");
+            if (Board.isOccupied(board, r, c) == false) {
+                // clicking on a square with no piece on it
+                System.out.println("You have clicked a square with no piece on it");
                 return;
             }
 
             prevR = r;
             prevC = c;
 
-            currImage = R.drawable.bqueen;
-            System.out.println("Have assigned image at src");
+            currImage = getImage(r, c);
+            System.out.println("Have assigned image at src, currImage: " + currImage);
         } else {
             // hitting destination
 
@@ -365,15 +368,68 @@ public class MainActivity extends AppCompatActivity {
             // set src square to blank
             ImageButton srcButton = (ImageButton) findViewById(makeButtonId(prevR, prevC));
 
-            srcButton.setVisibility(View.INVISIBLE);
+            //srcButton.setVisibility(View.INVISIBLE);
+            srcButton.setImageResource(R.drawable.blank);
             System.out.println("Have made " + r + "," + c + " a bqueen and took out " + prevR + "," + prevC);
 
             ImageButton destButton = (ImageButton) findViewById(makeButtonId(r, c));
-            destButton.setVisibility(View.VISIBLE);
+            //destButton.setVisibility(View.VISIBLE);
+
+            Piece one = board[prevR][prevC];
+            board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
+            board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
         }
 
         numHits++;
         System.out.println("numHits: " + numHits);
+    }
+
+    public int getImage(int r, int c) {
+        if (board[r][c].toString().equals("bp")) {
+            return R.drawable.rpawn;
+        }
+        if (board[r][c].toString().equals("bN")) {
+            return R.drawable.rknight;
+        }
+        if (board[r][c].toString().equals("bB")) {
+            return R.drawable.rbishop;
+        }
+        if (board[r][c].toString().equals("bR")) {
+            return R.drawable.rrook;
+        }
+        if (board[r][c].toString().equals("bQ")) {
+            return R.drawable.rqueen;
+        }
+        if (board[r][c].toString().equals("bK")) {
+            return R.drawable.rking;
+        }
+        if (board[r][c].toString().equals("wp")) {
+            return R.drawable.bpawn;
+        }
+        if (board[r][c].toString().equals("wN")) {
+            return R.drawable.bknight;
+        }
+        if (board[r][c].toString().equals("wB")) {
+            return R.drawable.bbishop;
+        }
+        if (board[r][c].toString().equals("wR")) {
+            return R.drawable.brook;
+        }
+        if (board[r][c].toString().equals("wQ")) {
+            return R.drawable.bqueen;
+        }
+        if (board[r][c].toString().equals("wK")) {
+            return R.drawable.bking;
+        }
+        if (board[r][c].toString().equals("  ")) {
+            return R.drawable.selrknight;
+        }
+        if (board[r][c].toString().equals("##")) {
+            return R.drawable.selrknight;
+        }
+
+        // shouldn't get down to here
+        return R.drawable.rbishop;
     }
 
     public int makeButtonId(int r, int c) {

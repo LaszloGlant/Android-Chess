@@ -9,6 +9,18 @@ package com.example.snake.chessandroid09;
  */
 public class Board {
     /**
+     * set every tile in the board to blank, needed later
+     * @param board 2D array of Pieces
+     */
+    public static void initWhite(Piece[][] board) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = new Piece(' ', ' ', -1, -1);
+            }
+        }
+    }
+
+    /**
      * initialize white and black Pieces on the board
      * @param board 2D array of Pieces
      */
@@ -63,11 +75,17 @@ public class Board {
      * @return true if there is a piece at entry (r, c)
      */
     public static boolean isOccupied(Piece[][] board, int r, int c) {
-        if (board[r][c].color == 'w' || board[r][c].color == 'b') {
+        System.out.println("board color " + board[r][c].color);
+        if (board[r][c].color == 'w') {
             // square at (r, c) is occupied by a piece
             return true;
         }
-        return false;
+        else if (board[r][c].color == 'b') {
+            // square at (r, c) is occupied by a piece
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -201,6 +219,20 @@ public class Board {
         }
 
         return true;
+    }
+
+    /**
+     * prints out the board as well as 8-1 on the right and a-h on the bottom of the board
+     * @param board 2D array of Pieces, serves as board for the game
+     */
+    public static void displayBoard(Piece[][] board) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                System.out.print(board[r][c].toString() + " ");
+            }
+            System.out.println(8 - r);
+        }
+        System.out.println(" a  b  c  d  e  f  g  h");
     }
 
 }
