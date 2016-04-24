@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     int turn = 0;
     int currImage = R.drawable.rbishop;
     char currP = 'w';
+    char oppP = 'b';
 
     int prevR;
     int prevC;
@@ -82,9 +83,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hit(View v) {
-        System.out.println("in hit");
         int id = v.getId();
         ImageButton currButton = (ImageButton) v;
+
+        Button message = (Button) findViewById(R.id.message);
 
         int r = -1;
         int c = -1;
@@ -349,9 +351,11 @@ public class MainActivity extends AppCompatActivity {
         if (turn % 2 == 0) {
             // white/blue's turn
             currP = 'w';
+            oppP = 'b';
         } else {
             // black/red's turn
             currP = 'b';
+            oppP = 'w';
         }
 
         System.out.println("Have clicked on square at " + r + "," + c);
@@ -360,7 +364,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
-                System.out.println("You have clicked a square with no piece on it");
+                message.setText("Don't click on empty square");
+
                 return;
             }
 
@@ -368,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // wrong color, shouldn't be moving this piece
-                // To do - warning to user that can't move that piece
+                message.setText("Move your own piece");
                 return;
             }
 
@@ -376,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
             prevC = c;
 
             currImage = getImage(r, c);
-            System.out.println("Have assigned image at src, currImage: " + currImage);
+            message.setText("Now select destination");
         } else {
             // hitting destination
 
@@ -388,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
 
             //srcButton.setVisibility(View.INVISIBLE);
             srcButton.setImageResource(R.drawable.blank);
-            System.out.println("Have made " + r + "," + c + " a bqueen and took out " + prevR + "," + prevC);
 
             ImageButton destButton = (ImageButton) findViewById(makeButtonId(r, c));
             //destButton.setVisibility(View.VISIBLE);
@@ -397,10 +401,22 @@ public class MainActivity extends AppCompatActivity {
             board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
             board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
             turn++;
+            message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
         }
 
         numHits++;
         System.out.println("numHits: " + numHits);
+    }
+
+    public String charToStr(char p) {
+        if (p == 'w') {
+            return "White";
+        } else if (p == 'b') {
+            return "Black";
+        } else {
+            // can't happen
+            return "Bogus";
+        }
     }
 
     public int getImage(int r, int c) {
