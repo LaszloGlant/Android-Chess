@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/board" />
+        android:src="@drawable/chess_board" />
 
     <GridLayout
         android:layout_width="240dp"
