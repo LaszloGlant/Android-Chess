@@ -19,8 +19,7 @@
         android:src="@drawable/chess_board"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="30dp" />
+        android:layout_alignParentEnd="true" />
 
     <GridLayout
         android:layout_width="240dp"
@@ -797,7 +796,8 @@
         android:layout_alignRight="@+id/imageView"
         android:layout_alignEnd="@+id/imageView"
         android:onClick="ai"
-        android:background="#43a5c6" />
+        android:background="#43a5c6"
+        android:layout_above="@+id/message" />
 
     <Button
         android:layout_width="wrap_content"
@@ -820,5 +820,16 @@
         android:layout_alignEnd="@+id/imageView"
         android:background="@color/colorPrimary"
         android:onClick="resign" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1234567890123456789012345678901234"
+        android:id="@+id/message"
+        android:layout_below="@+id/bUndo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/bAI"
+        android:layout_alignEnd="@+id/bAI" />
 
 </RelativeLayout>

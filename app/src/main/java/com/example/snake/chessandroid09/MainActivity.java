@@ -15,15 +15,17 @@ import android.widget.ImageButton;
 public class MainActivity extends AppCompatActivity {
 
     int numHits = 0;
+    int turn = 0;
     int currImage = R.drawable.rbishop;
+    char currP = 'w';
 
     int prevR;
     int prevC;
 
     Piece[][] board = new Piece[8][8];
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -344,6 +346,14 @@ public class MainActivity extends AppCompatActivity {
             c = 7;
         }
 
+        if (turn % 2 == 0) {
+            // white/blue's turn
+            currP = 'w';
+        } else {
+            // black/red's turn
+            currP = 'b';
+        }
+
         System.out.println("Have clicked on square at " + r + "," + c);
         if (numHits % 2 == 0) {
             // hitting source
@@ -351,6 +361,14 @@ public class MainActivity extends AppCompatActivity {
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
                 System.out.println("You have clicked a square with no piece on it");
+                return;
+            }
+
+            if (board[r][c].color == currP) {
+
+            } else {
+                // wrong color, shouldn't be moving this piece
+                // To do - warning to user that can't move that piece
                 return;
             }
 
@@ -378,6 +396,7 @@ public class MainActivity extends AppCompatActivity {
             Piece one = board[prevR][prevC];
             board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
             board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
+            turn++;
         }
 
         numHits++;
