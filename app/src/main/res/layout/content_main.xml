@@ -35,7 +35,7 @@
             android:layout_column="0"
             android:clickable="true"
             android:onClick="hit"
-            android:src="@drawable/bbishop"
+            android:src="@drawable/brook"
             android:scaleType="fitCenter"
             android:background="#00000000"
             android:padding="3dp" />
