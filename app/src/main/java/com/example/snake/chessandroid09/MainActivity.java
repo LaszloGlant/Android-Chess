@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void hit(View v) {
         int id = v.getId();
+        ImageButton currButton = (ImageButton) v;
 
         if (id == R.id.b00) {
             System.out.println("Button 00");
         }
         if (id == R.id.b01) {
-
+            currButton.setImageResource(R.drawable.bpawn);
+            System.out.println("should have set 01 to bpawn");
         }
         if (id == R.id.b02) {
 
