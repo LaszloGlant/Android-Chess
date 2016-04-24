@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.AdapterView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,14 +20,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
     }
 
     @Override
@@ -48,5 +50,202 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void hit(View v) {
+        int id = v.getId();
+
+        if (id == R.id.b00) {
+            System.out.println("Button 00");
+        }
+        if (id == R.id.b01) {
+
+        }
+        if (id == R.id.b02) {
+
+        }
+        if (id == R.id.b03) {
+
+        }
+        if (id == R.id.b04) {
+
+        }
+        if (id == R.id.b05) {
+
+        }
+        if (id == R.id.b06) {
+
+        }
+        if (id == R.id.b07) {
+
+        }
+        if (id == R.id.b10) {
+
+        }
+        if (id == R.id.b11) {
+
+        }
+        if (id == R.id.b12) {
+
+        }
+        if (id == R.id.b13) {
+
+        }
+        if (id == R.id.b14) {
+
+        }
+        if (id == R.id.b15) {
+
+        }
+        if (id == R.id.b16) {
+
+        }
+        if (id == R.id.b17) {
+
+        }
+        if (id == R.id.b20) {
+
+        }
+        if (id == R.id.b21) {
+
+        }
+        if (id == R.id.b22) {
+
+        }
+        if (id == R.id.b23) {
+
+        }
+        if (id == R.id.b24) {
+
+        }
+        if (id == R.id.b25) {
+
+        }
+        if (id == R.id.b26) {
+
+        }
+        if (id == R.id.b27) {
+
+        }
+        if (id == R.id.b30) {
+
+        }
+        if (id == R.id.b31) {
+
+        }
+        if (id == R.id.b32) {
+
+        }
+        if (id == R.id.b33) {
+
+        }
+        if (id == R.id.b34) {
+
+        }
+        if (id == R.id.b35) {
+
+        }
+        if (id == R.id.b36) {
+
+        }
+        if (id == R.id.b37) {
+
+        }
+        if (id == R.id.b40) {
+
+        }
+        if (id == R.id.b41) {
+
+        }
+        if (id == R.id.b42) {
+
+        }
+        if (id == R.id.b43) {
+
+        }
+        if (id == R.id.b44) {
+
+        }
+        if (id == R.id.b45) {
+
+        }
+        if (id == R.id.b46) {
+
+        }
+        if (id == R.id.b47) {
+
+        }
+        if (id == R.id.b50) {
+
+        }
+        if (id == R.id.b51) {
+
+        }
+        if (id == R.id.b52) {
+
+        }
+        if (id == R.id.b53) {
+
+        }
+        if (id == R.id.b54) {
+
+        }
+        if (id == R.id.b55) {
+
+        }
+        if (id == R.id.b56) {
+
+        }
+        if (id == R.id.b57) {
+
+        }
+        if (id == R.id.b60) {
+
+        }
+        if (id == R.id.b61) {
+
+        }
+        if (id == R.id.b62) {
+
+        }
+        if (id == R.id.b63) {
+
+        }
+        if (id == R.id.b64) {
+
+        }
+        if (id == R.id.b65) {
+
+        }
+        if (id == R.id.b66) {
+
+        }
+        if (id == R.id.b67) {
+
+        }
+        if (id == R.id.b60) {
+
+        }
+        if (id == R.id.b71) {
+
+        }
+        if (id == R.id.b72) {
+
+        }
+        if (id == R.id.b73) {
+
+        }
+        if (id == R.id.b74) {
+
+        }
+        if (id == R.id.b75) {
+
+        }
+        if (id == R.id.b76) {
+
+        }
+        if (id == R.id.b77) {
+
+        }
     }
 }
