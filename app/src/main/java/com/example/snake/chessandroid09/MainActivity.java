@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     public int numHits = 0;
     public int currImage = R.drawable.rbishop;
 
+    public int prevR;
+    public int prevC;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -320,14 +323,233 @@ public class MainActivity extends AppCompatActivity {
             c = 7;
         }
 
+        System.out.println("Have clicked on square at " + r + "," + c);
         if (numHits % 2 == 0) {
             // hitting source
-            currImage = currButton.getDrawingCacheQuality();
+
+            if (currButton.getDrawable().isVisible() == false) {
+                // clicking on an invisible square, bad source
+                System.out.println("You have clicked on an invisible square, please set a visible square as src");
+                return;
+            }
+
+            prevR = r;
+            prevC = c;
+
+            currImage = R.drawable.bqueen;
+            System.out.println("Have assigned image at src");
         } else {
             // hitting destination
+
+            // set destination square to currImage
             ((ImageButton) v).setImageResource(currImage);
+
+            // set src square to blank
+            ImageButton srcButton = (ImageButton) findViewById(makeButtonId(prevR, prevC));
+
+            srcButton.setVisibility(View.INVISIBLE);
+            System.out.println("Have made " + r + "," + c + " a bqueen and took out " + prevR + "," + prevC);
         }
 
         numHits++;
+        System.out.println("numHits: " + numHits);
+    }
+
+    public int makeButtonId(int r, int c) {
+        if (r == 0 && c == 0) {
+            return R.id.b00;
+        }
+        if (r == 0 && c == 1) {
+            return R.id.b01;
+        }
+        if (r == 0 && c == 2) {
+            return R.id.b02;
+        }
+        if (r == 0 && c == 3) {
+            return R.id.b03;
+        }
+        if (r == 0 && c == 4) {
+            return R.id.b04;
+        }
+        if (r == 0 && c == 5) {
+            return R.id.b05;
+        }
+        if (r == 0 && c == 6) {
+            return R.id.b06;
+        }
+        if (r == 0 && c == 7) {
+            return R.id.b07;
+        }
+        if (r == 1 && c == 0) {
+            return R.id.b10;
+        }
+        if (r == 1 && c == 1) {
+            return R.id.b11;
+        }
+        if (r == 1 && c == 2) {
+            return R.id.b12;
+        }
+        if (r == 1 && c == 3) {
+            return R.id.b13;
+        }
+        if (r == 1 && c == 4) {
+            return R.id.b14;
+        }
+        if (r == 1 && c == 5) {
+            return R.id.b15;
+        }
+        if (r == 1 && c == 6) {
+            return R.id.b16;
+        }
+        if (r == 1 && c == 7) {
+            return R.id.b17;
+        }
+        if (r == 2 && c == 0) {
+            return R.id.b20;
+        }
+        if (r == 2 && c == 1) {
+            return R.id.b21;
+        }
+        if (r == 2 && c == 2) {
+            return R.id.b22;
+        }
+        if (r == 2 && c == 3) {
+            return R.id.b23;
+        }
+        if (r == 2 && c == 4) {
+            return R.id.b24;
+        }
+        if (r == 2 && c == 5) {
+            return R.id.b25;
+        }
+        if (r == 2 && c == 6) {
+            return R.id.b26;
+        }
+        if (r == 2 && c == 7) {
+            return R.id.b27;
+        }
+        if (r == 3 && c == 0) {
+            return R.id.b30;
+        }
+        if (r == 3 && c == 1) {
+            return R.id.b31;
+        }
+        if (r == 3 && c == 2) {
+            return R.id.b32;
+        }
+        if (r == 3 && c == 3) {
+            return R.id.b33;
+        }
+        if (r == 3 && c == 4) {
+            return R.id.b34;
+        }
+        if (r == 3 && c == 5) {
+            return R.id.b35;
+        }
+        if (r == 3 && c == 6) {
+            return R.id.b36;
+        }
+        if (r == 3 && c == 7) {
+            return R.id.b37;
+        }
+        if (r == 4 && c == 0) {
+            return R.id.b34;
+        }
+        if (r == 4 && c == 1) {
+            return R.id.b41;
+        }
+        if (r == 4 && c == 2) {
+            return R.id.b42;
+        }
+        if (r == 4 && c == 3) {
+            return R.id.b43;
+        }
+        if (r == 4 && c == 4) {
+            return R.id.b44;
+        }
+        if (r == 4 && c == 5) {
+            return R.id.b45;
+        }
+        if (r == 4 && c == 6) {
+            return R.id.b46;
+        }
+        if (r == 4 && c == 7) {
+            return R.id.b47;
+        }
+        if (r == 5 && c == 0) {
+            return R.id.b50;
+        }
+        if (r == 5 && c == 1) {
+            return R.id.b51;
+        }
+        if (r == 5 && c == 2) {
+            return R.id.b52;
+        }
+        if (r == 5 && c == 3) {
+            return R.id.b53;
+        }
+        if (r == 5 && c == 4) {
+            return R.id.b54;
+        }
+        if (r == 5 && c == 5) {
+            return R.id.b55;
+        }
+        if (r == 5 && c == 6) {
+            return R.id.b56;
+        }
+        if (r == 5 && c == 7) {
+            return R.id.b57;
+        }
+        if (r == 6 && c == 0) {
+            return R.id.b60;
+        }
+        if (r == 6 && c == 1) {
+            return R.id.b61;
+        }
+        if (r == 6 && c == 2) {
+            return R.id.b62;
+        }
+        if (r == 6 && c == 3) {
+            return R.id.b63;
+        }
+        if (r == 6 && c == 4) {
+            return R.id.b64;
+        }
+        if (r == 6 && c == 5) {
+            return R.id.b65;
+        }
+        if (r == 6 && c == 6) {
+            return R.id.b66;
+        }
+        if (r == 6 && c == 7) {
+            return R.id.b67;
+        }
+        if (r == 7 && c == 0) {
+            return R.id.b70;
+        }
+        if (r == 7 && c == 1) {
+            return R.id.b71;
+        }
+        if (r == 7 && c == 2) {
+            return R.id.b72;
+        }
+        if (r == 7 && c == 3) {
+            return R.id.b73;
+        }
+        if (r == 7 && c == 4) {
+            return R.id.b74;
+        }
+        if (r == 7 && c == 5) {
+            return R.id.b75;
+        }
+        if (r == 7 && c == 6) {
+            return R.id.b76;
+        }
+        if (r == 7 && c == 7) {
+            return R.id.b77;
+        }
+
+        // shouldn't get to down here anway
+        return R.id.b00;
     }
 }
