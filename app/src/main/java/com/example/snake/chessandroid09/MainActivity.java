@@ -317,13 +317,15 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.b77) {
             r = 7;
-            c = 6;
+            c = 7;
         }
 
         if (numHits % 2 == 0) {
             // hitting source
+            currImage = currButton.getDrawingCacheQuality();
         } else {
             // hitting destination
+            ((ImageButton) v).setImageResource(currImage);
         }
 
         numHits++;
