@@ -61,6 +61,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void undo(View v){
+        System.out.println("hit undo");
+    }
+
+    public void ai(View v){
+        System.out.println("hit ai");
+    }
+
+    public void draw(View v){//maybe current player
+        System.out.println("hit draw");
+    }
+
+    public void resign(View v){//maybe current player
+        System.out.println("hit resign");
+    }
+
     public void hit(View v) {
         int id = v.getId();
         ImageButton currButton = (ImageButton) v;
