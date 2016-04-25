@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
-                message.setText("Don't click on empty square");
+                message.setText("Click on a " + charToStr(currP) + " piece");
                 return;
             }
 
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // wrong color, shouldn't be moving this piece
-                message.setText("Move your own piece");
+                message.setText("You can't move a " + charToStr(oppP) + " piece");
                 return;
             }
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             prevC = c;
 
             currImage = getImage(r, c);
-            message.setText("Now select destination");
+            message.setText("Now select destination for " + board[r][c].toString());
         } else {
             // hitting destination
 
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 // move was invalid, return
-                message.setText("Bad move, re-select destination");
+                message.setText("Bad move, re-select destination for " + board[r][c].toString());
                 return;
             }
 
