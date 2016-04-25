@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             prevC = c;
 
             currImage = getImage(r, c);
-            message.setText("Now select destination for " + board[r][c].toString());
+            message.setText("Now select " + board[r][c].toString() + " destination");
         } else {
             // hitting destination
 
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 // move was invalid, return
-                message.setText("Bad move, re-select destination for " + board[r][c].toString());
+                message.setText("Bad move, re-select " + board[prevR][prevC].toString() + " destination");
                 return;
             }
 
@@ -167,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
 
         numHits++;
         System.out.println("numHits: " + numHits);
+
+        System.out.println("board: ");
+        Board.displayBoard(board);
     }
 
     /**
