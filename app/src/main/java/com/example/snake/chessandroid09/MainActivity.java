@@ -154,15 +154,6 @@ public class MainActivity extends AppCompatActivity {
             if (move(currP, prevR, prevC, r, c, turn) > 0) {
                 // assuming move is good passed this point, update real board
 
-                /*
-                // set destination square to currImage
-                ((ImageButton) v).setImageResource(currImage);
-
-                // set src square to blank
-                ImageButton srcButton = (ImageButton) findViewById(makeButtonId(prevR, prevC));
-                srcButton.setImageResource(R.drawable.blank);
-                */
-
                 turn++;
                 message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
             } else {
@@ -170,13 +161,6 @@ public class MainActivity extends AppCompatActivity {
                 message.setText("Bad move, re-select destination");
                 return;
             }
-
-
-            /*
-            Piece one = board[prevR][prevC];
-            board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
-            board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
-            */
 
         }
 
