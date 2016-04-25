@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     int numHits = 0;
     int turn = 0;
     int currImage = R.drawable.rbishop;
+
     char currP = 'w';
     char oppP = 'b';
 
@@ -88,27 +89,291 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View v){
-        System.out.println("hit undo");
+        Button message = (Button) findViewById(R.id.message);
+        message.setText("Have undone last move");
     }
 
     public void ai(View v){
-        System.out.println("hit ai");
+        Button message = (Button) findViewById(R.id.message);
+        message.setText("AI has made a move for " + charToStr(currP));
     }
 
-    public void draw(View v){//maybe current player
-        System.out.println("hit draw");
+    public void draw(View v){
+        Button message = (Button) findViewById(R.id.message);
+        message.setText("Draw");
     }
 
-    public void resign(View v){//maybe current player
-        System.out.println("hit resign");
+    public void resign(View v){
+        Button message = (Button) findViewById(R.id.message);
+        message.setText("Resign");
     }
 
     public void hit(View v) {
         int id = v.getId();
-        ImageButton currButton = (ImageButton) v;
-
         Button message = (Button) findViewById(R.id.message);
 
+        int r = setRC(id)[0];
+        int c = setRC(id)[1];
+
+        if (turn % 2 == 0) {
+            // white/blue's turn
+            currP = 'w';
+            oppP = 'b';
+        } else {
+            // black/red's turn
+            currP = 'b';
+            oppP = 'w';
+        }
+
+        System.out.println("Have clicked on square at " + r + "," + c);
+        if (numHits % 2 == 0) {
+            // hitting source
+
+            if (Board.isOccupied(board, r, c) == false) {
+                // clicking on a square with no piece on it
+                message.setText("Don't click on empty square");
+                return;
+            }
+
+            if (board[r][c].color == currP) {
+
+            } else {
+                // wrong color, shouldn't be moving this piece
+                message.setText("Move your own piece");
+                return;
+            }
+
+            prevR = r;
+            prevC = c;
+
+            currImage = getImage(r, c);
+            message.setText("Now select destination");
+        } else {
+            // hitting destination
+
+            if (move(currP, prevR, prevC, r, c, turn) > 0) {
+                // assuming move is good passed this point, update real board
+
+                /*
+                // set destination square to currImage
+                ((ImageButton) v).setImageResource(currImage);
+
+                // set src square to blank
+                ImageButton srcButton = (ImageButton) findViewById(makeButtonId(prevR, prevC));
+                srcButton.setImageResource(R.drawable.blank);
+                */
+
+                turn++;
+                message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
+            } else {
+                // move was invalid, return
+                message.setText("Bad move, re-select destination");
+                return;
+            }
+
+
+            /*
+            Piece one = board[prevR][prevC];
+            board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
+            board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
+            */
+
+        }
+
+        numHits++;
+        System.out.println("numHits: " + numHits);
+    }
+
+    /**
+     * move a piece from (r1, c1) to (r2, c2), execute move if valid, don't execute if invalid
+     * @param p w for white's turn, b for black's turn
+     * @param r1 initial row
+     * @param c1 initial column
+     * @param r2 final row
+     * @param c2 final column
+     * @param i current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
+     * @return negative number if move is bad, positive number if move is good
+     */
+    public int move(char p, int r1, int c1, int r2, int c2, int i) {
+        Button message = (Button) findViewById(R.id.message);
+
+        ImageButton srcButton = (ImageButton) findViewById(makeButtonId(r1, c1));
+        ImageButton destButton = (ImageButton) findViewById(makeButtonId(r2, c2));
+        System.out.println("destination is " + r2 + "," + c2);
+
+        // if not moving piece at all, error
+        if (r1 == r2 && c1 == c2) {
+            message.setText("Can't move piece to same square");
+            return -10;
+        }
+
+        // make sure no own piece at destination
+        if (Board.isOccupied(board, r2, c2)) {
+            // destination is occupied
+            if (board[r2][c2].color == p) {
+                message.setText("Destination is occupied by own piece");
+                return -12;
+            }
+        }
+
+        Piece one = board[r1][c1];
+
+        // checks on piece at initial location
+        int isValid;
+        boolean promoted = false;
+
+        if (one.name == 'p') {
+            // piece is pawn, move pawn
+
+            if (Move.canEnPassant(board, p, r1, c1, r2, c2, i)) {
+                // all conditions for en passant meet and destination is correct
+
+                // move to destination
+                board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
+                destButton.setImageResource(currImage);
+
+                // delete old position piece
+                board[r1][c1] = new Piece(' ', ' ', 0, -1);
+                srcButton.setImageResource(R.drawable.blank);
+                return 3;
+            }
+            isValid = Move.movePawn(board, p, r1, c1, r2, c2, i);
+
+            if (isValid > 0) {
+                // move was valid, see if can upgrade pawn
+                // if reach end (r = 0 for white, r = 7 for black), promote to promo (Q by default)
+                if (p == 'w') {
+                    if (r2 == 0) {
+                        promoted = true;
+                    }
+                }
+
+                if (p == 'b') {
+                    if (r2 == 7) {
+                        promoted = true;
+                    }
+                }
+            }
+
+        } else if (one.name == 'N') {
+            // piece is knight, move knight
+            isValid = Move.moveKnight(board, p, r1, c1, r2, c2, i);
+        } else if (one.name == 'B') {
+            // piece is bishop, move bishop
+            isValid = Move.moveBishop(board, p, r1, c1, r2, c2, i);
+        } else if (one.name == 'R') {
+            // piece is rook, move rook
+            isValid = Move.moveRook(board, p, r1, c1, r2, c2, i);
+        } else if (one.name == 'Q') {
+            // piece is queen, move queen
+            isValid = Move.moveQueen(board, p, r1, c1, r2, c2, i);
+        } else if (one.name == 'K') {
+            // piece is king, move king
+
+            if (Move.canCastle(board, p, r1, c1, r2, c2, i) > 0) {
+
+                if (c2 > c1) {
+                    // rightwards, kingside
+
+                    // check conditions good
+                    board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
+                    destButton.setImageResource(currImage);
+
+                    board[r1][c1] = new Piece(' ', ' ', 0, -1);
+                    srcButton.setImageResource(R.drawable.blank);
+
+                    board[r1][5] = new Piece(p, 'R', board[r1][7].numMoves + 1, board[r1][7].lastMoved);
+                    ImageButton buttonR = (ImageButton) findViewById(makeButtonId(r1, 5));
+                    if (p == 'w') {
+                        buttonR.setImageResource(R.drawable.brook);
+                    } else {
+                        buttonR.setImageResource(R.drawable.rrook);
+                    }
+
+                    board[r1][7] = new Piece(' ', ' ', 0, -1);
+                    ImageButton srcButton2 = (ImageButton) findViewById(makeButtonId(r1, 7));
+                    srcButton2.setImageResource(R.drawable.blank);
+                } else {
+                    // check conditions good
+                    board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
+                    destButton.setImageResource(currImage);
+
+                    board[r1][c1] = new Piece(' ', ' ', 0, -1);
+                    srcButton.setImageResource(R.drawable.blank);
+
+                    board[r1][3] = new Piece(p, 'R', board[r1][0].numMoves + 1, board[r1][0].lastMoved);
+                    ImageButton buttonR = (ImageButton) findViewById(makeButtonId(r1, 3));
+                    if (p == 'w') {
+                        buttonR.setImageResource(R.drawable.brook);
+                    } else {
+                        buttonR.setImageResource(R.drawable.rrook);
+                    }
+
+                    board[r1][0] = new Piece(' ', ' ', 0, -1);
+                    ImageButton srcButton2 = (ImageButton) findViewById(makeButtonId(r1, 0));
+                    srcButton2.setImageResource(R.drawable.blank);
+                }
+
+
+                if (p == 'w'){
+                    Piece.whiteKing[0]=r2;
+                    Piece.whiteKing[1]=c2;
+                }
+                else {
+                    Piece.blackKing[0]=r2;
+                    Piece.blackKing[1]=c2;
+                }
+
+                return 2;
+            }
+
+            isValid = Move.moveKing(board, p, r1, c1, r2, c2, i);
+            if (isValid>0){
+                if (p == 'w'){
+                    Piece.whiteKing[0]=r2;
+                    Piece.whiteKing[1]=c2;
+                }
+                else {
+                    Piece.blackKing[0]=r2;
+                    Piece.blackKing[1]=c2;
+                }
+            }
+        } else {
+            // shouldn't happen, only 6 pieces
+            return -1;
+        }
+
+        if (isValid < 0) {
+            // not ok move
+            message.setText("Illegal move");
+            return -1;
+        }
+
+        if (promoted == true) {
+            // Piece was a pawn and reached far end of board, change name of P to Q
+            board[r2][c2] = new Piece(one.color, 'Q', one.numMoves + 1, i);
+            if (one.color == 'w') {
+                destButton.setImageResource(R.drawable.bqueen);
+            } else {
+                destButton.setImageResource(R.drawable.rqueen);
+            }
+
+
+            board[r1][c1] = new Piece(' ', ' ', 0, -1);
+            srcButton.setImageResource(R.drawable.blank);
+        } else {
+            // normally move piece and delete old
+            board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
+            destButton.setImageResource(currImage);
+
+            board[r1][c1] = new Piece(' ', ' ', 0, -1);
+            srcButton.setImageResource(R.drawable.blank);
+        }
+        promoted = false;
+        return isValid;
+    }
+
+    public int[] setRC(int id) {
         int r = -1;
         int c = -1;
 
@@ -369,64 +634,8 @@ public class MainActivity extends AppCompatActivity {
             c = 7;
         }
 
-        if (turn % 2 == 0) {
-            // white/blue's turn
-            currP = 'w';
-            oppP = 'b';
-        } else {
-            // black/red's turn
-            currP = 'b';
-            oppP = 'w';
-        }
-
-        System.out.println("Have clicked on square at " + r + "," + c);
-        if (numHits % 2 == 0) {
-            // hitting source
-
-            if (Board.isOccupied(board, r, c) == false) {
-                // clicking on a square with no piece on it
-                message.setText("Don't click on empty square");
-
-                return;
-            }
-
-            if (board[r][c].color == currP) {
-
-            } else {
-                // wrong color, shouldn't be moving this piece
-                message.setText("Move your own piece");
-                return;
-            }
-
-            prevR = r;
-            prevC = c;
-
-            currImage = getImage(r, c);
-            message.setText("Now select destination");
-        } else {
-            // hitting destination
-
-            // set destination square to currImage
-            ((ImageButton) v).setImageResource(currImage);
-
-            // set src square to blank
-            ImageButton srcButton = (ImageButton) findViewById(makeButtonId(prevR, prevC));
-
-            //srcButton.setVisibility(View.INVISIBLE);
-            srcButton.setImageResource(R.drawable.blank);
-
-            ImageButton destButton = (ImageButton) findViewById(makeButtonId(r, c));
-            //destButton.setVisibility(View.VISIBLE);
-
-            Piece one = board[prevR][prevC];
-            board[r][c] = new Piece(one.color, one.name, one.numMoves + 1, numHits);
-            board[prevR][prevC] = new Piece(' ', ' ', 0, -1);
-            turn++;
-            message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
-        }
-
-        numHits++;
-        System.out.println("numHits: " + numHits);
+        int[] arr = {r, c};
+        return arr;
     }
 
     public String charToStr(char p) {
