@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void resign(View v){
         Button message = (Button) findViewById(R.id.message);
-        message.setText("Resign");
+        message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
 
     public void hit(View v) {
@@ -115,15 +115,6 @@ public class MainActivity extends AppCompatActivity {
         int r = setRC(id)[0];
         int c = setRC(id)[1];
 
-        if (turn % 2 == 0) {
-            // white/blue's turn
-            currP = 'w';
-            oppP = 'b';
-        } else {
-            // black/red's turn
-            currP = 'b';
-            oppP = 'w';
-        }
 
         System.out.println("Have clicked on square at " + r + "," + c);
         if (numHits % 2 == 0) {
@@ -156,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
 
                 turn++;
                 message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
+
+                if (turn % 2 == 0) {
+                    // white/blue's turn
+                    currP = 'w';
+                    oppP = 'b';
+                } else {
+                    // black/red's turn
+                    currP = 'b';
+                    oppP = 'w';
+                }
             } else {
                 // move was invalid, return
                 message.setText("Bad move, re-select destination");
