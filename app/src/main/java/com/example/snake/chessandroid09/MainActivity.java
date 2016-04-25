@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,8 +60,28 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
+        }*/
+        switch (id){
+
+            case R.id.play:
+
+                Toast.makeText(getApplicationContext(), "Hit Play menu item", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.save:
+
+                Toast.makeText(getApplicationContext(), "Hit Save menu item", Toast.LENGTH_SHORT).show();
+
+                break;
+
+            case R.id.replay:
+
+                Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);

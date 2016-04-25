@@ -778,7 +778,7 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Undo"
         android:id="@+id/bUndo"
         android:layout_alignParentTop="true"
@@ -789,47 +789,47 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="AI"
         android:id="@+id/bAI"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
         android:onClick="ai"
         android:background="#43a5c6"
-        android:layout_above="@+id/message" />
+        android:layout_alignTop="@+id/bUndo"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Draw"
         android:id="@+id/bDraw"
-        android:layout_above="@+id/imageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:background="@color/colorPrimary"
-        android:onClick="draw" />
+        android:onClick="draw"
+        android:layout_alignTop="@+id/bResign"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Resign"
         android:id="@+id/bResign"
-        android:layout_above="@+id/imageView"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
         android:background="@color/colorPrimary"
-        android:onClick="resign" />
+        android:onClick="resign"
+        android:layout_above="@+id/message"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="White&apos;s turn"
+        android:layout_height="40dp"
+        android:text="White&apos;s turn!"
         android:id="@+id/message"
-        android:layout_below="@+id/bUndo"
+        android:background="@color/background_material_light"
+        android:layout_above="@+id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/bAI"
-        android:layout_alignEnd="@+id/bAI" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
