@@ -126,9 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (board[r][c].color == currP) {
-
-            } else {
+            if (board[r][c].color != currP) {
                 // wrong color, shouldn't be moving this piece
                 message.setText("You can't move a " + charToStr(oppP) + " piece");
                 return;
@@ -143,10 +141,36 @@ public class MainActivity extends AppCompatActivity {
             // hitting destination
 
             if (move(currP, prevR, prevC, r, c, turn) > 0) {
-                // assuming move is good passed this point, update real board
+                // if in here, move has been executed on both real board and on back end board
 
+                // check if put opponent in check or not
+                System.out.println("before check");
+                if (Conditions.isCheck(board, oppP, turn)) {
+                    // in check
+                    System.out.println(oppP + "in check");
+                    if (oppP == 'w') {
+                        if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
+                            // checkmate
+                            message.setText("Checkmate, Black wins");
+                        } else {
+                            message.setText("White in Check");
+                        }
+                    } else {
+                        if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
+                            // checkmate
+                            message.setText("Checkmate, White wins");
+                        } else {
+                            message.setText("Black in Check");
+                        }
+                    }
+
+                } else {
+                    // not in check
+                    message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
+                }
+
+                // advance turn to next player
                 turn++;
-                message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
 
                 if (turn % 2 == 0) {
                     // white/blue's turn

@@ -75,7 +75,6 @@ public class Board {
      * @return true if there is a piece at entry (r, c)
      */
     public static boolean isOccupied(Piece[][] board, int r, int c) {
-        System.out.println("board color " + board[r][c].color);
         if (board[r][c].color == 'w') {
             // square at (r, c) is occupied by a piece
             return true;
