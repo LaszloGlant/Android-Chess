@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     int numHits = 0;
@@ -27,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
     Piece[][] board = new Piece[8][8];
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    ArrayList<Pair> savedPairs = new ArrayList<Pair>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         /*if (id == R.id.action_settings) {
             return true;
         }*/
-        switch (id){
+        switch (id) {
 
             case R.id.play:
 
@@ -88,22 +92,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void undo(View v){
+    public void undo(View v) {
         Button message = (Button) findViewById(R.id.message);
         message.setText("Have undone last move");
     }
 
-    public void ai(View v){
+    public void ai(View v) {
         Button message = (Button) findViewById(R.id.message);
         message.setText("AI has made a move for " + charToStr(currP));
     }
 
-    public void draw(View v){
+    public void draw(View v) {
         Button message = (Button) findViewById(R.id.message);
         message.setText("Draw");
     }
 
-    public void resign(View v){
+    public void resign(View v) {
         Button message = (Button) findViewById(R.id.message);
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
@@ -163,7 +167,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // not in check
                     message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
+
+
                 }
+
+                // update saved pairs array list
+                savedPairs.add(new Pair(prevR, prevC, r, c));
 
                 // advance turn to next player
                 turn++;
@@ -193,12 +202,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * move a piece from (r1, c1) to (r2, c2), execute move if valid, don't execute if invalid
-     * @param p w for white's turn, b for black's turn
+     *
+     * @param p  w for white's turn, b for black's turn
      * @param r1 initial row
      * @param c1 initial column
      * @param r2 final row
      * @param c2 final column
-     * @param i current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
+     * @param i  current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
      * @return negative number if move is bad, positive number if move is good
      */
     public int move(char p, int r1, int c1, int r2, int c2, int i) {
@@ -322,27 +332,25 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                if (p == 'w'){
-                    Piece.whiteKing[0]=r2;
-                    Piece.whiteKing[1]=c2;
-                }
-                else {
-                    Piece.blackKing[0]=r2;
-                    Piece.blackKing[1]=c2;
+                if (p == 'w') {
+                    Piece.whiteKing[0] = r2;
+                    Piece.whiteKing[1] = c2;
+                } else {
+                    Piece.blackKing[0] = r2;
+                    Piece.blackKing[1] = c2;
                 }
 
                 return 2;
             }
 
             isValid = Move.moveKing(board, p, r1, c1, r2, c2, i);
-            if (isValid>0){
-                if (p == 'w'){
-                    Piece.whiteKing[0]=r2;
-                    Piece.whiteKing[1]=c2;
-                }
-                else {
-                    Piece.blackKing[0]=r2;
-                    Piece.blackKing[1]=c2;
+            if (isValid > 0) {
+                if (p == 'w') {
+                    Piece.whiteKing[0] = r2;
+                    Piece.whiteKing[1] = c2;
+                } else {
+                    Piece.blackKing[0] = r2;
+                    Piece.blackKing[1] = c2;
                 }
             }
         } else {
@@ -907,4 +915,25 @@ public class MainActivity extends AppCompatActivity {
         int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
         return lets[c] + "" + nums[r];
     }
+
+    /*
+    Chess
+    Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like. You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required to implement stalemate.
+Your app should have a Home activity that lets you choose from the following three other activities:
+Playing chess (120 pts)
+•  30 pts Two humans can use your app to play a game of Chess.
+•  20 pts Your app must draw the board with icons and correctly shaded squares.
+•  20 pts Players must move their pieces using touch input - either dragging a piece or touching first the piece's original square and then its destination.
+•  10 pts Provide an 'undo' button that will undo the last move (but no farther).
+•  10 pts Provide an 'AI' button that will choose a move for the current player. Choosing randomly from the set of legal moves is sufficient.
+•  20 pts Provide functional 'draw' and 'resign' buttons.
+•  10 pts When the game is over, report the outcome.
+Recording games (50 pts)
+•  20 pts Record all games as they're being played.
+•  10 pts At the conclusion of a game, offer to store it and prompt the user for a game title.
+•  20 pts List all recorded games, sorted by both date and by title (user can select which view to choose).
+Game playback (30 pts)
+•  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
+
+     */
 }
