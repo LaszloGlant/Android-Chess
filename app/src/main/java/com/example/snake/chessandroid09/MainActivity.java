@@ -115,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
         int r = setRC(id)[0];
         int c = setRC(id)[1];
 
-
-        System.out.println("Have clicked on square at " + r + "," + c);
         if (numHits % 2 == 0) {
             // hitting source
 
@@ -126,9 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (board[r][c].color == currP) {
-
-            } else {
+            if (board[r][c].color != currP) {
                 // wrong color, shouldn't be moving this piece
                 message.setText("You can't move a " + charToStr(oppP) + " piece");
                 return;
@@ -138,15 +134,39 @@ public class MainActivity extends AppCompatActivity {
             prevC = c;
 
             currImage = getImage(r, c);
-            message.setText("Now select " + board[r][c].toString() + " destination");
+            message.setText("Now select destination for " + board[r][c].toString() + " at " + toCoord(r, c));
         } else {
             // hitting destination
 
             if (move(currP, prevR, prevC, r, c, turn) > 0) {
-                // assuming move is good passed this point, update real board
+                // if in here, move has been executed on both real board and on back end board
 
+                // check if put opponent in check or not
+                if (Conditions.isCheck(board, oppP, turn)) {
+                    // in check
+                    if (oppP == 'w') {
+                        if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
+                            // checkmate
+                            message.setText("Checkmate, Black wins");
+                        } else {
+                            message.setText("White in Check");
+                        }
+                    } else {
+                        if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
+                            // checkmate
+                            message.setText("Checkmate, White wins");
+                        } else {
+                            message.setText("Black in Check");
+                        }
+                    }
+
+                } else {
+                    // not in check
+                    message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
+                }
+
+                // advance turn to next player
                 turn++;
-                message.setText("Good move, " + charToStr(currP) + "! Now " + charToStr(oppP) + "'s turn");
 
                 if (turn % 2 == 0) {
                     // white/blue's turn
@@ -159,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 // move was invalid, return
-                message.setText("Bad move, re-select " + board[prevR][prevC].toString() + " destination");
+                message.setText("Bad move, re-select destination for " + board[prevR][prevC].toString() + " at " + toCoord(r, c));
                 return;
             }
 
@@ -168,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         numHits++;
         System.out.println("numHits: " + numHits);
 
-        System.out.println("board: ");
         Board.displayBoard(board);
     }
 
@@ -783,7 +802,7 @@ public class MainActivity extends AppCompatActivity {
             return R.id.b37;
         }
         if (r == 4 && c == 0) {
-            return R.id.b34;
+            return R.id.b40;
         }
         if (r == 4 && c == 1) {
             return R.id.b41;
@@ -879,7 +898,13 @@ public class MainActivity extends AppCompatActivity {
             return R.id.b77;
         }
 
-        // shouldn't get to down here anway
+        // shouldn't get to down here anyway
         return R.id.b00;
+    }
+
+    public String toCoord(int r, int c) {
+        char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+        int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
+        return lets[c] + "" + nums[r];
     }
 }
