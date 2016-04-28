@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+
+        myGames = Utility.input();
+
         Board.initWhite(board);
         Board.initBoard(board);
     }
