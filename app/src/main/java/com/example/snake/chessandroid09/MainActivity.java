@@ -259,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // not in check
                     message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
-                    haveJustUndone = false;
 
                 }
 
@@ -502,7 +501,6 @@ public class MainActivity extends AppCompatActivity {
                             if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
                                 // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
                                 int ret = move(p, r1, c1, r2, c2, i);
-                                haveJustUndone = false;
                                 return;
                             } else {
                                 continue;
@@ -570,6 +568,8 @@ public class MainActivity extends AppCompatActivity {
 
         ai.setText("AI (" + charToStr(currP) + ")");
         resign.setText("Resign (" + charToStr(currP) + ")");
+
+        haveJustUndone = false;
 
     }
 
