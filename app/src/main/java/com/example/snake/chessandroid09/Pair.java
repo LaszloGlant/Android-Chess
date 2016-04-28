@@ -11,6 +11,13 @@ public class Pair implements Serializable{
     int r2;
     int c2;
 
+    public Pair() {
+        this.r1 = -1;
+        this.c1 = -1;
+        this.r2 = -1;
+        this.c2 = -1;
+    }
+
     public Pair(int r1, int c1, int r2, int c2) {
         this.r1 = r1;
         this.c1 = c1;

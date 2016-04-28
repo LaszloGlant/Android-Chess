@@ -16,6 +16,14 @@ public class RecordedGame implements Serializable {
         return title + " " + year + "/" + month + "/" + day;
     }
 
+    public RecordedGame() {
+        this.title = "";
+        this.year = 0;
+        this.month = 0;
+        this.day = 0;
+        this.moves = null;
+    }
+
     public RecordedGame(String title, int year, int month, int day, ArrayList<Pair> moves) {
         this.title = title;
         this.year = year;

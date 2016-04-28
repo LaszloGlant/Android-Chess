@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -56,12 +57,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+        File g = new File("games.ser");
+        if (g.exists()) {
+
+        } else {
+
+        }
         myGames = Utility.input();
 
         Board.initWhite(board);
         Board.initBoard(board);
 
         copy(board, boardCopy);
+
     }
 
     @Override
@@ -185,8 +193,11 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar c = new GregorianCalendar();
         c.set(Calendar.MILLISECOND, 0);
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int day = c.get(Calendar.DAY_OF_MONTH);
 
-        myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
+        myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
 
         Utility.output(myGames);
 
