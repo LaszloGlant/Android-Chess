@@ -109,6 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
         updateTurn();
 
+        if (numHits % 2 != 0) {
+            // odd number, need to increment so next src selection not messed up
+            numHits++;
+        }
+
         message.setText("AI has made a move for " + charToStr(currP));
     }
 
