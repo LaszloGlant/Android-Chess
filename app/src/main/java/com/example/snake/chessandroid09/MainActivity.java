@@ -122,12 +122,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void undo(View v) {
-        if (turn == 0) {
-            return;
-        }
 
         if (haveJustUndone) {
             // don't go back any farther
+            return;
+        }
+
+        if (turn == 0) {
             return;
         }
 
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         Board.displayBoard(board);
         drawBoard();
 
-        savedPairs.remove(savedPairs.size() - 1);
+        //savedPairs.remove(savedPairs.size() - 1);
 
         updateTurn();
 
@@ -497,9 +498,11 @@ public class MainActivity extends AppCompatActivity {
 
                     for (int r2 = 0; r2 < 8; r2++) {
                         for (int c2 = 0; c2 < 8; c2++) {
+                            copy(board, boardCopy);
                             if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
                                 // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
                                 int ret = move(p, r1, c1, r2, c2, i);
+                                haveJustUndone = false;
                                 return;
                             } else {
                                 continue;
