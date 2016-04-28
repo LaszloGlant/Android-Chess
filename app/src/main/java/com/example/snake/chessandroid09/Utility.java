@@ -21,17 +21,17 @@ import java.util.ArrayList;
 public class Utility {
 
     /**
-     * Outputs the database to the user.ser file
-     * @param users all the users in the database
+     * Outputs the database to the games.ser file
+     * @param games all the users in the database
      */
-    public static void output(ArrayList<RecordedGame> users) {
+    public static void output(ArrayList<RecordedGame> games) {
         try
         {
             File gameSave = new File("games.ser");
             FileOutputStream fileOut = new FileOutputStream(gameSave);
 
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(users);
+            out.writeObject(games);
             out.close();
             fileOut.close();
             System.out.printf("Serialized data is saved in games.ser");
@@ -41,8 +41,8 @@ public class Utility {
         }
     }
     /**
-     * Loads the database from the user.ser file
-     * @return The database of users
+     * Loads the database from the games.ser file
+     * @return The database of games
      */
     public static ArrayList<RecordedGame> input() {
 
@@ -50,7 +50,7 @@ public class Utility {
         try
         {
 
-            FileInputStream fileIn = new FileInputStream("users.ser");
+            FileInputStream fileIn = new FileInputStream("games.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             recordedGames = (ArrayList<RecordedGame>) in.readObject();
             in.close();
