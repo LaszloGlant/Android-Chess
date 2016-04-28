@@ -255,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton srcButton = (ImageButton) findViewById(makeButtonId(r1, c1));
         ImageButton destButton = (ImageButton) findViewById(makeButtonId(r2, c2));
-        System.out.println("destination is " + r2 + "," + c2);
 
         // if not moving piece at all, error
         if (r1 == r2 && c1 == c2) {
@@ -291,6 +290,17 @@ public class MainActivity extends AppCompatActivity {
                 // delete old position piece
                 board[r1][c1] = new Piece(' ', ' ', 0, -1);
                 srcButton.setImageResource(R.drawable.blank);
+
+                if (c2 > c1) {
+                    // moving to the right
+                    ImageButton captured = (ImageButton) findViewById(makeButtonId(r1, c1 + 1));
+                    captured.setImageResource(R.drawable.blank);
+                } else {
+                    // moving to the left
+                    ImageButton captured = (ImageButton) findViewById(makeButtonId(r1, c1 - 1));
+                    captured.setImageResource(R.drawable.blank);
+                }
+
                 return 3;
             }
             isValid = Move.movePawn(board, p, r1, c1, r2, c2, i);
