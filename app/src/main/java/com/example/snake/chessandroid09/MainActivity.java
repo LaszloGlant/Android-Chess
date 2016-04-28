@@ -21,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
     int numHits = 0;
     int turn = 0;
-    int currImage = R.drawable.rbishop;
+    int pbIndex = 0;
+
+    int currImage;
 
     char currP = 'w';
     char oppP = 'b';
@@ -30,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
     int prevC;
 
     boolean isOver = false;
+    boolean haveJustUndone = false;
 
     Piece[][] board = new Piece[8][8];
+    Piece[][] boardCopy = new Piece[8][8];
 
     ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         Board.initWhite(board);
         Board.initBoard(board);
+
+        copy(board, boardCopy);
     }
 
     @Override
@@ -77,38 +83,76 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }*/
         switch (id) {
-
             case R.id.play:
-
                 Toast.makeText(getApplicationContext(), "Hit Play menu item", Toast.LENGTH_SHORT).show();
-
                 break;
-
             case R.id.save:
-
                 Toast.makeText(getApplicationContext(), "Hit Save menu item", Toast.LENGTH_SHORT).show();
-
                 break;
-
             case R.id.replay:
-
                 Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
-
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * copy contents from board, put in board2
+     * @param board 2D array of Pieces
+     * @param board2 secondary 2D array of Pieces
+     */
+    public void copy(Piece[][] board, Piece[][] board2) {
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board2[i][j] = board[i][j];
+            }
+        }
+    }
+
+    public void drawBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int image = getImage(i, j);
+                ImageButton b = (ImageButton) findViewById(makeButtonId(i, j));
+                b.setImageResource(image);
+            }
+        }
+    }
+
     public void undo(View v) {
+        if (turn == 0) {
+            return;
+        }
+
+        if (haveJustUndone) {
+            // don't go back any farther
+            return;
+        }
+
         Button message = (Button) findViewById(R.id.message);
-        message.setText("Have undone last move");
+
+        copy(boardCopy, board);
+        Board.displayBoard(board);
+        drawBoard();
+
+        savedPairs.remove(savedPairs.size() - 1);
+
+        updateTurn();
+
+        message.setText("Have undone last move, " + charToStr(currP) + " to play");
+        haveJustUndone = true;
     }
 
     public void ai(View v) {
         Button message = (Button) findViewById(R.id.message);
 
+        copy(board, boardCopy);
+
         AI(board, currP, turn);
+
+        message.setText("AI has made a move for " + charToStr(currP));
 
         updateTurn();
 
@@ -116,8 +160,6 @@ public class MainActivity extends AppCompatActivity {
             // odd number, need to increment so next src selection not messed up
             numHits++;
         }
-
-        message.setText("AI has made a move for " + charToStr(currP));
     }
 
     public void draw(View v) {
@@ -126,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         isOver = true;
 
         Calendar c = new GregorianCalendar();
-        c.set(Calendar.MILLISECOND,0);
+        c.set(Calendar.MILLISECOND, 0);
 
         myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
 
@@ -141,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         isOver = true;
 
         Calendar c = new GregorianCalendar();
-        c.set(Calendar.MILLISECOND,0);
+        c.set(Calendar.MILLISECOND, 0);
 
         myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
 
@@ -183,8 +225,11 @@ public class MainActivity extends AppCompatActivity {
 
             currImage = getImage(r, c);
             message.setText("Now select destination for " + board[r][c].toString() + " at " + toCoord(r, c));
+
         } else {
             // hitting destination
+
+            copy(board, boardCopy);
 
             if (move(currP, prevR, prevC, r, c, turn) > 0) {
                 // if in here, move has been executed on both real board and on back end board
@@ -213,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // not in check
                     message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
-
+                    haveJustUndone = false;
 
                 }
 
@@ -439,9 +484,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * AI should do any 1 legal move for player p
+     *
      * @param board 2D array of pieces
-     * @param p w or b
-     * @param i turn number
+     * @param p     w or b
+     * @param i     turn number
      */
     public void AI(Piece[][] board, char p, int i) {
         for (int r1 = 0; r1 < 8; r1++) {
@@ -465,6 +511,24 @@ public class MainActivity extends AppCompatActivity {
                     continue;
                 }
             }
+        }
+    }
+
+    public void playBack(RecordedGame rg) {
+        for (int i = 0; i < rg.moves.size(); i++) {
+            int r1 = rg.moves.get(i).r1;
+            int c1 = rg.moves.get(i).c1;
+            int r2 = rg.moves.get(i).r2;
+            int c2 = rg.moves.get(i).c2;
+
+            char p;
+            if (i % 2 == 0) {
+                p = 'w';
+            } else {
+                p = 'b';
+            }
+
+            int ret = move(p, r1, c1, r2, c2, i);
         }
     }
 
@@ -809,10 +873,10 @@ public class MainActivity extends AppCompatActivity {
             return R.drawable.bking;
         }
         if (board[r][c].toString().equals("  ")) {
-            return R.drawable.selrknight;
+            return R.drawable.blank;
         }
         if (board[r][c].toString().equals("##")) {
-            return R.drawable.selrknight;
+            return R.drawable.blank;
         }
 
         // shouldn't get down to here
@@ -1018,8 +1082,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+}
 
-    /*
+/*
 Chess
 Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
 You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
@@ -1043,5 +1108,4 @@ Recording games (50 pts)
 Game playback (30 pts)
 •  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
 
-     */
-}
+*/

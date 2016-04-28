@@ -780,7 +780,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Undo"
+        android:text="&lt;&lt;&lt;"
         android:id="@+id/bUndo"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
