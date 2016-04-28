@@ -104,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void ai(View v) {
         Button message = (Button) findViewById(R.id.message);
+
+        AI(board, currP, turn);
+
+        updateTurn();
+
         message.setText("AI has made a move for " + charToStr(currP));
     }
 
@@ -183,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, Black wins");
+                            isOver = true;
                         } else {
                             message.setText("White in Check");
                         }
@@ -190,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, White wins");
+                            isOver = true;
                         } else {
                             message.setText("Black in Check");
                         }
@@ -206,17 +213,8 @@ public class MainActivity extends AppCompatActivity {
                 savedPairs.add(new Pair(prevR, prevC, r, c));
 
                 // advance turn to next player
-                turn++;
+                updateTurn();
 
-                if (turn % 2 == 0) {
-                    // white/blue's turn
-                    currP = 'w';
-                    oppP = 'b';
-                } else {
-                    // black/red's turn
-                    currP = 'b';
-                    oppP = 'w';
-                }
             } else {
                 // move was invalid, return
                 message.setText("Bad move, re-select destination for " + board[prevR][prevC].toString() + " at " + toCoord(r, c));
@@ -244,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public int move(char p, int r1, int c1, int r2, int c2, int i) {
         Button message = (Button) findViewById(R.id.message);
+
+        currImage = getImage(r1, c1);
 
         ImageButton srcButton = (ImageButton) findViewById(makeButtonId(r1, c1));
         ImageButton destButton = (ImageButton) findViewById(makeButtonId(r2, c2));
@@ -417,6 +417,75 @@ public class MainActivity extends AppCompatActivity {
         }
         promoted = false;
         return isValid;
+    }
+
+    /**
+     * AI should do any 1 legal move for player p
+     * @param board 2D array of pieces
+     * @param p w or b
+     * @param i turn number
+     */
+    public void AI(Piece[][] board, char p, int i) {
+        for (int r1 = 0; r1 < 8; r1++) {
+            for (int c1 = 0; c1 < 8; c1++) {
+                if (board[r1][c1].color == p) {
+                    // own piece
+
+                    for (int r2 = 0; r2 < 8; r2++) {
+                        for (int c2 = 0; c2 < 8; c2++) {
+                            if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                int ret = move(p, r1, c1, r2, c2, i);
+                                return;
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+
+                } else {
+                    continue;
+                }
+            }
+        }
+    }
+
+    public String toCoord(int r, int c) {
+        char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+        int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
+        return lets[c] + "" + nums[r];
+    }
+
+    public String charToStr(char p) {
+        if (p == 'w') {
+            return "White";
+        } else if (p == 'b') {
+            return "Black";
+        } else {
+            // can't happen
+            return "Bogus";
+        }
+    }
+
+    public void updateTurn() {
+        turn++;
+
+        if (turn % 2 == 0) {
+            // white/blue's turn
+            currP = 'w';
+            oppP = 'b';
+        } else {
+            // black/red's turn
+            currP = 'b';
+            oppP = 'w';
+        }
+
+        Button ai = (Button) findViewById(R.id.bAI);
+        Button resign = (Button) findViewById(R.id.bResign);
+
+        ai.setText("AI (" + charToStr(currP) + ")");
+        resign.setText("Resign (" + charToStr(currP) + ")");
+
     }
 
     public int[] setRC(int id) {
@@ -684,17 +753,6 @@ public class MainActivity extends AppCompatActivity {
         return arr;
     }
 
-    public String charToStr(char p) {
-        if (p == 'w') {
-            return "White";
-        } else if (p == 'b') {
-            return "Black";
-        } else {
-            // can't happen
-            return "Bogus";
-        }
-    }
-
     public int getImage(int r, int c) {
         if (board[r][c].toString().equals("bp")) {
             return R.drawable.rpawn;
@@ -941,11 +999,7 @@ public class MainActivity extends AppCompatActivity {
         return R.id.b00;
     }
 
-    public String toCoord(int r, int c) {
-        char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-        int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
-        return lets[c] + "" + nums[r];
-    }
+
 
     /*
 Chess

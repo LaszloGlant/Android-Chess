@@ -791,7 +791,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="AI"
+        android:text="AI (white)"
         android:id="@+id/bAI"
         android:onClick="ai"
         android:background="#43a5c6"
@@ -813,7 +813,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Resign"
+        android:text="Resign (white)"
         android:id="@+id/bResign"
         android:background="@color/colorPrimary"
         android:onClick="resign"
