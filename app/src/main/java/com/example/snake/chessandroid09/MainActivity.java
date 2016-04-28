@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +29,11 @@ public class MainActivity extends AppCompatActivity {
     int prevR;
     int prevC;
 
+    boolean isOver = false;
+
     Piece[][] board = new Piece[8][8];
 
+    ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
 
     @Override
@@ -104,15 +109,41 @@ public class MainActivity extends AppCompatActivity {
 
     public void draw(View v) {
         Button message = (Button) findViewById(R.id.message);
+
+        isOver = true;
+
+        Calendar c = new GregorianCalendar();
+        c.set(Calendar.MILLISECOND,0);
+
+        myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
+
+        Utility.output(myGames);
+
         message.setText("Draw");
     }
 
     public void resign(View v) {
         Button message = (Button) findViewById(R.id.message);
+
+        isOver = true;
+
+        Calendar c = new GregorianCalendar();
+        c.set(Calendar.MILLISECOND,0);
+
+        myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
+
+        Utility.output(myGames);
+
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
 
     public void hit(View v) {
+
+        if (isOver) {
+            // game is over, just return so that user cannot move any pieces
+            return;
+        }
+
         int id = v.getId();
         Button message = (Button) findViewById(R.id.message);
 
@@ -917,8 +948,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    Chess
-    Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like. You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required to implement stalemate.
+Chess
+Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
+You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
+to implement stalemate.
+
 Your app should have a Home activity that lets you choose from the following three other activities:
 Playing chess (120 pts)
 •  30 pts Two humans can use your app to play a game of Chess.
@@ -928,10 +962,12 @@ Playing chess (120 pts)
 •  10 pts Provide an 'AI' button that will choose a move for the current player. Choosing randomly from the set of legal moves is sufficient.
 •  20 pts Provide functional 'draw' and 'resign' buttons.
 •  10 pts When the game is over, report the outcome.
+
 Recording games (50 pts)
 •  20 pts Record all games as they're being played.
 •  10 pts At the conclusion of a game, offer to store it and prompt the user for a game title.
 •  20 pts List all recorded games, sorted by both date and by title (user can select which view to choose).
+
 Game playback (30 pts)
 •  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
 
