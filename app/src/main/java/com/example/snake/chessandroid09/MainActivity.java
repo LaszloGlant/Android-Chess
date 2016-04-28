@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
         File g = new File("games.ser");
         if (g.exists()) {
-
+            myGames = Utility.input();
         } else {
-
+            Utility.output(myGames);
         }
-        myGames = Utility.input();
+
 
         Board.initWhite(board);
         Board.initBoard(board);
