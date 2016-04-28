@@ -1088,6 +1088,21 @@ public class MainActivity extends AppCompatActivity {
 }
 
 /*
+Remaining Tasks:
+- Get check to identify correctly
+- Disallow move that ends turn with self in check
+- Disallow AI to put self in check
+- Get Utility to stop giving errors
+- Get game to stop crashing when hit Draw/Resign
+- prompt user for draw
+- prompt user for piece to promote pawn to
+- take last move off of savedPairs when undo a move
+- prompt user for game title
+- list recorded games
+- sort games
+- playback a game one move at a time
+
+
 Chess
 Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
 You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
