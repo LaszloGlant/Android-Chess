@@ -27,8 +27,10 @@ public class Utility {
     public static void output(ArrayList<RecordedGame> games) {
         try
         {
+            //File gameSave = new File(context.getFilesDir(), "games.ser");
             File gameSave = new File("games.ser");
             FileOutputStream fileOut = new FileOutputStream(gameSave);
+            //FileOutputStream fileOut = openFileOutput("games.ser", MODE_PRIVATE);
 
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(games);
