@@ -345,7 +345,6 @@ Game playback (30 pts)
 
             if (okMove < 0) {
                 // move was invalid
-                message.setText("Invalid move, try again");
                 numHits++;
                 return;
             } else if (Conditions.isCheck(board, currP, turn)) {
@@ -381,9 +380,10 @@ Game playback (30 pts)
                             inCheck = 'b';
                         }
                     }
-                } else {
-                    message.setText("Have moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c));
                 }
+//                else {
+//                    message.setText("Have moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c));
+//                }
             }
 
             // do at end of every good move
@@ -468,6 +468,7 @@ Game playback (30 pts)
                     captured.setImageResource(R.drawable.blank);
                 }
 
+                message.setText(charToStr(p) + " has performed en passant");
                 return 3;
             }
             isValid = Move.movePawn(board, p, r1, c1, r2, c2, i);
@@ -576,7 +577,7 @@ Game playback (30 pts)
 
         if (isValid < 0) {
             // not ok move
-            message.setText("Illegal move");
+            message.setText(board[r1][c1].toString() + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2) + " is invalid");
             return -1;
         }
 
@@ -601,6 +602,7 @@ Game playback (30 pts)
             srcButton.setImageResource(R.drawable.blank);
         }
         promoted = false;
+        message.setText("Have moved " + board[r2][c2] + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2));
         return isValid;
     }
 

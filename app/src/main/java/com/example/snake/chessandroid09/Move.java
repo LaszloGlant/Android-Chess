@@ -414,6 +414,7 @@ public class Move {
 
         //there is a piece in the way, in black's turn check for the white queen
         if (!Board.isClear(board, r1, c1, r2, c2)){
+            System.out.println("board is not clear");
             return -1;
         }
 
@@ -438,6 +439,8 @@ public class Move {
         }
 
         // otherwise no good
+        System.out.printf("%d %d %d %d\n", r1, c1, r2, c2);
+        System.out.println("queen not moving in straight line, dr:" + dr + " dc:" + dc);
         return -1;
     }
 
