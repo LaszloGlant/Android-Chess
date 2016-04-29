@@ -3,5 +3,7 @@
     <string name="action_settings">Menu</string>
     <string name="play">Play Chess</string>
     <string name="replay">Replay Chess</string>
-    <string name="save">Save Game</string>
+    <string name="main">Main Menu</string>
+    <string name="title_activity_replay_game">ReplayGameActivity</string>
+    <string name="title_activity_main_menu">Main Menu</string>
 </resources>

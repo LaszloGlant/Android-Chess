@@ -1,19 +1,16 @@
 package com.example.snake.chessandroid09;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -95,12 +92,14 @@ public class MainActivity extends AppCompatActivity {
         }*/
         switch (id) {
             case R.id.play:
-                Toast.makeText(getApplicationContext(), "Hit Play menu item", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(getApplicationContext(), "You are in play chess mode!", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.save:
-                Toast.makeText(getApplicationContext(), "Hit Save menu item", Toast.LENGTH_SHORT).show();
+            case R.id.main:
+                Toast.makeText(getApplicationContext(), "THIS MENU IS PROBALY NOT NEEDED! WILL SEE!", Toast.LENGTH_LONG).show();
                 break;
             case R.id.replay:
+                startActivity(new Intent(getApplicationContext(), ReplayGameActivity.class));
                 Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -589,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Button ai = (Button) findViewById(R.id.bAI);
-        Button resign = (Button) findViewById(R.id.bResign);
+        Button resign = (Button) findViewById(R.id.bForward);
 
         ai.setText("AI (" + charToStr(currP) + ")");
         resign.setText("Resign (" + charToStr(currP) + ")");

@@ -6,8 +6,8 @@
         android:id="@+id/play"
         android:title="@string/play"/>
     <item
-        android:id="@+id/save"
-        android:title="@string/save"/>
+        android:id="@+id/main"
+        android:title="@string/main"/>
     <item
         android:id="@+id/replay"
         android:title="@string/replay"/>

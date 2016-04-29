@@ -9,8 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.snake.chessandroid09.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.example.snake.chessandroid09.ReplayGameActivity"
+    tools:showIn="@layout/replay_game">
 
     <ImageView
         android:layout_width="300dp"
@@ -780,20 +780,20 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Undo"
+        android:text="Start Playback"
         android:id="@+id/bStartPlay"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="#43a5c6"
-        android:onClick="undo" />
+        android:onClick="playback" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="AI (white)"
-        android:id="@+id/bAI"
-        android:onClick="ai"
+        android:text="Recorded Games"
+        android:id="@+id/bRecordedGames"
+        android:onClick="recordedGames"
         android:background="#43a5c6"
         android:layout_alignTop="@+id/bStartPlay"
         android:layout_alignParentRight="true"
@@ -802,10 +802,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Draw"
-        android:id="@+id/bDraw"
+        android:text="&lt;&lt;&lt;"
+        android:id="@+id/bBack"
         android:background="@color/colorPrimary"
-        android:onClick="draw"
+        android:onClick="backward"
         android:layout_alignTop="@+id/bForward"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -813,24 +813,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Resign (white)"
+        android:text=">>>"
         android:id="@+id/bForward"
         android:background="@color/colorPrimary"
-        android:onClick="resign"
-        android:layout_above="@+id/message"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="White&apos;s turn!"
-        android:id="@+id/message"
-        android:background="@color/background_material_light"
-        android:layout_above="@+id/imageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:onClick="forward"
+        android:layout_below="@+id/bRecordedGames"
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_marginTop="12dp" />
 
 </RelativeLayout>
