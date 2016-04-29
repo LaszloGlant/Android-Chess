@@ -59,13 +59,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+        /*
         File g = new File("games.ser");
         if (g.exists()) {
             myGames = Utility.input();
         } else {
             Utility.output(myGames);
         }
-
+        */
 
         Board.initWhite(board);
         Board.initBoard(board);
@@ -109,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * copy contents from board, put in board2
-     * @param board 2D array of Pieces
+     *
+     * @param board  2D array of Pieces
      * @param board2 secondary 2D array of Pieces
      */
     public void copy(Piece[][] board, Piece[][] board2) {
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
         myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
 
-        Utility.output(myGames);
+        //Utility.output(myGames);
 
         message.setText("Draw");
     }
@@ -201,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
 
-        Utility.output(myGames);
+        //Utility.output(myGames);
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
@@ -247,9 +249,14 @@ public class MainActivity extends AppCompatActivity {
 
             // move only good if valid and do not end with king in check
 
-            if (move(currP, prevR, prevC, r, c, turn) > 0) {
-                // if in here, move has been executed on both real board and on back end board and move is good
+            boolean okMove = Move.movePiece(board, currP, prevR, prevC, r, c, turn);
 
+            if (okMove == false || Conditions.isCheck(board, currP, turn)) {
+                // move is bad
+                message.setText("Bad move, re-select destination for " + board[prevR][prevC].toString() + " at " + toCoord(r, c));
+                return;
+            } else {
+                // move is good
                 // check if put opponent in check or not
                 if (Conditions.isCheck(board, oppP, turn)) {
                     // in check
@@ -272,12 +279,10 @@ public class MainActivity extends AppCompatActivity {
                             inCheck = 'b';
                         }
                     }
-
                 } else {
                     // not in check
                     message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
-                    inCheck = 'n';
-                }
+                }   // end not in check
 
                 // update saved pairs array list
                 savedPairs.add(new Pair(prevR, prevC, r, c));
@@ -285,13 +290,11 @@ public class MainActivity extends AppCompatActivity {
                 // advance turn to next player
                 updateTurn();
 
-            } else {
-                // move was invalid, return
-                message.setText("Bad move, re-select destination for " + board[prevR][prevC].toString() + " at " + toCoord(r, c));
-                return;
-            }
 
-        }
+            }   // end move is good
+
+
+        }   // end destination choosing
 
         numHits++;
         System.out.println("numHits: " + numHits);
@@ -310,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
      * @param i  current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
      * @return negative number if move is bad, positive number if move is good
      */
+
     public int move(char p, int r1, int c1, int r2, int c2, int i) {
         Button message = (Button) findViewById(R.id.message);
 

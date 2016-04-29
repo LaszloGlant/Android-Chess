@@ -11,6 +11,35 @@ public class Conditions {
     public static int[] attacker = {-1, -1};
 
     /**
+     * determine if the player p (white or black) is in checkmate or not
+     *
+     * @param board 2D array of Pieces
+     * @param p     'w' or 'b'
+     * @param kr    row of king
+     * @param kc    column of king
+     * @return true if p player is in checkmate, false otherwise
+     */
+    public static boolean isCheckmate(Piece[][] board, char p, int kr, int kc, int counter) {
+        //see if p's own pieces can take out attacker
+
+        if (isFree(board, p, kr, kc, counter)) {
+            // King still has a square to go to, not checkmate
+            return false;
+        } else if (canCapture(board, p, attacker)) {
+            // can capture attacking piece with own piece, not checkmate
+            return false;
+        } else if (board[attacker[0]][attacker[1]].name == 'N') {
+            // attacker is Knight (cannot be blocked)
+            return true;
+        } else if (canBlock(board, p, kr, kc, attacker)) {
+            // can move piece between king and attacker to block attack, not checkmate
+            return false;
+        } else {
+            return true;//it is checkMate
+        }
+    }
+
+    /**
      * determine if p's King is in check or not
      *
      * @param board 2D array of Pieces
@@ -58,35 +87,6 @@ public class Conditions {
         } else {
             // no pieces can target king, not check but may not have any moves left
             return false;
-        }
-    }
-
-    /**
-     * determine if the player p (white or black) is in checkmate or not
-     *
-     * @param board 2D array of Pieces
-     * @param p     'w' or 'b'
-     * @param kr    row of king
-     * @param kc    column of king
-     * @return true if p player is in checkmate, false otherwise
-     */
-    public static boolean isCheckmate(Piece[][] board, char p, int kr, int kc, int counter) {
-        //see if p's own pieces can take out attacker
-
-        if (isFree(board, p, kr, kc, counter)) {
-            // King still has a square to go to, not checkmate
-            return false;
-        } else if (canCapture(board, p, attacker)) {
-            // can capture attacking piece with own piece, not checkmate
-            return false;
-        } else if (board[attacker[0]][attacker[1]].name == 'N') {
-            // attacker is Knight (cannot be blocked)
-            return true;
-        } else if (canBlock(board, p, kr, kc, attacker)) {
-            // can move piece between king and attacker to block attack, not checkmate
-            return false;
-        } else {
-            return true;//it is checkMate
         }
     }
 
