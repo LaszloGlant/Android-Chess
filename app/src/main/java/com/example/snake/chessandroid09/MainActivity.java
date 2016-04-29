@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*
 Remaining Tasks:
-- Get check to identify correctly (just have to check checkmate)
+- Get check to identify correctly (completed as well as checkmate with AI)
 - Disallow move that ends turn with self in check (completed)
 - Disallow AI to put self in check (completed)
 - If in check and hit AI button, get out of check (completed)
@@ -175,6 +175,9 @@ Game playback (30 pts)
     }
 
     public void undo(View v) {
+        if (isOver) {
+            return;
+        }
 
         if (haveJustUndone) {
             // don't go back any farther
@@ -200,21 +203,44 @@ Game playback (30 pts)
     }
 
     public void ai(View v) {
+        if (isOver) {
+            return;
+        }
+
         Button message = (Button) findViewById(R.id.message);
 
         copy(board, boardCopy);
 
-//        if (Conditions.isCheck(board, currP, turn)) {
-//            // currently in check, AI has to get out
-//        } else {
-//            // not in check, any legal move will do as long as does not put self in check
-//        }
+        int statusAI = AI(board, currP, turn);     // make AI move
 
-        AI(board, currP, turn);     // make AI move
+        if (statusAI < 0) {
+            // no legal move for AI to do
+            message.setText("Checkmate for " + charToStr(oppP));
+            isOver = true;
+            return;
+        }
 
         if (Conditions.isCheck(board, oppP, turn)) {
-            // AI has put opponent in check
-            message.setText("AI has put " + charToStr(oppP) + " in check");
+            // have put opponent in check
+            if (oppP == 'w') {
+                if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
+                    // checkmate
+                    message.setText("Checkmate, Black wins");
+                    isOver = true;
+                } else {
+                    message.setText("White in Check");
+                    inCheck = 'w';
+                }
+            } else {
+                if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
+                    // checkmate
+                    message.setText("Checkmate, White wins");
+                    isOver = true;
+                } else {
+                    message.setText("Black in Check");
+                    inCheck = 'b';
+                }
+            }
         } else {
             message.setText("AI has made a move for " + charToStr(currP));
         }
@@ -228,6 +254,10 @@ Game playback (30 pts)
     }
 
     public void draw(View v) {
+        if (isOver) {
+            return;
+        }
+
         Button message = (Button) findViewById(R.id.message);
 
         isOver = true;
@@ -243,6 +273,10 @@ Game playback (30 pts)
     }
 
     public void resign(View v) {
+        if (isOver) {
+            return;
+        }
+
         Button message = (Button) findViewById(R.id.message);
 
         isOver = true;
@@ -261,7 +295,6 @@ Game playback (30 pts)
     }
 
     public void hit(View v) {
-
         if (isOver) {
             // game is over, just return so that user cannot move any pieces
             return;
@@ -368,7 +401,6 @@ Game playback (30 pts)
         numHits++;
 
     }
-
 
 
     /**
@@ -578,8 +610,9 @@ Game playback (30 pts)
      * @param board 2D array of pieces
      * @param p     w or b
      * @param i     turn number
+     * @return positive number if sucessfully did a legal move, negative number if nothing legal to do
      */
-    public void AI(Piece[][] board, char p, int i) {
+    public int AI(Piece[][] board, char p, int i) {
         copy(board, boardCopy);
         for (int r1 = 0; r1 < 8; r1++) {
             for (int c1 = 0; c1 < 8; c1++) {
@@ -594,25 +627,31 @@ Game playback (30 pts)
                                 int ret = move(p, r1, c1, r2, c2, i);
 
                                 if (Conditions.isCheck(board, p, i)) {
-                                    // this move will put self in check
+                                    // this move will put self in check, take back
                                     copy(boardCopy, board);
                                     drawBoard();
+
+                                    // skip this move, still looking for something legal to do
                                     continue;
                                 } else {
-                                    return;
+                                    // not in check, this move is good
+                                    return 1;
                                 }
 
                             } else {
+                                // not a legal move, don't attempt to do this
                                 continue;
                             }
                         }
                     }
 
                 } else {
+                    // not own piece, don't attempt to move this one
                     continue;
                 }
             }
         }
+        return -1;
     }
 
     public void playBack(RecordedGame rg) {
