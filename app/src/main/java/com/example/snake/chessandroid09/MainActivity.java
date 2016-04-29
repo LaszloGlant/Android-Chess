@@ -884,7 +884,7 @@ Game playback (30 pts)
         }
         if (id == R.id.b51) {
             r = 5;
-            c = 2;
+            c = 1;
         }
         if (id == R.id.b52) {
             r = 5;
