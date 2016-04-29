@@ -162,9 +162,14 @@ public class MainActivity extends AppCompatActivity {
 
         copy(board, boardCopy);
 
-        AI(board, currP, turn);
+        AI(board, currP, turn);     // make AI move
 
-        message.setText("AI has made a move for " + charToStr(currP));
+        if (Conditions.isCheck(board, oppP, turn)) {
+            // AI has put opponent in check
+            message.setText("AI has put " + charToStr(oppP) + " in check");
+        } else {
+            message.setText("AI has made a move for " + charToStr(currP));
+        }
 
         updateTurn();
 
@@ -1126,9 +1131,10 @@ public class MainActivity extends AppCompatActivity {
 
 /*
 Remaining Tasks:
-- Get check to identify correctly (I think so, but should test more, also check at end of AI move)
+- Get check to identify correctly (completed)
 - Disallow move that ends turn with self in check (completed)
 - Disallow AI to put self in check
+- If in check and hit AI button, get out of check
 - Get Utility to stop giving errors (might abandon and re-write with txt file input, use s.concat("abc") to append a string to end of another string)
 - Get game to stop crashing when hit Draw/Resign (completed)
 - prompt user for draw
