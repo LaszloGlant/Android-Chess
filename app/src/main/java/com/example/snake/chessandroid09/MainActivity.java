@@ -40,6 +40,48 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
 
+    /*
+Remaining Tasks:
+- Get check to identify correctly (just have to check checkmate)
+- Disallow move that ends turn with self in check (completed)
+- Disallow AI to put self in check (completed)
+- If in check and hit AI button, get out of check (completed)
+- Get Utility to stop giving errors (might abandon and re-write with txt file input, use s.concat("abc") to append a string to end of another string)
+- Get game to stop crashing when hit Draw/Resign (completed)
+- prompt user for draw
+- prompt user for piece to promote pawn to
+- take last move off of savedPairs when undo a move
+- prompt user for game title
+- list recorded games
+- sort games
+- playback a game one move at a time
+
+
+Chess
+Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
+You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
+to implement stalemate.
+
+Your app should have a Home activity that lets you choose from the following three other activities:
+Playing chess (120 pts)
+•  30 pts Two humans can use your app to play a game of Chess.
+•  20 pts Your app must draw the board with icons and correctly shaded squares.
+•  20 pts Players must move their pieces using touch input - either dragging a piece or touching first the piece's original square and then its destination.
+•  10 pts Provide an 'undo' button that will undo the last move (but no farther).
+•  10 pts Provide an 'AI' button that will choose a move for the current player. Choosing randomly from the set of legal moves is sufficient.
+•  20 pts Provide functional 'draw' and 'resign' buttons.
+•  10 pts When the game is over, report the outcome.
+
+Recording games (50 pts)
+•  20 pts Record all games as they're being played.
+•  10 pts At the conclusion of a game, offer to store it and prompt the user for a game title.
+•  20 pts List all recorded games, sorted by both date and by title (user can select which view to choose).
+
+Game playback (30 pts)
+•  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
+
+*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +203,12 @@ public class MainActivity extends AppCompatActivity {
         Button message = (Button) findViewById(R.id.message);
 
         copy(board, boardCopy);
+
+//        if (Conditions.isCheck(board, currP, turn)) {
+//            // currently in check, AI has to get out
+//        } else {
+//            // not in check, any legal move will do as long as does not put self in check
+//        }
 
         AI(board, currP, turn);     // make AI move
 
@@ -532,6 +580,7 @@ public class MainActivity extends AppCompatActivity {
      * @param i     turn number
      */
     public void AI(Piece[][] board, char p, int i) {
+        copy(board, boardCopy);
         for (int r1 = 0; r1 < 8; r1++) {
             for (int c1 = 0; c1 < 8; c1++) {
                 if (board[r1][c1].color == p) {
@@ -539,11 +588,20 @@ public class MainActivity extends AppCompatActivity {
 
                     for (int r2 = 0; r2 < 8; r2++) {
                         for (int c2 = 0; c2 < 8; c2++) {
-                            copy(board, boardCopy);
+
                             if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
                                 // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
                                 int ret = move(p, r1, c1, r2, c2, i);
-                                return;
+
+                                if (Conditions.isCheck(board, p, i)) {
+                                    // this move will put self in check
+                                    copy(boardCopy, board);
+                                    drawBoard();
+                                    continue;
+                                } else {
+                                    return;
+                                }
+
                             } else {
                                 continue;
                             }
@@ -1128,45 +1186,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
-/*
-Remaining Tasks:
-- Get check to identify correctly (completed)
-- Disallow move that ends turn with self in check (completed)
-- Disallow AI to put self in check
-- If in check and hit AI button, get out of check
-- Get Utility to stop giving errors (might abandon and re-write with txt file input, use s.concat("abc") to append a string to end of another string)
-- Get game to stop crashing when hit Draw/Resign (completed)
-- prompt user for draw
-- prompt user for piece to promote pawn to
-- take last move off of savedPairs when undo a move
-- prompt user for game title
-- list recorded games
-- sort games
-- playback a game one move at a time
-
-
-Chess
-Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
-You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
-to implement stalemate.
-
-Your app should have a Home activity that lets you choose from the following three other activities:
-Playing chess (120 pts)
-•  30 pts Two humans can use your app to play a game of Chess.
-•  20 pts Your app must draw the board with icons and correctly shaded squares.
-•  20 pts Players must move their pieces using touch input - either dragging a piece or touching first the piece's original square and then its destination.
-•  10 pts Provide an 'undo' button that will undo the last move (but no farther).
-•  10 pts Provide an 'AI' button that will choose a move for the current player. Choosing randomly from the set of legal moves is sufficient.
-•  20 pts Provide functional 'draw' and 'resign' buttons.
-•  10 pts When the game is over, report the outcome.
-
-Recording games (50 pts)
-•  20 pts Record all games as they're being played.
-•  10 pts At the conclusion of a game, offer to store it and prompt the user for a game title.
-•  20 pts List all recorded games, sorted by both date and by title (user can select which view to choose).
-
-Game playback (30 pts)
-•  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
-
-*/
