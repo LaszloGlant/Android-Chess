@@ -257,6 +257,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             } else {
                 // move is good
+
+                // first execute move, which will not put self in check due to above logic
+
                 // check if put opponent in check or not
                 if (Conditions.isCheck(board, oppP, turn)) {
                     // in check
