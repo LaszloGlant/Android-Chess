@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 // move is good
 
                 // first execute move, which will not put self in check due to above logic
+                int moveRet = move(currP, prevR, prevC, r, c, turn);
 
                 // check if put opponent in check or not
                 if (Conditions.isCheck(board, oppP, turn)) {
@@ -1113,8 +1114,8 @@ public class MainActivity extends AppCompatActivity {
 
 /*
 Remaining Tasks:
-- Get check to identify correctly
-- Disallow move that ends turn with self in check
+- Get check to identify correctly (I think so, but should test more, also check at end of AI move)
+- Disallow move that ends turn with self in check (still working on it)
 - Disallow AI to put self in check
 - Get Utility to stop giving errors
 - Get game to stop crashing when hit Draw/Resign (completed)
