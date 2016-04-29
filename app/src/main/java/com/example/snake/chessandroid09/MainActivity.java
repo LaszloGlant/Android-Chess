@@ -248,17 +248,30 @@ public class MainActivity extends AppCompatActivity {
 
             // move only good if valid and do not end with king in check
 
-            boolean okMove = Move.movePiece(board, currP, prevR, prevC, r, c, turn);
+            int okMove = move(currP, prevR, prevC, r, c, turn);
 
-            if (okMove == false || Conditions.isCheck(board, currP, turn)) {
-                // move is bad
-                message.setText("Bad move, re-select destination for " + board[prevR][prevC].toString() + " at " + toCoord(r, c));
+            /*
+            if move is invalid, print invalid and take action
+            if move is good, but puts self in check, print that and take action
+            if move is good, do what normally should do, execute move
+            then at end update turn and increment numHits like would do normally
+             */
+
+            if (okMove < 0) {
+                // move was invalid
+                message.setText("Invalid move, try again");
+                numHits++;
+                return;
+            } else if (Conditions.isCheck(board, currP, turn)) {
+                // move was valid, but put self in check, not good, have to take that move back
+
+                copy(boardCopy, board);
+                drawBoard();
+                message.setText("You can't end your turn in check, try again");
+                numHits++;
                 return;
             } else {
-                // move is good
-
-                // first execute move, which will not put self in check due to above logic
-                int moveRet = move(currP, prevR, prevC, r, c, turn);
+                // move was good
 
                 // check if put opponent in check or not
                 if (Conditions.isCheck(board, oppP, turn)) {
@@ -283,27 +296,27 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    // not in check
-                    message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
-                }   // end not in check
+                    message.setText("Have moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c));
+                }
+            }
 
-                // update saved pairs array list
-                savedPairs.add(new Pair(prevR, prevC, r, c));
+            // do at end of every good move
 
-                // advance turn to next player
-                updateTurn();
+            // update saved pairs array list
+            savedPairs.add(new Pair(prevR, prevC, r, c));
 
+            // advance turn to next player
+            updateTurn();
 
-            }   // end move is good
+            Board.displayBoard(board);
+        }
 
-
-        }   // end destination choosing
-
+        // do at end of each turn, whether hitting src or dest
         numHits++;
-        System.out.println("numHits: " + numHits);
 
-        Board.displayBoard(board);
     }
+
+
 
     /**
      * move a piece from (r1, c1) to (r2, c2), execute move if valid, don't execute if invalid
@@ -1114,9 +1127,9 @@ public class MainActivity extends AppCompatActivity {
 /*
 Remaining Tasks:
 - Get check to identify correctly (I think so, but should test more, also check at end of AI move)
-- Disallow move that ends turn with self in check (still working on it)
+- Disallow move that ends turn with self in check (completed)
 - Disallow AI to put self in check
-- Get Utility to stop giving errors
+- Get Utility to stop giving errors (might abandon and re-write with txt file input, use s.concat("abc") to append a string to end of another string)
 - Get game to stop crashing when hit Draw/Resign (completed)
 - prompt user for draw
 - prompt user for piece to promote pawn to
