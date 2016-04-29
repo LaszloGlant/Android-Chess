@@ -1,5 +1,6 @@
 package com.example.snake.chessandroid09;
 
+import android.os.Environment;
 import android.widget.Toast;
 
 
@@ -27,11 +28,8 @@ public class Utility {
     public static void output(ArrayList<RecordedGame> games) {
         try
         {
-            //File gameSave = new File(context.getFilesDir(), "games.ser");
-            File gameSave = new File("games.ser");
+            File gameSave = new File(Environment.getDataDirectory(),"games.ser");
             FileOutputStream fileOut = new FileOutputStream(gameSave);
-            //FileOutputStream fileOut = openFileOutput("games.ser", MODE_PRIVATE);
-
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(games);
             out.close();
@@ -51,8 +49,8 @@ public class Utility {
         ArrayList<RecordedGame> recordedGames= null;
         try
         {
-
-            FileInputStream fileIn = new FileInputStream("games.ser");
+            File gameSave = new File(Environment.getDataDirectory(),"games.ser");
+            FileInputStream fileIn = new FileInputStream(gameSave);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             recordedGames = (ArrayList<RecordedGame>) in.readObject();
             in.close();

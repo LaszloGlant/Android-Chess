@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     int prevR;
     int prevC;
 
+    char inCheck = 'n';     // w for white, b for black, n for neither player is in check
+
     boolean isOver = false;
     boolean haveJustUndone = false;
 
@@ -243,8 +245,10 @@ public class MainActivity extends AppCompatActivity {
 
             copy(board, boardCopy);
 
+            // move only good if valid and do not end with king in check
+
             if (move(currP, prevR, prevC, r, c, turn) > 0) {
-                // if in here, move has been executed on both real board and on back end board
+                // if in here, move has been executed on both real board and on back end board and move is good
 
                 // check if put opponent in check or not
                 if (Conditions.isCheck(board, oppP, turn)) {
@@ -256,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                             isOver = true;
                         } else {
                             message.setText("White in Check");
+                            inCheck = 'w';
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
@@ -264,13 +269,14 @@ public class MainActivity extends AppCompatActivity {
                             isOver = true;
                         } else {
                             message.setText("Black in Check");
+                            inCheck = 'b';
                         }
                     }
 
                 } else {
                     // not in check
                     message.setText("Moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c) + ", Now " + charToStr(oppP) + "'s turn");
-
+                    inCheck = 'n';
                 }
 
                 // update saved pairs array list
@@ -1104,7 +1110,7 @@ Remaining Tasks:
 - Disallow move that ends turn with self in check
 - Disallow AI to put self in check
 - Get Utility to stop giving errors
-- Get game to stop crashing when hit Draw/Resign
+- Get game to stop crashing when hit Draw/Resign (completed)
 - prompt user for draw
 - prompt user for piece to promote pawn to
 - take last move off of savedPairs when undo a move
