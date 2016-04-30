@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,10 +96,12 @@ Game playback (30 pts)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Log.i("--------------blw4", "-------------blw");
+
         load();
         System.out.println("have loaded");
 
-        input(myGames, o);
+//        input(myGames, o);
 
         Board.initWhite(board);
         Board.initBoard(board);
@@ -252,8 +255,6 @@ Game playback (30 pts)
 
         gameOver();
 
-        //Utility.output(myGames);
-
         message.setText("Draw");
     }
 
@@ -265,8 +266,6 @@ Game playback (30 pts)
         Button message = (Button) findViewById(R.id.message);
 
         gameOver();
-
-        //Utility.output(myGames);
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
@@ -283,12 +282,16 @@ Game playback (30 pts)
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
         printPairs();
 
-        output(myGames);
+        //output(myGames);
 
+        Log.i("blw calling save", "blw calling save");
+        System.out.println("blw calling save");
         save();
     }
 
     public void save() {
+        System.out.println("blw in save");
+        Log.i("blw in save", "blw in save");
         try {
             Calendar c = new GregorianCalendar();
             c.set(Calendar.MILLISECOND, 0);
@@ -298,22 +301,56 @@ Game playback (30 pts)
 
             String str = "myGame1," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
 
-            FileOutputStream nos = openFileOutput("output1.txt", Context.MODE_PRIVATE);
-            nos.write(str.getBytes());
-            nos.close();
+            File sdcard = Environment.getExternalStorageDirectory();
+            System.out.println("sdcard");
+            File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
+            System.out.println("dir");
+            dir.mkdir();
+            System.out.println("mkdir");
+            File file = new File(dir, "output3.txt");
+            System.out.println("made output3.txt");
+            FileOutputStream os =  new FileOutputStream(file);
+            System.out.println("File output stream made");
+            os.write(str.getBytes());
+            System.out.println("have written hello world");
+            os.close();
+            System.out.println("have closed os");
+//            FileOutputStream nos = openFileOutput("/sdcard/output2.txt", Context.MODE_PRIVATE);
+//
+//            nos.write(str.getBytes());
+//            nos.close();
+//            System.out.println("save complete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } catch (Exception e) {
             System.out.println("exception in save");
         }
     }
 
     public void load() {
-        String input = "";
+        System.out.println("in load");
+        String input;
         try {
-            FileInputStream nos = openFileInput(path + "output1.txt");
-            nos.read(input.getBytes());
-            nos.close();
-            Toast.makeText(getApplicationContext(), input, Toast.LENGTH_LONG).show();
-            System.out.println("num bytes " + input.getBytes().length);
+//            FileInputStream nos = openFileInput("/sdcard/output2.txt");  // want to read from sdcard
+//            System.out.println("have just created inputstream");
+//            nos.read(input.getBytes());
+//            System.out.println("have read");
+//            nos.close();
+//            System.out.println("have closed");
+//            Toast.makeText(getApplicationContext(), input, Toast.LENGTH_LONG).show();
+//            System.out.println("num bytes " + input.getBytes().length + " loaded");
+
+            File sdcard = Environment.getExternalStorageDirectory();
+            Log.i("load", "sdcard");
+            File file = new File(sdcard, "/tmp/output3.txt");
+            Log.i("load", "file");
+            StringBuilder text = new StringBuilder();
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            while ((input = br.readLine()) != null) {
+                System.out.println("input: " + input);
+                Log.i("load", "input = " + input);
+            }
+            br.close();
+            Log.i("load", "have closed");
         } catch (Exception e) {
             System.out.println("exception in load");
         }
