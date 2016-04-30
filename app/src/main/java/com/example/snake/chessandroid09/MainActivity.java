@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -28,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     int prevR;
     int prevC;
-
-    char inCheck = 'n';     // w for white, b for black, n for neither player is in check
 
     boolean isOver = false;
     boolean haveJustUndone = false;
@@ -194,7 +195,10 @@ Game playback (30 pts)
         Board.displayBoard(board);
         drawBoard();
 
-        //savedPairs.remove(savedPairs.size() - 1);
+        if (savedPairs.size() > 0) {
+            // take last element out from savedPairs
+            savedPairs.remove(savedPairs.size() - 1);
+        }
 
         updateTurn();
 
@@ -226,19 +230,17 @@ Game playback (30 pts)
                 if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, Black wins");
-                    isOver = true;
+                    gameOver();
                 } else {
                     message.setText("White in Check");
-                    inCheck = 'w';
                 }
             } else {
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, White wins");
-                    isOver = true;
+                    gameOver();
                 } else {
                     message.setText("Black in Check");
-                    inCheck = 'b';
                 }
             }
         } else {
@@ -260,12 +262,7 @@ Game playback (30 pts)
 
         Button message = (Button) findViewById(R.id.message);
 
-        isOver = true;
-
-        Calendar c = new GregorianCalendar();
-        c.set(Calendar.MILLISECOND, 0);
-
-        myGames.add(new RecordedGame("myGame " + c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), savedPairs));
+        gameOver();
 
         //Utility.output(myGames);
 
@@ -279,6 +276,14 @@ Game playback (30 pts)
 
         Button message = (Button) findViewById(R.id.message);
 
+        gameOver();
+
+        //Utility.output(myGames);
+
+        message.setText("Resign: " + charToStr(oppP) + " wins!");
+    }
+
+    public void gameOver() {
         isOver = true;
 
         Calendar c = new GregorianCalendar();
@@ -289,9 +294,7 @@ Game playback (30 pts)
 
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
 
-        //Utility.output(myGames);
-
-        message.setText("Resign: " + charToStr(oppP) + " wins!");
+        output(myGames);
     }
 
     public void hit(View v) {
@@ -365,25 +368,21 @@ Game playback (30 pts)
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, Black wins");
-                            isOver = true;
+                            gameOver();
                         } else {
                             message.setText("White in Check");
-                            inCheck = 'w';
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, White wins");
-                            isOver = true;
+                            gameOver();
                         } else {
                             message.setText("Black in Check");
-                            inCheck = 'b';
                         }
                     }
                 }
-//                else {
-//                    message.setText("Have moved " + board[r][c] + " from " + toCoord(prevR, prevC) + " to " + toCoord(r, c));
-//                }
+
             }
 
             // do at end of every good move
@@ -637,6 +636,7 @@ Game playback (30 pts)
                                     continue;
                                 } else {
                                     // not in check, this move is good
+                                    savedPairs.add(new Pair(r1, c1, r2, c2));
                                     return 1;
                                 }
 
@@ -674,10 +674,58 @@ Game playback (30 pts)
         }
     }
 
+    /**
+     * given the master list of games, store them to disk
+     * @param games master list of games
+     */
+    public void output(ArrayList<RecordedGame> games) {
+        try {
+            File o = new File("output.txt");
+            o.createNewFile();
+
+            PrintWriter out = new PrintWriter(new FileWriter(o, false), true);
+            for (int i = 0; i < games.size(); i++) {
+                out.println(outString(games.get(i)));
+            }
+            out.close();
+            return;
+        } catch (Exception e) {
+            return;
+        }
+    }
+
+    /**
+     * read in the master list from games from disk and load them up
+     */
+    public void input() {
+
+    }
+
     public String toCoord(int r, int c) {
         char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
         return lets[c] + "" + nums[r];
+    }
+
+    public String toMovement(int r1, int c1, int r2, int c2) {
+        return toCoord(r1, c1) + "-" + toCoord(r2, c2);
+    }
+
+    public String savedPairsStr(ArrayList<Pair> sp) {
+        String ret = "";
+        for (int i = 0; i < sp.size(); i++) {
+            int r1 = sp.get(i).r1;
+            int c1 = sp.get(i).c1;
+            int r2 = sp.get(i).r2;
+            int c2 = sp.get(i).c2;
+            ret.concat(toCoord(r1, c1) + " " + toCoord(r2, c2) + ",");
+        }
+        return ret;
+    }
+
+
+    public String outString(RecordedGame rg) {
+        return rg.title + "," + rg.year + "," + rg.month + "," + savedPairsStr(rg.moves);
     }
 
     public String charToStr(char p) {
@@ -712,6 +760,16 @@ Game playback (30 pts)
 
         haveJustUndone = false;
 
+    }
+
+    public void printPairs() {
+        for (int i = 0; i < savedPairs.size(); i++) {
+            int r1 = savedPairs.get(i).r1;
+            int c1 = savedPairs.get(i).c1;
+            int r2 = savedPairs.get(i).r2;
+            int c2 = savedPairs.get(i).c2;
+            System.out.println(toCoord(r1, c1) + " " + toCoord(r2, c2));
+        }
     }
 
     public int[] setRC(int id) {

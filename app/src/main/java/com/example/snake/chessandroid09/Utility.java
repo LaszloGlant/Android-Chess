@@ -8,9 +8,11 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
@@ -21,6 +23,7 @@ import java.util.ArrayList;
  *
  */
 public class Utility {
+
     Context context;
     /**
      * Outputs the database to the games.ser file
@@ -43,6 +46,7 @@ public class Utility {
             i.printStackTrace();
         }
     }
+
     /**
      * Loads the database from the games.ser file
      * @return The database of games

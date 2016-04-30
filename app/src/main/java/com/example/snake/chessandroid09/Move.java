@@ -439,8 +439,8 @@ public class Move {
         }
 
         // otherwise no good
-        System.out.printf("%d %d %d %d\n", r1, c1, r2, c2);
-        System.out.println("queen not moving in straight line, dr:" + dr + " dc:" + dc);
+        //System.out.printf("%d %d %d %d\n", r1, c1, r2, c2);
+        //System.out.println("queen not moving in straight line, dr:" + dr + " dc:" + dc);
         return -1;
     }
 
