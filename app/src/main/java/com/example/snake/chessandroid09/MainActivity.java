@@ -1,6 +1,8 @@
 package com.example.snake.chessandroid09;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 import android.os.Environment;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -22,39 +26,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
-
-    int numHits = 0;
-    int turn = 0;
-    int pbIndex = 0;
-
-    int currImage;
-
-    char currP = 'w';
-    char oppP = 'b';
-
-    int prevR;
-    int prevC;
-
-    boolean isOver = false;
-    boolean haveJustUndone = false;
-
-    Piece[][] board = new Piece[8][8];
-    Piece[][] boardCopy = new Piece[8][8];
-
-    ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
-    ArrayList<Pair> savedPairs = new ArrayList<Pair>();
-
-    //public String path = Enviroment.getExternalStorageDirectory().getAbsolutePath();
-
-    File o = new File("output1.txt");
-
     /*
 Remaining Tasks:
 - save using text file input (next)
 - prompt user for draw
 - prompt user for piece to promote pawn to
 - prompt user for game title
-- list recorded games
+- list recorded games (popup from "recorded games" button on replay activity, still to do)
 - sort games
 - playback a game one move at a time
 
@@ -84,12 +62,44 @@ Game playback (30 pts)
 
 */
 
+    int numHits = 0;
+    int turn = 0;
+    int pbIndex = 0;
+
+    int currImage;
+
+    char currP = 'w';
+    char oppP = 'b';
+
+    int prevR;
+    int prevC;
+
+    boolean isOver = false;
+    boolean haveJustUndone = false;
+
+    Piece[][] board = new Piece[8][8];
+    Piece[][] boardCopy = new Piece[8][8];
+
+    ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
+    ArrayList<Pair> savedPairs = new ArrayList<Pair>();
+
+    public static final String PREFS_NAME = "MyPrefsFile";
+
+    //public String path = Enviroment.getExternalStorageDirectory().getAbsolutePath();
+
+    File o = new File("output1.txt");
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        load();
+        System.out.println("have loaded");
 
         input(myGames, o);
 
@@ -276,6 +286,31 @@ Game playback (30 pts)
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
 
         output(myGames);
+
+        save();
+    }
+
+    public void save() {
+        String str = "myString";
+        try {
+            FileOutputStream nos = openFileOutput("output1.txt", Context.MODE_PRIVATE);
+            nos.write(str.getBytes());
+            nos.close();
+        } catch (Exception e) {
+            System.out.println("exception in save");
+        }
+    }
+
+    public void load() {
+        String input = "";
+        try {
+            FileInputStream nos = openFileInput("output1.txt");
+            nos.read(input.getBytes());
+            nos.close();
+            Toast.makeText(getApplicationContext(), input, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            System.out.println("exception in load");
+        }
     }
 
     public void hit(View v) {
@@ -387,7 +422,6 @@ Game playback (30 pts)
      * @param i  current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
      * @return negative number if move is bad, positive number if move is good
      */
-
     public int move(char p, int r1, int c1, int r2, int c2, int i) {
         Button message = (Button) findViewById(R.id.message);
 
