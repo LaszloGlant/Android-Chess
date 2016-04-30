@@ -10,13 +10,14 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
+import android.os.Environment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -43,17 +44,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
 
+    //public String path = Enviroment.getExternalStorageDirectory().getAbsolutePath();
+
+    File o = new File("output1.txt");
+
     /*
 Remaining Tasks:
-- Get check to identify correctly (completed as well as checkmate with AI)
-- Disallow move that ends turn with self in check (completed)
-- Disallow AI to put self in check (completed)
-- If in check and hit AI button, get out of check (completed)
-- Get Utility to stop giving errors (might abandon and re-write with txt file input, use s.concat("abc") to append a string to end of another string)
-- Get game to stop crashing when hit Draw/Resign (completed)
+- save using text file input (next)
 - prompt user for draw
 - prompt user for piece to promote pawn to
-- take last move off of savedPairs when undo a move
 - prompt user for game title
 - list recorded games
 - sort games
@@ -109,6 +108,7 @@ Game playback (30 pts)
             Utility.output(myGames);
         }
         */
+        input(myGames, o);
 
         Board.initWhite(board);
         Board.initBoard(board);
@@ -721,17 +721,19 @@ Game playback (30 pts)
      * @param line 1 line of text from output.txt
      */
     public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
-
+        String[] strArr = line.split(",");
+        String[] movements = strArr[4].split(".");
+        ArrayList<Pair> moves = new ArrayList<Pair>();
+        for (int i = 0; i < movements.length; i++) {
+            moves.add(new Pair(movements[i].charAt(0), movements[i].charAt(1), movements[i].charAt(3), movements[i].charAt(4)));
+        }
+        empty.add(new RecordedGame(strArr[0], Integer.parseInt(strArr[1]), Integer.parseInt(strArr[2]), Integer.parseInt(strArr[3]), moves));
     }
 
     public String toCoord(int r, int c) {
         char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
         return lets[c] + "" + nums[r];
-    }
-
-    public String toMovement(int r1, int c1, int r2, int c2) {
-        return toCoord(r1, c1) + "-" + toCoord(r2, c2);
     }
 
     public String savedPairsStr(ArrayList<Pair> sp) {
@@ -741,14 +743,14 @@ Game playback (30 pts)
             int c1 = sp.get(i).c1;
             int r2 = sp.get(i).r2;
             int c2 = sp.get(i).c2;
-            ret.concat(toCoord(r1, c1) + " " + toCoord(r2, c2) + ",");
+            ret.concat(toCoord(r1, c1) + " " + toCoord(r2, c2) + ".");
         }
         return ret;
     }
 
 
     public String outString(RecordedGame rg) {
-        return rg.title + "," + rg.year + "," + rg.month + "," + savedPairsStr(rg.moves);
+        return rg.title + "," + rg.year + "," + rg.month + "," + rg.day + "," + savedPairsStr(rg.moves);
     }
 
     public String charToStr(char p) {
