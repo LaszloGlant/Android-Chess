@@ -83,13 +83,10 @@ Game playback (30 pts)
     ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
 
-    public static final String PREFS_NAME = "MyPrefsFile";
-
-    //public String path = Enviroment.getExternalStorageDirectory().getAbsolutePath();
 
     File o = new File("output1.txt");
 
-
+    String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,10 +301,11 @@ Game playback (30 pts)
     public void load() {
         String input = "";
         try {
-            FileInputStream nos = openFileInput("output1.txt");
+            FileInputStream nos = openFileInput(path + "output1.txt");
             nos.read(input.getBytes());
             nos.close();
             Toast.makeText(getApplicationContext(), input, Toast.LENGTH_LONG).show();
+            System.out.println("num bytes " + input.getBytes().length);
         } catch (Exception e) {
             System.out.println("exception in load");
         }
