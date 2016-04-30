@@ -180,7 +180,7 @@ Game playback (30 pts)
         Button message = (Button) findViewById(R.id.message);
 
         copy(boardCopy, board);
-        Board.displayBoard(board);
+        //Board.displayBoard(board);
         drawBoard();
 
         if (savedPairs.size() > 0) {
@@ -281,6 +281,7 @@ Game playback (30 pts)
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
+        printPairs();
 
         output(myGames);
 
@@ -288,8 +289,15 @@ Game playback (30 pts)
     }
 
     public void save() {
-        String str = "myString";
         try {
+            Calendar c = new GregorianCalendar();
+            c.set(Calendar.MILLISECOND, 0);
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH) + 1;
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            String str = "myGame1," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
+
             FileOutputStream nos = openFileOutput("output1.txt", Context.MODE_PRIVATE);
             nos.write(str.getBytes());
             nos.close();
@@ -400,7 +408,7 @@ Game playback (30 pts)
             // advance turn to next player
             updateTurn();
 
-            Board.displayBoard(board);
+            //Board.displayBoard(board);
         }
 
         // do at end of each turn, whether hitting src or dest
@@ -747,7 +755,7 @@ Game playback (30 pts)
             int c1 = sp.get(i).c1;
             int r2 = sp.get(i).r2;
             int c2 = sp.get(i).c2;
-            ret.concat(toCoord(r1, c1) + " " + toCoord(r2, c2) + ".");
+            ret = ret + "" + r1 + ""  + c1 + " " + r2 + "" + c2 + "~";
         }
         return ret;
     }
