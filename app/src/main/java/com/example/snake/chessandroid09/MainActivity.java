@@ -91,23 +91,6 @@ Game playback (30 pts)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-        /*
-        File g = new File("games.ser");
-        if (g.exists()) {
-            myGames = Utility.input();
-        } else {
-            Utility.output(myGames);
-        }
-        */
         input(myGames, o);
 
         Board.initWhite(board);
@@ -131,10 +114,6 @@ Game playback (30 pts)
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
         switch (id) {
             case R.id.play:
 
@@ -340,13 +319,6 @@ Game playback (30 pts)
             // move only good if valid and do not end with king in check
 
             int okMove = move(currP, prevR, prevC, r, c, turn);
-
-            /*
-            if move is invalid, print invalid and take action
-            if move is good, but puts self in check, print that and take action
-            if move is good, do what normally should do, execute move
-            then at end update turn and increment numHits like would do normally
-             */
 
             if (okMove < 0) {
                 // move was invalid
