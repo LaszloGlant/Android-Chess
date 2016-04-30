@@ -29,12 +29,12 @@ import java.util.GregorianCalendar;
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
-- save using text file input (next)
-- prompt user for draw
-- prompt user for piece to promote pawn to
-- prompt user for game title
+- save using text file input (good with sample string, now do with real data)
+- prompt user for draw (need pop up)
+- prompt user for piece to promote pawn to (need pop up)
+- prompt user for game title (need text field)
 - list recorded games (popup from "recorded games" button on replay activity, still to do)
-- sort games
+- sort games (need myGames to be loaded properly first)
 - playback a game one move at a time
 
 
@@ -84,11 +84,6 @@ Game playback (30 pts)
     ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
     ArrayList<Pair> savedPairs = new ArrayList<Pair>();
 
-
-    File o = new File("output1.txt");
-
-    String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +95,6 @@ Game playback (30 pts)
 
         load();
         System.out.println("have loaded");
-
-//        input(myGames, o);
 
         Board.initWhite(board);
         Board.initBoard(board);
@@ -282,16 +275,12 @@ Game playback (30 pts)
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
         printPairs();
 
-        //output(myGames);
-
         Log.i("blw calling save", "blw calling save");
         System.out.println("blw calling save");
         save();
     }
 
     public void save() {
-        System.out.println("blw in save");
-        Log.i("blw in save", "blw in save");
         try {
             Calendar c = new GregorianCalendar();
             c.set(Calendar.MILLISECOND, 0);
@@ -302,46 +291,22 @@ Game playback (30 pts)
             String str = "myGame1," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
 
             File sdcard = Environment.getExternalStorageDirectory();
-            System.out.println("sdcard");
             File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
-            System.out.println("dir");
             dir.mkdir();
-            System.out.println("mkdir");
             File file = new File(dir, "output3.txt");
-            System.out.println("made output3.txt");
             FileOutputStream os =  new FileOutputStream(file);
-            System.out.println("File output stream made");
             os.write(str.getBytes());
-            System.out.println("have written hello world");
             os.close();
-            System.out.println("have closed os");
-//            FileOutputStream nos = openFileOutput("/sdcard/output2.txt", Context.MODE_PRIVATE);
-//
-//            nos.write(str.getBytes());
-//            nos.close();
-//            System.out.println("save complete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         } catch (Exception e) {
             System.out.println("exception in save");
         }
     }
 
     public void load() {
-        System.out.println("in load");
         String input;
         try {
-//            FileInputStream nos = openFileInput("/sdcard/output2.txt");  // want to read from sdcard
-//            System.out.println("have just created inputstream");
-//            nos.read(input.getBytes());
-//            System.out.println("have read");
-//            nos.close();
-//            System.out.println("have closed");
-//            Toast.makeText(getApplicationContext(), input, Toast.LENGTH_LONG).show();
-//            System.out.println("num bytes " + input.getBytes().length + " loaded");
-
             File sdcard = Environment.getExternalStorageDirectory();
-            Log.i("load", "sdcard");
             File file = new File(sdcard, "/tmp/output3.txt");
-            Log.i("load", "file");
             StringBuilder text = new StringBuilder();
 
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -350,7 +315,6 @@ Game playback (30 pts)
                 Log.i("load", "input = " + input);
             }
             br.close();
-            Log.i("load", "have closed");
         } catch (Exception e) {
             System.out.println("exception in load");
         }
@@ -726,45 +690,6 @@ Game playback (30 pts)
     }
 
     /**
-     * given the master list of games, store them to disk
-     * @param games master list of games
-     */
-    public void output(ArrayList<RecordedGame> games) {
-        try {
-            File o = new File("output.txt");
-            o.createNewFile();
-
-            PrintWriter out = new PrintWriter(new FileWriter(o, false), true);
-            for (int i = 0; i < games.size(); i++) {
-                out.println(outString(games.get(i)));
-            }
-            out.close();
-            return;
-        } catch (Exception e) {
-            return;
-        }
-    }
-
-    /**
-     * read in the master list from games from disk and load them up
-     * @param empty blank array list to be loaded up with data
-     * @param o output.txt
-     */
-    public void input(ArrayList<RecordedGame> empty, File o) {
-        try {
-            String line = null;
-            FileReader fileReader = new FileReader(o);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while ((line = bufferedReader.readLine()) != null) {
-                stickIn1Line(empty, line);
-            }
-        } catch (Exception e) {
-            System.out.println("input exception");
-        }
-    }
-
-    /**
      * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
      * @param empty blank array list to be loaded up with data
      * @param line 1 line of text from output.txt
@@ -796,7 +721,6 @@ Game playback (30 pts)
         }
         return ret;
     }
-
 
     public String outString(RecordedGame rg) {
         return rg.title + "," + rg.year + "," + rg.month + "," + rg.day + "," + savedPairsStr(rg.moves);

@@ -5,9 +5,11 @@ import android.os.Environment;
 import android.widget.Toast;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -74,4 +76,43 @@ public class Utility {
         }
         return recordedGames;
     }
+
+//    /**
+//     * given the master list of games, store them to disk
+//     * @param games master list of games
+//     */
+//    public void output(ArrayList<RecordedGame> games) {
+//        try {
+//            File o = new File("output.txt");
+//            o.createNewFile();
+//
+//            PrintWriter out = new PrintWriter(new FileWriter(o, false), true);
+//            for (int i = 0; i < games.size(); i++) {
+//                out.println(outString(games.get(i)));
+//            }
+//            out.close();
+//            return;
+//        } catch (Exception e) {
+//            return;
+//        }
+//    }
+//
+//    /**
+//     * read in the master list from games from disk and load them up
+//     * @param empty blank array list to be loaded up with data
+//     * @param o output.txt
+//     */
+//    public void input(ArrayList<RecordedGame> empty, File o) {
+//        try {
+//            String line = null;
+//            FileReader fileReader = new FileReader(o);
+//            BufferedReader bufferedReader = new BufferedReader(fileReader);
+//
+//            while ((line = bufferedReader.readLine()) != null) {
+//                stickIn1Line(empty, line);
+//            }
+//        } catch (Exception e) {
+//            System.out.println("input exception");
+//        }
+//    }
 }
