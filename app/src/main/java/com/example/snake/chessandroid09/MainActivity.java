@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -696,8 +698,29 @@ Game playback (30 pts)
 
     /**
      * read in the master list from games from disk and load them up
+     * @param empty blank array list to be loaded up with data
+     * @param o output.txt
      */
-    public void input() {
+    public void input(ArrayList<RecordedGame> empty, File o) {
+        try {
+            String line = null;
+            FileReader fileReader = new FileReader(o);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            while ((line = bufferedReader.readLine()) != null) {
+                stickIn1Line(empty, line);
+            }
+        } catch (Exception e) {
+            System.out.println("input exception");
+        }
+    }
+
+    /**
+     * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
+     * @param empty blank array list to be loaded up with data
+     * @param line 1 line of text from output.txt
+     */
+    public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
 
     }
 
