@@ -833,4 +833,62 @@
         android:background="@color/colorAccent3"
         android:onClick="resign" />
 
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/promoQ"
+        android:layout_row="7"
+        android:layout_column="3"
+        android:onClick="selectPromo"
+        android:src="@drawable/selbqueen"
+        android:scaleType="fitCenter"
+        android:background="#00000000"
+        android:padding="3dp"
+        android:layout_alignBottom="@+id/bStartPlay"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/promoB"
+        android:layout_row="7"
+        android:layout_column="3"
+        android:onClick="selectPromo"
+        android:src="@drawable/bbishop"
+        android:scaleType="fitCenter"
+        android:background="#00000000"
+        android:padding="3dp"
+        android:layout_alignTop="@+id/promoQ"
+        android:layout_toLeftOf="@+id/promoQ"
+        android:layout_toStartOf="@+id/promoQ" />
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/promoN"
+        android:layout_row="7"
+        android:layout_column="3"
+        android:onClick="selectPromo"
+        android:src="@drawable/bknight"
+        android:scaleType="fitCenter"
+        android:background="#00000000"
+        android:padding="3dp"
+        android:layout_below="@+id/promoQ"
+        android:layout_toLeftOf="@+id/promoQ"
+        android:layout_toStartOf="@+id/promoQ" />
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/promoR"
+        android:layout_row="7"
+        android:layout_column="3"
+        android:onClick="selectPromo"
+        android:src="@drawable/brook"
+        android:scaleType="fitCenter"
+        android:background="#00000000"
+        android:padding="3dp"
+        android:layout_below="@+id/promoQ"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
