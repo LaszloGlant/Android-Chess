@@ -11,39 +11,9 @@ public class Conditions {
     public static int[] attacker = {-1, -1};
 
     /**
-     * determine if the player p (white or black) is in checkmate or not
-     *
-     * @param board 2D array of Pieces
-     * @param p     'w' or 'b'
-     * @param kr    row of king
-     * @param kc    column of king
-     * @return true if p player is in checkmate, false otherwise
-     */
-    public static boolean isCheckmate(Piece[][] board, char p, int kr, int kc, int counter) {
-        //see if p's own pieces can take out attacker
-
-        if (isFree(board, p, kr, kc, counter)) {
-            // King still has a square to go to, not checkmate
-            return false;
-        } else if (canCapture(board, p, attacker)) {
-            // can capture attacking piece with own piece, not checkmate
-            return false;
-        } else if (board[attacker[0]][attacker[1]].name == 'N') {
-            // attacker is Knight (cannot be blocked)
-            return true;
-        } else if (canBlock(board, p, kr, kc, attacker)) {
-            // can move piece between king and attacker to block attack, not checkmate
-            return false;
-        } else {
-            return true;//it is checkMate
-        }
-    }
-
-    /**
      * determine if p's King is in check or not
-     *
      * @param board 2D array of Pieces
-     * @param p     white or black
+     * @param p white or black
      * @return true if p's King is in check or not, false otherwise
      */
     public static boolean isCheck(Piece[][] board, char p, int counter) {
@@ -72,6 +42,8 @@ public class Conditions {
                     }
                     if (Move.movePiece(board, oppC, r, c, kr, kc, counter)) {
                         // can move to (kr, kc)
+                        attacker[0]=r;
+                        attacker[1]=c;
                         kingAttacked = true;
                     } else {
                         continue;
@@ -91,19 +63,58 @@ public class Conditions {
     }
 
     /**
+     * determine if the player p (white or black) is in checkmate or not
+     * @param board 2D array of Pieces
+     * @param p 'w' or 'b'
+     * @param kr row of king
+     * @param kc column of king
+     * @return true if p player is in checkmate, false otherwise
+     */
+    public static boolean isCheckmate(Piece[][] board, char p, int kr, int kc, int counter) {
+        //see if p's own pieces can take out attacker
+
+        int[] realAttacker = {-1, -1};
+
+        // store the real attacker because isFree() messes it up
+        realAttacker[0] = attacker[0];
+        realAttacker[1] = attacker[1];
+
+        if (isFree(board, p, kr, kc, counter)){
+            // King still has a square to go to, not checkmate
+            return false;
+        }
+
+        attacker[0] = realAttacker[0];
+        attacker[1] = realAttacker[1];
+        if (canCapture(board, p, attacker, counter)){
+            // can capture attacking piece with own piece, not checkmate
+            return false;
+        }
+        else if (board[attacker[0]][attacker[1]].name == 'N') {
+            // attacker is Knight (cannot be blocked)
+            return true;
+        }
+        else if (canBlock(board, p, kr, kc, attacker, counter)){
+            // can move piece between king and attacker to block attack, not checkmate
+            return false;
+        }
+        else {
+            return true;//it is checkMate
+        }
+    }
+
+    /**
      * determine if one of own pieces can move between own King and attacking piece
-     *
-     * @param board    2D array of Pieces
-     * @param p        our color
-     * @param kr       king row
-     * @param kc       king column
+     * @param board 2D array of Pieces
+     * @param p our color
+     * @param kr king row
+     * @param kc king column
      * @param attacker attacking piece, coordinates given in array
      * @return true if own piece can block (preventing checkmate), false if cannot
      */
-    public static boolean canBlock(Piece[][] board, char p, int kr, int kc, int[] attacker) {
+    public static boolean canBlock(Piece[][] board, char p, int kr, int kc, int[] attacker, int counter) {
         int ar = attacker[0];
         int ac = attacker[1];
-
         if (ar == kr) {
             //attacker is in same row (left or right) of king
 
@@ -114,7 +125,7 @@ public class Conditions {
 
                     int[] target = {ar, c};
 
-                    if (canCapture(board, p, target)) {
+                    if (canCapture(board, p, target, counter)) {
                         // own piece can move to target
                         return true;
                     }
@@ -128,13 +139,14 @@ public class Conditions {
 
                     int[] target = {ar, c};
 
-                    if (canCapture(board, p, target)) {
+                    if (canCapture(board, p, target, counter)) {
                         // own piece can move to target
                         return true;
                     }
                 }
             }
-        } else if (ac == kc) {
+        }
+        else if (ac == kc) {
             // attacker is in same column (up or down) of king
 
             if (ar < kr) {
@@ -144,7 +156,7 @@ public class Conditions {
 
                     int[] target = {r, ac};
 
-                    if (canCapture(board, p, target)) {
+                    if (canCapture(board, p, target, counter)) {
                         // own piece can move to target
                         return true;
                     }
@@ -156,7 +168,7 @@ public class Conditions {
 
                     int[] target = {r, ac};
 
-                    if (canCapture(board, p, target)) {
+                    if (canCapture(board, p, target, counter)) {
                         // own piece can move to target
                         return true;
                     }
@@ -164,28 +176,27 @@ public class Conditions {
 
                 return false;
             }
-        } else {
+        }
+        else {
             // attacker is diagonal from King, not same row or column
             if (ar < kr) {
                 // attacker is N of King
                 if (ac < kc) {
                     // attacker is NW of King
-
                     for (int r = kr, c = kc; r > ar; r--, c--) {
                         int[] target = {r, c};
 
-                        if (canCapture(board, p, target)) {
+                        if (canCapture(board, p, target, counter)) {
                             // own piece can move to target
                             return true;
                         }
                     }
                 } else {
                     // attacker is NE of King
-
-                    for (int r = kr, c = kc; r < ar; r--, c++) {
+                    for (int r = kr, c = kc; r > ar; r--, c++) {
                         int[] target = {r, c};
 
-                        if (canCapture(board, p, target)) {
+                        if (canCapture(board, p, target, counter)) {
                             // own piece can move to target
                             return true;
                         }
@@ -193,13 +204,14 @@ public class Conditions {
                 }
             } else {
                 // attacker is S of King
+
                 if (ac < kc) {
                     // attacker is SW of King
 
                     for (int r = kr, c = kc; r < ar; r++, c--) {
                         int[] target = {r, c};
 
-                        if (canCapture(board, p, target)) {
+                        if (canCapture(board, p, target, counter)) {
                             // own piece can move to target
                             return true;
                         }
@@ -207,10 +219,10 @@ public class Conditions {
                 } else {
                     // attacker is SE of King
 
-                    for (int r = kr, c = kc; r > ar; r++, c++) {
+                    for (int r = kr, c = kc; r < ar; r++, c++) {
                         int[] target = {r, c};
 
-                        if (canCapture(board, p, target)) {
+                        if (canCapture(board, p, target, counter)) {
                             // own piece can move to target
                             return true;
                         }
@@ -225,20 +237,19 @@ public class Conditions {
 
     /**
      * Checks if one of our pieces can capture the attacker
-     *
-     * @param board    2D array of Pieces
-     * @param p        our color
+     * @param board 2D array of Pieces
+     * @param p our color
      * @param attacker the piece that put the king in check
      * @return true if one of our pieces can capture the attacker
      */
-    public static boolean canCapture(Piece[][] board, char p, int[] attacker) {
+    public static boolean canCapture(Piece[][] board, char p, int [] attacker, int counter){
         int r = attacker[0];
         int c = attacker[1];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (Board.isOccupied(board, i, j) && (board[i][j].color == p)) {//check board if empty, add same color as the attacked King
+                if(Board.isOccupied(board, i, j) && (board[i][j].color == p)){//check board if empty, add same color as the attacked King
                     //let's see if we can take out the attacker with one of our piece
-                    if (Move.movePiece(board, p, i, j, r, c, -200)) {
+                    if (Move.movePiece(board, p, i, j, r, c, counter)) {
                         // can move to attacker's square
                         return true;
                     }
@@ -250,11 +261,10 @@ public class Conditions {
 
     /**
      * Checks if a square at r, c is targeted by opposing player's color
-     *
      * @param board 2D array of Pieces
-     * @param p     w or b
-     * @param r     row of square looking at
-     * @param c     column of square looking at
+     * @param p w or b
+     * @param r row of square looking at
+     * @param c column of square looking at
      * @return true if square is under attack, false otherwise
      */
     public static boolean isUnderAttack(Piece[][] board, char p, int r, int c, int counter) {
@@ -268,43 +278,48 @@ public class Conditions {
             System.exit(0);
         }
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j].color == oppColor) {
-                    if (board[i][j].name == 'p') {
-                        if (Move.movePawn(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j].color == oppColor){
+                    if (board[i][j].name == 'p'){
+                        if(Move.movePawn(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
-                    } else if (board[i][j].name == 'N') {
-                        if (Move.moveKnight(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+                    }
+                    else if (board[i][j].name == 'N'){
+                        if(Move.moveKnight(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
-                    } else if (board[i][j].name == 'B') {
-                        if (Move.moveBishop(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+                    }
+                    else if (board[i][j].name == 'B'){
+                        if(Move.moveBishop(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
-                    } else if (board[i][j].name == 'R') {
-                        if (Move.moveRook(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+                    }
+                    else if (board[i][j].name == 'R'){
+                        if(Move.moveRook(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
-                    } else if (board[i][j].name == 'Q') {
-                        if (Move.moveQueen(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+                    }
+                    else if (board[i][j].name == 'Q'){
+                        if(Move.moveQueen(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
-                    } else if (board[i][j].name == 'K') {
-                        if (Move.moveKing(board, oppColor, i, j, r, c, counter) > 0) {
-                            attacker[0] = i;
-                            attacker[1] = j;
+                    }
+                    else if (board[i][j].name == 'K'){
+                        if(Move.moveKing(board, oppColor, i, j, r, c, counter)>0){
+                            attacker [0] = i;
+                            attacker [1] = j;
                             return true;
                         }
                     }
@@ -317,93 +332,92 @@ public class Conditions {
 
     /**
      * Checks if the king has any available moves left when in check
-     *
      * @param board 2D array of Pieces
-     * @param p     white or black
-     * @param kr    king's row
-     * @param kc    king's column
+     * @param p white or black
+     * @param kr king's row
+     * @param kc king's column
      * @return true if King has a free space around him, false otherwise
      */
-    public static boolean isFree(Piece[][] board, char p, int kr, int kc, int counter) {
+    public static boolean isFree(Piece[][] board, char p, int kr, int kc, int counter){
         boolean option1 = false, option2 = false, option3 = false, option4 = false,
                 option5 = false, option6 = false, option7 = false, option8 = false;
 
         Piece king = board[kr][kc];
         board[kr][kc] = new Piece(' ', ' ', 0, -1);//take the king out
         //below king
-        if (coordinateValid(kr + 1, kc)) {
-            if (!(Conditions.isUnderAttack(board, p, kr + 1, kc, counter))
-                    && (occupiedByOwnPiece(board, p, kr + 1, kc))) {//if not under attack and not occupied by own piece
-                option1 = true;
+        if (coordinateValid(kr+1, kc)){
+            if (!(Conditions.isUnderAttack(board, p, kr+1, kc, counter))
+                    && (occupiedByOwnPiece(board, p, kr+1, kc))){//if not under attack and not occupied by own piece
+                option1=true;
             }
         }
         //above king
-        if (coordinateValid(kr - 1, kc)) {//if coordinate is valid
-            if (!(Conditions.isUnderAttack(board, p, kr - 1, kc, counter))
-                    && (occupiedByOwnPiece(board, p, kr - 1, kc))) {//if not under attack and not occupied by own piece
-                option2 = true;
+        if (coordinateValid(kr-1, kc)){//if coordinate is valid
+            if (!(Conditions.isUnderAttack(board, p, kr-1, kc, counter))
+                    && (occupiedByOwnPiece(board, p, kr-1, kc))){//if not under attack and not occupied by own piece
+                option2=true;
             }
         }
         //below right of king
-        if (coordinateValid(kr + 1, kc + 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr + 1, kc + 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr + 1, kc + 1))) {//if not under attack and not occupied by own piece
-                option3 = true;
+        if (coordinateValid(kr+1, kc+1)){
+            if (!(Conditions.isUnderAttack(board, p, kr+1, kc+1, counter))
+                    && (occupiedByOwnPiece(board, p, kr+1, kc+1))){//if not under attack and not occupied by own piece
+                option3=true;
             }
         }
         //above right of king
-        if (coordinateValid(kr - 1, kc + 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr - 1, kc + 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr - 1, kc + 1))) {//if not under attack and not occupied by own piece
-                option4 = true;
+        if (coordinateValid(kr-1, kc+1)){
+            if (!(Conditions.isUnderAttack(board, p, kr-1, kc+1, counter))
+                    && (occupiedByOwnPiece(board, p, kr-1, kc+1))){//if not under attack and not occupied by own piece
+                option4=true;
             }
         }
         //below left of king
-        if (coordinateValid(kr + 1, kc - 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr + 1, kc - 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr + 1, kc - 1))) {//if not under attack and not occupied by own piece
-                option5 = true;
+        if (coordinateValid(kr+1, kc-1)){
+            if (!(Conditions.isUnderAttack(board, p, kr+1, kc-1, counter))
+                    && (occupiedByOwnPiece(board, p, kr+1, kc-1))){//if not under attack and not occupied by own piece
+                option5=true;
             }
         }
         //above left of king
-        if (coordinateValid(kr - 1, kc - 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr - 1, kc - 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr - 1, kc - 1))) {//if not under attack and not occupied by own piece
-                option6 = true;
+        if (coordinateValid(kr-1, kc-1)){
+            if (!(Conditions.isUnderAttack(board, p, kr-1, kc-1, counter))
+                    && (occupiedByOwnPiece(board, p, kr-1, kc-1))){//if not under attack and not occupied by own piece
+                option6=true;
             }
         }
         //right of king
-        if (coordinateValid(kr, kc + 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr, kc + 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr, kc + 1))) {//if not under attack and not occupied by own piece
-                option7 = true;
+        if (coordinateValid(kr, kc+1)){
+            if (!(Conditions.isUnderAttack(board, p, kr, kc+1, counter))
+                    && (occupiedByOwnPiece(board, p, kr, kc+1))){//if not under attack and not occupied by own piece
+                option7=true;
             }
         }
         //left of king
-        if (coordinateValid(kr, kc - 1)) {
-            if (!(Conditions.isUnderAttack(board, p, kr, kc - 1, counter))
-                    && (occupiedByOwnPiece(board, p, kr, kc - 1))) {//if not under attack and not occupied by own piece
-                option8 = true;
+        if (coordinateValid(kr, kc-1)){
+            if (!(Conditions.isUnderAttack(board, p, kr, kc-1, counter))
+                    && (occupiedByOwnPiece(board, p, kr, kc-1))){//if not under attack and not occupied by own piece
+                option8=true;
             }
         }
 //		System.out.println("isFree "+option1+" "+option2+" "+option3+" "+option4+" "+option5+" "+option6+" "+option7+" "+option8);//for testing only
         //if any of them true then return true (king has legal move
-        if (option1 || option2 || option3 || option4 || option5 || option6 || option7 || option8) {
+        if (option1 || option2 || option3 || option4 || option5 || option6 || option7 || option8){
             board[kr][kc] = king; // put king back
             return true;
         }
         board[kr][kc] = king; // put king back
+
         return false;
     }
 
     /**
      * Checks if the coordinates passed in are valid
-     *
      * @param kr row
      * @param kc column
      * @return true if coordinate is valid
      */
-    public static boolean coordinateValid(int kr, int kc) {
+    public static boolean coordinateValid(int kr, int kc){
         if (kr < 0 || kr > 7) {
             return false;
         }
@@ -415,19 +429,62 @@ public class Conditions {
 
     /**
      * Checks if destination is available
-     *
      * @param board 2D array of Pieces
-     * @param p     white or black
-     * @param kr    destination row
-     * @param kc    destination column
+     * @param p white or black
+     * @param kr destination row
+     * @param kc destination column
      * @return true if empty
      */
-    public static boolean occupiedByOwnPiece(Piece[][] board, char p, int kr, int kc) {
+    public static boolean occupiedByOwnPiece(Piece[][] board, char p, int kr, int kc){
         if (Board.isOccupied(board, kr, kc)) {// destination is occupied
             if (board[kr][kc].color == p) {// occupied by own color
                 return false;
             }
         }
         return true;//not occupied
+    }
+
+
+    /**
+     * Determines if game is in stalemate or not (if player p has any legal moves at all available, not stalemate, false)
+     * @param board 2D array of Pieces
+     * @param p w or b
+     * @i current turn number
+     * @return true if stalemate, false otherwise
+     */
+    public static boolean isStalemate(Piece[][] board, char p, int i) {
+
+        boolean haveMove = false;
+
+        // assuming p not in check
+        for (int r1 = 0; r1 < 8; r1++) {
+            for (int c1 = 0; c1 < 8; c1++) {
+                if (board[r1][c1].color == p) {
+                    // own piece
+
+                    for (int r2 = 0; r2 < 8; r2++) {
+                        for (int c2 = 0; c2 < 8; c2++) {
+                            if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                // one of our pieces does have a legal move, not checkmate, return false
+                                haveMove = true;
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        if (haveMove == true) {
+            // we have a move, not stalemate yet
+            return false;
+        } else {
+            // no piece of ours has a legal move, return true, yes stalemate
+            return true;
+        }
     }
 }
