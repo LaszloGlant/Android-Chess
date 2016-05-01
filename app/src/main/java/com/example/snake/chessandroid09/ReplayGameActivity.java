@@ -60,18 +60,13 @@ public class ReplayGameActivity extends AppCompatActivity {
         switch (id) {
             case R.id.play:
                 finish();
-                Board.initWhite(board);
-                Board.initBoard(board);
-                //MainActivity.copy(board, boardCopy);
-                drawBoard();
-
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 Toast.makeText(getApplicationContext(), "Returning to play chess mode!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.main:
                 Toast.makeText(getApplicationContext(), "THIS MENU IS PROBALY NOT NEEDED! WILL SEE!", Toast.LENGTH_LONG).show();
                 break;
             case R.id.replay:
-
                 Toast.makeText(getApplicationContext(), "You are in replay mode!", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -80,7 +75,7 @@ public class ReplayGameActivity extends AppCompatActivity {
     }
 
     public void hit(View v) {
-        Toast.makeText(getApplicationContext(), "You can't manipulate the board when you're in replay game mode", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "You can't manipulate the board when you're in replay game mode, hit >>>", Toast.LENGTH_SHORT).show();
     }
 
     public void recordedGames(View v) {
@@ -97,7 +92,7 @@ public class ReplayGameActivity extends AppCompatActivity {
         if (pbIndex < MainActivity.myGames.get(gameIndex).moves.size()) {
 
         } else {
-            message.setText("Game Over");
+            message.setText("Replay has finished. Play another game or select another game to replay");
             return;
         }
 
