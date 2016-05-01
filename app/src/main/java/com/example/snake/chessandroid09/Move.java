@@ -2,7 +2,7 @@ package com.example.snake.chessandroid09;
 
 /**
  * Move contains the methods to move each piece (ex. movePawn)
- * Prints correct error message if move trying to be executed is illegal.
+ * Disallows illegal moves
  * @author Brian Wong, Laszlo Glant
  *
  */

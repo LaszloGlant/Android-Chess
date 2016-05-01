@@ -3,7 +3,10 @@ package com.example.snake.chessandroid09;
 import java.io.Serializable;
 
 /**
- * Created by Brian on 4/25/2016.
+ *
+ * @author Brian Wong, Laszlo Glant
+ * A Pair is a set of 2 coordinates (ex. e2 e4), but in integer format
+ *
  */
 public class Pair implements Serializable{
     int r1;

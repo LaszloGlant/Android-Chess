@@ -91,7 +91,7 @@ Game playback (30 pts)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.i("--------------blw4", "-------------blw");
+        System.out.println("----------------------------------------------------------------------");
 
         load();
         System.out.println("have loaded");
@@ -275,8 +275,6 @@ Game playback (30 pts)
         myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
         printPairs();
 
-        Log.i("blw calling save", "blw calling save");
-        System.out.println("blw calling save");
         save();
     }
 
@@ -657,7 +655,7 @@ Game playback (30 pts)
             int month = c.get(Calendar.MONTH) + 1;
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            String thisGame = "myGame2," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
+            String thisGame = "this game," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
 
             // add this 1 line to all recorded games
             stickIn1Line(myGames, thisGame);
@@ -685,8 +683,8 @@ Game playback (30 pts)
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             while ((input = br.readLine()) != null) {
-                System.out.println("input: " + input);
                 Log.i("load", "input = " + input);
+                stickIn1Line(myGames, input);
             }
             br.close();
         } catch (Exception e) {

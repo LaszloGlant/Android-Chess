@@ -15,6 +15,12 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ *
+ * @author Brian Wong, Laszlo Glant
+ * Replay Game Activity screen
+ *
+ */
 public class ReplayGameActivity extends AppCompatActivity {
 
     @Override
