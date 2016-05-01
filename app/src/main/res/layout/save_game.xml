@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <EditText
-        android:id="@+id/edittext"
+        android:id="@+id/body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

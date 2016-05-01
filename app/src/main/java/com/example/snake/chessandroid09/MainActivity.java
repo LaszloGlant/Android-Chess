@@ -365,7 +365,38 @@ Game playback (30 pts)
 
     public void saveGame(){
         // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+
+            final Dialog commentDialog = new Dialog(MainActivity.this);
+            commentDialog.setTitle("Save Game");
+            commentDialog.setContentView(R.layout.save_game);
+            Button okBtn = (Button) commentDialog
+                    .findViewById(R.id.ok);
+            okBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    EditText et = (EditText) commentDialog.findViewById(R.id.body);
+                    String gameTitle = et.getText().toString();
+                    gameOver(gameTitle);
+                    startActivity(new Intent(
+                            getApplicationContext(),
+                            MainActivity.class));
+                    commentDialog.dismiss();
+                }
+            });
+            Button cancelBtn = (Button) commentDialog.findViewById(R.id.cancel);
+            cancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   //startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            commentDialog.dismiss();
+                }
+            });
+            commentDialog.show();
+    }
+
+        /* LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
         View promptView = layoutInflater.inflate(R.layout.save_game, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilder.setView(promptView);
@@ -392,8 +423,8 @@ Game playback (30 pts)
 
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
+        alert.show();*/
+
 
 
     public void gameOver(String gameTitle) {
