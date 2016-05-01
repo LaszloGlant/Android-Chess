@@ -76,27 +76,27 @@ Game playback (30 pts)
 
 */
 
-    int numHits = 0;
-    int turn = 0;
+    int numHits = 0;    // the number of times the user has clicked on a piece on the board, even for src, odd for dest
+    int turn = 0;       // the current turn number, even for white, odd for black
 
-    int currImage;
+    int currImage;      // global variable for the image of the current piece, set in move
 
-    char currP = 'w';
-    char oppP = 'b';
+    char currP = 'w';   // current player is w, start's off as white's turn
+    char oppP = 'b';    // current opponent is b
 
-    char promo = 'Q';
+    char promo = 'Q';   // determines which piece the user chooses to promote a pawn to, Q by default
 
-    int prevR;
-    int prevC;
+    int prevR;          // previous (source) row
+    int prevC;          // previous (source) column
 
-    boolean isOver = false;
-    boolean haveJustUndone = false;
+    boolean isOver = false;     // game is not over yet, set to true for draw, resign, or checkmate
+    boolean haveJustUndone = false; // set to true if just hit undo so don't go back more than 1 move
 
-    Piece[][] board = new Piece[8][8];
-    Piece[][] boardCopy = new Piece[8][8];
+    Piece[][] board = new Piece[8][8];      // back end board
+    Piece[][] boardCopy = new Piece[8][8];  // secondary back end board, needed to undo a move
 
-    static ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();
-    ArrayList<Pair> savedPairs = new ArrayList<Pair>();
+    static ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();     // master list of games
+    ArrayList<Pair> savedPairs = new ArrayList<Pair>();     // list of moves that the user has done for this current game
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,14 +108,11 @@ Game playback (30 pts)
         System.out.println("----------------------------------------------------------------------");
 
         load();
-        System.out.println("have loaded");
 
         Board.initWhite(board);
         Board.initBoard(board);
 
         copy(board, boardCopy);
-
-
     }
 
     @Override
@@ -642,24 +639,6 @@ Game playback (30 pts)
         return -1;
     }
 
-    public void playBack(RecordedGame rg) {
-        for (int i = 0; i < rg.moves.size(); i++) {
-            int r1 = rg.moves.get(i).r1;
-            int c1 = rg.moves.get(i).c1;
-            int r2 = rg.moves.get(i).r2;
-            int c2 = rg.moves.get(i).c2;
-
-            char p;
-            if (i % 2 == 0) {
-                p = 'w';
-            } else {
-                p = 'b';
-            }
-
-            int ret = move(p, r1, c1, r2, c2, i);
-        }
-    }
-
     public void save() {
         try {
             Calendar c = new GregorianCalendar();
@@ -692,7 +671,6 @@ Game playback (30 pts)
         try {
             File sdcard = Environment.getExternalStorageDirectory();
             File file = new File(sdcard, "/tmp/output.txt");
-            StringBuilder text = new StringBuilder();
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             while ((input = br.readLine()) != null) {
