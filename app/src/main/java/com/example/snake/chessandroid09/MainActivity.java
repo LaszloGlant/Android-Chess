@@ -280,46 +280,6 @@ Game playback (30 pts)
         save();
     }
 
-    public void save() {
-        try {
-            Calendar c = new GregorianCalendar();
-            c.set(Calendar.MILLISECOND, 0);
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH) + 1;
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            String str = "myGame1," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
-
-            File sdcard = Environment.getExternalStorageDirectory();
-            File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
-            dir.mkdir();
-            File file = new File(dir, "output3.txt");
-            FileOutputStream os =  new FileOutputStream(file);
-            os.write(str.getBytes());
-            os.close();
-        } catch (Exception e) {
-            System.out.println("exception in save");
-        }
-    }
-
-    public void load() {
-        String input;
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, "/tmp/output3.txt");
-            StringBuilder text = new StringBuilder();
-
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            while ((input = br.readLine()) != null) {
-                System.out.println("input: " + input);
-                Log.i("load", "input = " + input);
-            }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("exception in load");
-        }
-    }
-
     public void hit(View v) {
         if (isOver) {
             // game is over, just return so that user cannot move any pieces
@@ -689,17 +649,67 @@ Game playback (30 pts)
         }
     }
 
+    public void save() {
+        try {
+            Calendar c = new GregorianCalendar();
+            c.set(Calendar.MILLISECOND, 0);
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH) + 1;
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            String thisGame = "myGame2," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
+
+            // add this 1 line to all recorded games
+            stickIn1Line(myGames, thisGame);
+
+            String allGames = listToStr();
+
+            File sdcard = Environment.getExternalStorageDirectory();
+            File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
+            dir.mkdir();
+            File file = new File(dir, "output3.txt");
+            FileOutputStream os =  new FileOutputStream(file);
+            os.write(allGames.getBytes());
+            os.close();
+        } catch (Exception e) {
+            System.out.println("exception in save");
+        }
+    }
+
+    public void load() {
+        String input;
+        try {
+            File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard, "/tmp/output3.txt");
+            StringBuilder text = new StringBuilder();
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            while ((input = br.readLine()) != null) {
+                System.out.println("input: " + input);
+                Log.i("load", "input = " + input);
+            }
+            br.close();
+        } catch (Exception e) {
+            System.out.println("exception in load");
+        }
+    }
+
     /**
      * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
-     * @param empty blank array list to be loaded up with data
+     * @param empty blank array list to be loaded up with data (myGames)
      * @param line 1 line of text from output.txt
      */
     public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
+        System.out.println("line: " + line);
         String[] strArr = line.split(",");
-        String[] movements = strArr[4].split(".");
+        String[] movements = strArr[4].split("~");
         ArrayList<Pair> moves = new ArrayList<Pair>();
         for (int i = 0; i < movements.length; i++) {
-            moves.add(new Pair(movements[i].charAt(0), movements[i].charAt(1), movements[i].charAt(3), movements[i].charAt(4)));
+            int r1 = Character.getNumericValue(movements[i].charAt(0));
+            int c1 = Character.getNumericValue(movements[i].charAt(1));
+            int r2 = Character.getNumericValue(movements[i].charAt(3));
+            int c2 = Character.getNumericValue(movements[i].charAt(4));
+            moves.add(new Pair(r1, c1, r2, c2));
         }
         empty.add(new RecordedGame(strArr[0], Integer.parseInt(strArr[1]), Integer.parseInt(strArr[2]), Integer.parseInt(strArr[3]), moves));
     }
@@ -724,6 +734,19 @@ Game playback (30 pts)
 
     public String outString(RecordedGame rg) {
         return rg.title + "," + rg.year + "," + rg.month + "," + rg.day + "," + savedPairsStr(rg.moves);
+    }
+
+    /**
+     * given myGames (master list of recorded games), make that into a String version
+     * @return String version of myGames
+     */
+    public String listToStr() {
+        String myList = "";
+        for (int i = 0; i < myGames.size(); i++) {
+            myList += outString(myGames.get(i));
+            myList += "\n";
+        }
+        return myList;
     }
 
     public String charToStr(char p) {

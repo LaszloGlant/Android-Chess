@@ -12,10 +12,6 @@ public class RecordedGame implements Serializable {
     int year, month, day;
     ArrayList<Pair> moves = new ArrayList<Pair>();
 
-    public String toString() {
-        return title + " " + year + "/" + month + "/" + day;
-    }
-
     public RecordedGame() {
         this.title = "";
         this.year = 0;
