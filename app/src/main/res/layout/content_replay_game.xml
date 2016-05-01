@@ -780,33 +780,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Start Playback"
-        android:id="@+id/bStartPlay"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="#43a5c6"
-        android:onClick="playback" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
         android:text="Recorded Games"
         android:id="@+id/bRecordedGames"
         android:onClick="recordedGames"
         android:background="#43a5c6"
-        android:layout_alignTop="@+id/bStartPlay"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="&lt;&lt;&lt;"
-        android:id="@+id/bBack"
-        android:background="@color/colorPrimary"
-        android:onClick="backward"
-        android:layout_alignTop="@+id/bForward"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -817,10 +795,9 @@
         android:id="@+id/bForward"
         android:background="@color/colorPrimary"
         android:onClick="forward"
-        android:layout_below="@+id/bRecordedGames"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
-        android:layout_marginTop="12dp" />
+        android:layout_alignTop="@+id/bRecordedGames"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -831,6 +808,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_alignEnd="@+id/imageView"
+        android:background="@color/background_material_light" />
 
 </RelativeLayout>

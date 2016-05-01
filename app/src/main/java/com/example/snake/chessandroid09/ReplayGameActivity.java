@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 public class ReplayGameActivity extends AppCompatActivity {
 
     int pbIndex = 0;
-
+    int gameIndex = 0;
     int currImage;
 
     Piece[][] board = new Piece[8][8];
@@ -59,6 +59,10 @@ public class ReplayGameActivity extends AppCompatActivity {
         switch (id) {
             case R.id.play:
                 finish();
+                Board.initWhite(board);
+                Board.initBoard(board);
+                //MainActivity.copy(board, boardCopy);
+                drawBoard();
 
                 Toast.makeText(getApplicationContext(), "Returning to play chess mode!", Toast.LENGTH_SHORT).show();
                 break;
@@ -83,26 +87,18 @@ public class ReplayGameActivity extends AppCompatActivity {
 
     }
 
-    public void playback(View v) {
-        Toast.makeText(getApplicationContext(), "This should select the game to be played back", Toast.LENGTH_SHORT).show();
-    }
-
-    public void backward(View v) {
-        Toast.makeText(getApplicationContext(), "You hit backward!", Toast.LENGTH_SHORT).show();
-    }
-
     public void forward(View v) {
-        //Toast.makeText(getApplicationContext(), "You hit forward!", Toast.LENGTH_SHORT).show();
-
-        int gameIndex = 0;
+        Button message = (Button) findViewById(R.id.message);
+        if (MainActivity.myGames.size() == 0){
+            return;
+        }
 
         if (pbIndex < MainActivity.myGames.get(gameIndex).moves.size()) {
 
         } else {
+            message.setText("Game Over");
             return;
         }
-
-        Button message = (Button) findViewById(R.id.message);
 
         System.out.println("number of moves this game: " + MainActivity.myGames.get(gameIndex).moves.size());
 
@@ -119,8 +115,6 @@ public class ReplayGameActivity extends AppCompatActivity {
         } else {
             p = 'b';
         }
-
-        System.out.println("about to call move in replay");
 
         int ret = execute(p, r1, c1, r2, c2, pbIndex);
         pbIndex++;
@@ -592,6 +586,16 @@ public class ReplayGameActivity extends AppCompatActivity {
 
         // shouldn't get to down here anyway
         return R.id.b00;
+    }
+
+    public void drawBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int image = getImage(i, j);
+                ImageButton b = (ImageButton) findViewById(makeButtonId(i, j));
+                b.setImageResource(image);
+            }
+        }
     }
 
 }

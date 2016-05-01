@@ -1,6 +1,9 @@
 package com.example.snake.chessandroid09;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,9 +14,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.os.Environment;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,10 +32,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- *
  * @author Brian Wong, Laszlo Glant
- * Main Activity screen
- *
+ *         Main Activity screen
  */
 public class MainActivity extends AppCompatActivity {
     /*
@@ -111,6 +114,7 @@ Game playback (30 pts)
         Board.initBoard(board);
 
         copy(board, boardCopy);
+
 
     }
 
@@ -269,1049 +273,1051 @@ Game playback (30 pts)
 
         Button message = (Button) findViewById(R.id.message);
 
+
+
         gameOver();
 
-        message.setText("Resign: " + charToStr(oppP) + " wins!");
-    }
+        message.setText("Resign: "+charToStr(oppP)+" wins!");
+        }
 
-    public void gameOver() {
-        isOver = true;
+public void gameOver(){
+        isOver=true;
 
-        Calendar c = new GregorianCalendar();
-        c.set(Calendar.MILLISECOND, 0);
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH) + 1;
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        Calendar c=new GregorianCalendar();
+        c.set(Calendar.MILLISECOND,0);
+        int year=c.get(Calendar.YEAR);
+        int month=c.get(Calendar.MONTH)+1;
+        int day=c.get(Calendar.DAY_OF_MONTH);
 
-        myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
+        myGames.add(new RecordedGame("myGame",year,month,day,savedPairs));
         printPairs();
 
         save();
-    }
-
-    public void hit(View v) {
-        if (isOver) {
-            // game is over, just return so that user cannot move any pieces
-            return;
         }
 
-        int id = v.getId();
-        Button message = (Button) findViewById(R.id.message);
+public void hit(View v){
+        if(isOver){
+        // game is over, just return so that user cannot move any pieces
+        return;
+        }
 
-        int r = setRC(id)[0];
-        int c = setRC(id)[1];
+        int id=v.getId();
+        Button message=(Button)findViewById(R.id.message);
 
-        if (numHits % 2 == 0) {
-            // hitting source
+        int r=setRC(id)[0];
+        int c=setRC(id)[1];
 
-            if (Board.isOccupied(board, r, c) == false) {
-                // clicking on a square with no piece on it
-                message.setText("Click on a " + charToStr(currP) + " piece");
-                return;
-            }
+        if(numHits%2==0){
+        // hitting source
 
-            if (board[r][c].color != currP) {
-                // wrong color, shouldn't be moving this piece
-                message.setText("You can't move a " + charToStr(oppP) + " piece");
-                return;
-            }
+        if(Board.isOccupied(board,r,c)==false){
+        // clicking on a square with no piece on it
+        message.setText("Click on a "+charToStr(currP)+" piece");
+        return;
+        }
 
-            prevR = r;
-            prevC = c;
+        if(board[r][c].color!=currP){
+        // wrong color, shouldn't be moving this piece
+        message.setText("You can't move a "+charToStr(oppP)+" piece");
+        return;
+        }
 
-            currImage = getImage(r, c);
-            message.setText("Now select destination for " + board[r][c].toString() + " at " + toCoord(r, c));
+        prevR=r;
+        prevC=c;
 
-        } else {
-            // hitting destination
+        currImage=getImage(r,c);
+        message.setText("Now select destination for "+board[r][c].toString()+" at "+toCoord(r,c));
 
-            copy(board, boardCopy);
+        }else{
+        // hitting destination
 
-            // move only good if valid and do not end with king in check
+        copy(board,boardCopy);
 
-            int okMove = move(currP, prevR, prevC, r, c, turn);
+        // move only good if valid and do not end with king in check
 
-            if (okMove < 0) {
-                // move was invalid
-                numHits++;
-                return;
-            } else if (Conditions.isCheck(board, currP, turn)) {
-                // move was valid, but put self in check, not good, have to take that move back
+        int okMove=move(currP,prevR,prevC,r,c,turn);
 
-                copy(boardCopy, board);
-                drawBoard();
-                message.setText("You can't end your turn in check, try again");
-                numHits++;
-                return;
-            } else {
-                // move was good
+        if(okMove<0){
+        // move was invalid
+        numHits++;
+        return;
+        }else if(Conditions.isCheck(board,currP,turn)){
+        // move was valid, but put self in check, not good, have to take that move back
 
-                // check if put opponent in check or not
-                if (Conditions.isCheck(board, oppP, turn)) {
-                    // in check
-                    if (oppP == 'w') {
-                        if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
-                            // checkmate
-                            message.setText("Checkmate, Black wins");
-                            gameOver();
-                        } else {
-                            message.setText("White in Check");
-                        }
-                    } else {
-                        if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
-                            // checkmate
-                            message.setText("Checkmate, White wins");
-                            gameOver();
-                        } else {
-                            message.setText("Black in Check");
-                        }
-                    }
-                }
+        copy(boardCopy,board);
+        drawBoard();
+        message.setText("You can't end your turn in check, try again");
+        numHits++;
+        return;
+        }else{
+        // move was good
 
-            }
+        // check if put opponent in check or not
+        if(Conditions.isCheck(board,oppP,turn)){
+        // in check
+        if(oppP=='w'){
+        if(Conditions.isCheckmate(board,'w',Piece.whiteKing[0],Piece.whiteKing[1],turn)){
+        // checkmate
+        message.setText("Checkmate, Black wins");
+        gameOver();
+        }else{
+        message.setText("White in Check");
+        }
+        }else{
+        if(Conditions.isCheckmate(board,'b',Piece.blackKing[0],Piece.blackKing[1],turn)){
+        // checkmate
+        message.setText("Checkmate, White wins");
+        gameOver();
+        }else{
+        message.setText("Black in Check");
+        }
+        }
+        }
 
-            // do at end of every good move
+        }
 
-            // update saved pairs array list
-            savedPairs.add(new Pair(prevR, prevC, r, c));
+        // do at end of every good move
 
-            // advance turn to next player
-            updateTurn();
+        // update saved pairs array list
+        savedPairs.add(new Pair(prevR,prevC,r,c));
 
-            //Board.displayBoard(board);
+        // advance turn to next player
+        updateTurn();
+
+        //Board.displayBoard(board);
         }
 
         // do at end of each turn, whether hitting src or dest
         numHits++;
 
-    }
+        }
 
 
-    /**
-     * move a piece from (r1, c1) to (r2, c2), execute move if valid, don't execute if invalid
-     *
-     * @param p  w for white's turn, b for black's turn
-     * @param r1 initial row
-     * @param c1 initial column
-     * @param r2 final row
-     * @param c2 final column
-     * @param i  current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
-     * @return negative number if move is bad, positive number if move is good
-     */
-    public int move(char p, int r1, int c1, int r2, int c2, int i) {
-        Button message = (Button) findViewById(R.id.message);
+/**
+ * move a piece from (r1, c1) to (r2, c2), execute move if valid, don't execute if invalid
+ *
+ * @param p  w for white's turn, b for black's turn
+ * @param r1 initial row
+ * @param c1 initial column
+ * @param r2 final row
+ * @param c2 final column
+ * @param i  current turn (ex. 0 for white's first turn, 1 for black's first turn, 2 for white's second turn, etc)
+ * @return negative number if move is bad, positive number if move is good
+ */
+public int move(char p,int r1,int c1,int r2,int c2,int i){
+        Button message=(Button)findViewById(R.id.message);
 
-        currImage = getImage(r1, c1);
+        currImage=getImage(r1,c1);
 
-        ImageButton srcButton = (ImageButton) findViewById(makeButtonId(r1, c1));
-        ImageButton destButton = (ImageButton) findViewById(makeButtonId(r2, c2));
+        ImageButton srcButton=(ImageButton)findViewById(makeButtonId(r1,c1));
+        ImageButton destButton=(ImageButton)findViewById(makeButtonId(r2,c2));
 
         // if not moving piece at all, error
-        if (r1 == r2 && c1 == c2) {
-            message.setText("Can't move piece to same square");
-            return -10;
+        if(r1==r2&&c1==c2){
+        message.setText("Can't move piece to same square");
+        return-10;
         }
 
         // make sure no own piece at destination
-        if (Board.isOccupied(board, r2, c2)) {
-            // destination is occupied
-            if (board[r2][c2].color == p) {
-                message.setText("Destination is occupied by own piece");
-                return -12;
-            }
+        if(Board.isOccupied(board,r2,c2)){
+        // destination is occupied
+        if(board[r2][c2].color==p){
+        message.setText("Destination is occupied by own piece");
+        return-12;
+        }
         }
 
-        Piece one = board[r1][c1];
+        Piece one=board[r1][c1];
 
         // checks on piece at initial location
         int isValid;
-        boolean promoted = false;
+        boolean promoted=false;
 
-        if (one.name == 'p') {
-            // piece is pawn, move pawn
+        if(one.name=='p'){
+        // piece is pawn, move pawn
 
-            if (Move.canEnPassant(board, p, r1, c1, r2, c2, i)) {
-                // all conditions for en passant meet and destination is correct
+        if(Move.canEnPassant(board,p,r1,c1,r2,c2,i)){
+        // all conditions for en passant meet and destination is correct
 
-                // move to destination
-                board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
-                destButton.setImageResource(currImage);
+        // move to destination
+        board[r2][c2]=new Piece(one.color,one.name,one.numMoves+1,i);
+        destButton.setImageResource(currImage);
 
-                // delete old position piece
-                board[r1][c1] = new Piece(' ', ' ', 0, -1);
-                srcButton.setImageResource(R.drawable.blank);
+        // delete old position piece
+        board[r1][c1]=new Piece(' ',' ',0,-1);
+        srcButton.setImageResource(R.drawable.blank);
 
-                if (c2 > c1) {
-                    // moving to the right
-                    ImageButton captured = (ImageButton) findViewById(makeButtonId(r1, c1 + 1));
-                    captured.setImageResource(R.drawable.blank);
-                } else {
-                    // moving to the left
-                    ImageButton captured = (ImageButton) findViewById(makeButtonId(r1, c1 - 1));
-                    captured.setImageResource(R.drawable.blank);
-                }
-
-                message.setText(charToStr(p) + " has performed en passant");
-                return 3;
-            }
-            isValid = Move.movePawn(board, p, r1, c1, r2, c2, i);
-
-            if (isValid > 0) {
-                // move was valid, see if can upgrade pawn
-                // if reach end (r = 0 for white, r = 7 for black), promote to promo (Q by default)
-                if (p == 'w') {
-                    if (r2 == 0) {
-                        promoted = true;
-                    }
-                }
-
-                if (p == 'b') {
-                    if (r2 == 7) {
-                        promoted = true;
-                    }
-                }
-            }
-
-        } else if (one.name == 'N') {
-            // piece is knight, move knight
-            isValid = Move.moveKnight(board, p, r1, c1, r2, c2, i);
-        } else if (one.name == 'B') {
-            // piece is bishop, move bishop
-            isValid = Move.moveBishop(board, p, r1, c1, r2, c2, i);
-        } else if (one.name == 'R') {
-            // piece is rook, move rook
-            isValid = Move.moveRook(board, p, r1, c1, r2, c2, i);
-        } else if (one.name == 'Q') {
-            // piece is queen, move queen
-            isValid = Move.moveQueen(board, p, r1, c1, r2, c2, i);
-        } else if (one.name == 'K') {
-            // piece is king, move king
-
-            if (Move.canCastle(board, p, r1, c1, r2, c2, i) > 0) {
-
-                if (c2 > c1) {
-                    // rightwards, kingside
-
-                    // check conditions good
-                    board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
-                    destButton.setImageResource(currImage);
-
-                    board[r1][c1] = new Piece(' ', ' ', 0, -1);
-                    srcButton.setImageResource(R.drawable.blank);
-
-                    board[r1][5] = new Piece(p, 'R', board[r1][7].numMoves + 1, board[r1][7].lastMoved);
-                    ImageButton buttonR = (ImageButton) findViewById(makeButtonId(r1, 5));
-                    if (p == 'w') {
-                        buttonR.setImageResource(R.drawable.brook);
-                    } else {
-                        buttonR.setImageResource(R.drawable.rrook);
-                    }
-
-                    board[r1][7] = new Piece(' ', ' ', 0, -1);
-                    ImageButton srcButton2 = (ImageButton) findViewById(makeButtonId(r1, 7));
-                    srcButton2.setImageResource(R.drawable.blank);
-                } else {
-                    // check conditions good
-                    board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
-                    destButton.setImageResource(currImage);
-
-                    board[r1][c1] = new Piece(' ', ' ', 0, -1);
-                    srcButton.setImageResource(R.drawable.blank);
-
-                    board[r1][3] = new Piece(p, 'R', board[r1][0].numMoves + 1, board[r1][0].lastMoved);
-                    ImageButton buttonR = (ImageButton) findViewById(makeButtonId(r1, 3));
-                    if (p == 'w') {
-                        buttonR.setImageResource(R.drawable.brook);
-                    } else {
-                        buttonR.setImageResource(R.drawable.rrook);
-                    }
-
-                    board[r1][0] = new Piece(' ', ' ', 0, -1);
-                    ImageButton srcButton2 = (ImageButton) findViewById(makeButtonId(r1, 0));
-                    srcButton2.setImageResource(R.drawable.blank);
-                }
-
-
-                if (p == 'w') {
-                    Piece.whiteKing[0] = r2;
-                    Piece.whiteKing[1] = c2;
-                } else {
-                    Piece.blackKing[0] = r2;
-                    Piece.blackKing[1] = c2;
-                }
-
-                return 2;
-            }
-
-            isValid = Move.moveKing(board, p, r1, c1, r2, c2, i);
-            if (isValid > 0) {
-                if (p == 'w') {
-                    Piece.whiteKing[0] = r2;
-                    Piece.whiteKing[1] = c2;
-                } else {
-                    Piece.blackKing[0] = r2;
-                    Piece.blackKing[1] = c2;
-                }
-            }
-        } else {
-            // shouldn't happen, only 6 pieces
-            return -1;
+        if(c2>c1){
+        // moving to the right
+        ImageButton captured=(ImageButton)findViewById(makeButtonId(r1,c1+1));
+        captured.setImageResource(R.drawable.blank);
+        }else{
+        // moving to the left
+        ImageButton captured=(ImageButton)findViewById(makeButtonId(r1,c1-1));
+        captured.setImageResource(R.drawable.blank);
         }
 
-        if (isValid < 0) {
-            // not ok move
-            message.setText(board[r1][c1].toString() + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2) + " is invalid");
-            return -1;
+        message.setText(charToStr(p)+" has performed en passant");
+        return 3;
+        }
+        isValid=Move.movePawn(board,p,r1,c1,r2,c2,i);
+
+        if(isValid>0){
+        // move was valid, see if can upgrade pawn
+        // if reach end (r = 0 for white, r = 7 for black), promote to promo (Q by default)
+        if(p=='w'){
+        if(r2==0){
+        promoted=true;
+        }
         }
 
-        if (promoted == true) {
-            // Piece was a pawn and reached far end of board, change name of P to Q
-            board[r2][c2] = new Piece(one.color, 'Q', one.numMoves + 1, i);
-            if (one.color == 'w') {
-                destButton.setImageResource(R.drawable.bqueen);
-            } else {
-                destButton.setImageResource(R.drawable.rqueen);
-            }
-
-
-            board[r1][c1] = new Piece(' ', ' ', 0, -1);
-            srcButton.setImageResource(R.drawable.blank);
-        } else {
-            // normally move piece and delete old
-            board[r2][c2] = new Piece(one.color, one.name, one.numMoves + 1, i);
-            destButton.setImageResource(currImage);
-
-            board[r1][c1] = new Piece(' ', ' ', 0, -1);
-            srcButton.setImageResource(R.drawable.blank);
+        if(p=='b'){
+        if(r2==7){
+        promoted=true;
         }
-        promoted = false;
-        message.setText("Have moved " + board[r2][c2] + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2));
+        }
+        }
+
+        }else if(one.name=='N'){
+        // piece is knight, move knight
+        isValid=Move.moveKnight(board,p,r1,c1,r2,c2,i);
+        }else if(one.name=='B'){
+        // piece is bishop, move bishop
+        isValid=Move.moveBishop(board,p,r1,c1,r2,c2,i);
+        }else if(one.name=='R'){
+        // piece is rook, move rook
+        isValid=Move.moveRook(board,p,r1,c1,r2,c2,i);
+        }else if(one.name=='Q'){
+        // piece is queen, move queen
+        isValid=Move.moveQueen(board,p,r1,c1,r2,c2,i);
+        }else if(one.name=='K'){
+        // piece is king, move king
+
+        if(Move.canCastle(board,p,r1,c1,r2,c2,i)>0){
+
+        if(c2>c1){
+        // rightwards, kingside
+
+        // check conditions good
+        board[r2][c2]=new Piece(one.color,one.name,one.numMoves+1,i);
+        destButton.setImageResource(currImage);
+
+        board[r1][c1]=new Piece(' ',' ',0,-1);
+        srcButton.setImageResource(R.drawable.blank);
+
+        board[r1][5]=new Piece(p,'R',board[r1][7].numMoves+1,board[r1][7].lastMoved);
+        ImageButton buttonR=(ImageButton)findViewById(makeButtonId(r1,5));
+        if(p=='w'){
+        buttonR.setImageResource(R.drawable.brook);
+        }else{
+        buttonR.setImageResource(R.drawable.rrook);
+        }
+
+        board[r1][7]=new Piece(' ',' ',0,-1);
+        ImageButton srcButton2=(ImageButton)findViewById(makeButtonId(r1,7));
+        srcButton2.setImageResource(R.drawable.blank);
+        }else{
+        // check conditions good
+        board[r2][c2]=new Piece(one.color,one.name,one.numMoves+1,i);
+        destButton.setImageResource(currImage);
+
+        board[r1][c1]=new Piece(' ',' ',0,-1);
+        srcButton.setImageResource(R.drawable.blank);
+
+        board[r1][3]=new Piece(p,'R',board[r1][0].numMoves+1,board[r1][0].lastMoved);
+        ImageButton buttonR=(ImageButton)findViewById(makeButtonId(r1,3));
+        if(p=='w'){
+        buttonR.setImageResource(R.drawable.brook);
+        }else{
+        buttonR.setImageResource(R.drawable.rrook);
+        }
+
+        board[r1][0]=new Piece(' ',' ',0,-1);
+        ImageButton srcButton2=(ImageButton)findViewById(makeButtonId(r1,0));
+        srcButton2.setImageResource(R.drawable.blank);
+        }
+
+
+        if(p=='w'){
+        Piece.whiteKing[0]=r2;
+        Piece.whiteKing[1]=c2;
+        }else{
+        Piece.blackKing[0]=r2;
+        Piece.blackKing[1]=c2;
+        }
+
+        return 2;
+        }
+
+        isValid=Move.moveKing(board,p,r1,c1,r2,c2,i);
+        if(isValid>0){
+        if(p=='w'){
+        Piece.whiteKing[0]=r2;
+        Piece.whiteKing[1]=c2;
+        }else{
+        Piece.blackKing[0]=r2;
+        Piece.blackKing[1]=c2;
+        }
+        }
+        }else{
+        // shouldn't happen, only 6 pieces
+        return-1;
+        }
+
+        if(isValid<0){
+        // not ok move
+        message.setText(board[r1][c1].toString()+" from "+toCoord(r1,c1)+" to "+toCoord(r2,c2)+" is invalid");
+        return-1;
+        }
+
+        if(promoted==true){
+        // Piece was a pawn and reached far end of board, change name of P to Q
+        board[r2][c2]=new Piece(one.color,'Q',one.numMoves+1,i);
+        if(one.color=='w'){
+        destButton.setImageResource(R.drawable.bqueen);
+        }else{
+        destButton.setImageResource(R.drawable.rqueen);
+        }
+
+
+        board[r1][c1]=new Piece(' ',' ',0,-1);
+        srcButton.setImageResource(R.drawable.blank);
+        }else{
+        // normally move piece and delete old
+        board[r2][c2]=new Piece(one.color,one.name,one.numMoves+1,i);
+        destButton.setImageResource(currImage);
+
+        board[r1][c1]=new Piece(' ',' ',0,-1);
+        srcButton.setImageResource(R.drawable.blank);
+        }
+        promoted=false;
+        message.setText("Have moved "+board[r2][c2]+" from "+toCoord(r1,c1)+" to "+toCoord(r2,c2));
         return isValid;
-    }
-
-    /**
-     * AI should do any 1 legal move for player p
-     *
-     * @param board 2D array of pieces
-     * @param p     w or b
-     * @param i     turn number
-     * @return positive number if sucessfully did a legal move, negative number if nothing legal to do
-     */
-    public int AI(Piece[][] board, char p, int i) {
-        copy(board, boardCopy);
-        for (int r1 = 0; r1 < 8; r1++) {
-            for (int c1 = 0; c1 < 8; c1++) {
-                if (board[r1][c1].color == p) {
-                    // own piece
-
-                    for (int r2 = 0; r2 < 8; r2++) {
-                        for (int c2 = 0; c2 < 8; c2++) {
-
-                            if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
-                                // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
-                                int ret = move(p, r1, c1, r2, c2, i);
-
-                                if (Conditions.isCheck(board, p, i)) {
-                                    // this move will put self in check, take back
-                                    copy(boardCopy, board);
-                                    drawBoard();
-
-                                    // skip this move, still looking for something legal to do
-                                    continue;
-                                } else {
-                                    // not in check, this move is good
-                                    savedPairs.add(new Pair(r1, c1, r2, c2));
-                                    return 1;
-                                }
-
-                            } else {
-                                // not a legal move, don't attempt to do this
-                                continue;
-                            }
-                        }
-                    }
-
-                } else {
-                    // not own piece, don't attempt to move this one
-                    continue;
-                }
-            }
         }
-        return -1;
-    }
 
-    public void playBack(RecordedGame rg) {
-        for (int i = 0; i < rg.moves.size(); i++) {
-            int r1 = rg.moves.get(i).r1;
-            int c1 = rg.moves.get(i).c1;
-            int r2 = rg.moves.get(i).r2;
-            int c2 = rg.moves.get(i).c2;
+/**
+ * AI should do any 1 legal move for player p
+ *
+ * @param board 2D array of pieces
+ * @param p     w or b
+ * @param i     turn number
+ * @return positive number if sucessfully did a legal move, negative number if nothing legal to do
+ */
+public int AI(Piece[][]board,char p,int i){
+        copy(board,boardCopy);
+        for(int r1=0;r1<8;r1++){
+        for(int c1=0;c1<8;c1++){
+        if(board[r1][c1].color==p){
+        // own piece
 
-            char p;
-            if (i % 2 == 0) {
-                p = 'w';
-            } else {
-                p = 'b';
-            }
+        for(int r2=0;r2<8;r2++){
+        for(int c2=0;c2<8;c2++){
 
-            int ret = move(p, r1, c1, r2, c2, i);
+        if(Move.movePiece(board,p,r1,c1,r2,c2,i)){
+        // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+        int ret=move(p,r1,c1,r2,c2,i);
+
+        if(Conditions.isCheck(board,p,i)){
+        // this move will put self in check, take back
+        copy(boardCopy,board);
+        drawBoard();
+
+        // skip this move, still looking for something legal to do
+        continue;
+        }else{
+        // not in check, this move is good
+        savedPairs.add(new Pair(r1,c1,r2,c2));
+        return 1;
         }
-    }
 
-    public void save() {
-        try {
-            Calendar c = new GregorianCalendar();
-            c.set(Calendar.MILLISECOND, 0);
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH) + 1;
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            String thisGame = "this game," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
-
-            // add this 1 line to all recorded games
-            stickIn1Line(myGames, thisGame);
-
-            String allGames = listToStr();
-
-            File sdcard = Environment.getExternalStorageDirectory();
-            File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
-            dir.mkdir();
-            File file = new File(dir, "output.txt");
-            FileOutputStream os =  new FileOutputStream(file);
-            os.write(allGames.getBytes());
-            os.close();
-        } catch (Exception e) {
-            System.out.println("exception in save");
+        }else{
+        // not a legal move, don't attempt to do this
+        continue;
         }
-    }
+        }
+        }
 
-    public void load() {
+        }else{
+        // not own piece, don't attempt to move this one
+        continue;
+        }
+        }
+        }
+        return-1;
+        }
+
+public void playBack(RecordedGame rg){
+        for(int i=0;i<rg.moves.size();i++){
+        int r1=rg.moves.get(i).r1;
+        int c1=rg.moves.get(i).c1;
+        int r2=rg.moves.get(i).r2;
+        int c2=rg.moves.get(i).c2;
+
+        char p;
+        if(i%2==0){
+        p='w';
+        }else{
+        p='b';
+        }
+
+        int ret=move(p,r1,c1,r2,c2,i);
+        }
+        }
+
+public void save(){
+        try{
+        Calendar c=new GregorianCalendar();
+        c.set(Calendar.MILLISECOND,0);
+        int year=c.get(Calendar.YEAR);
+        int month=c.get(Calendar.MONTH)+1;
+        int day=c.get(Calendar.DAY_OF_MONTH);
+
+        String thisGame="this game,"+year+","+month+","+day+","+savedPairsStr(savedPairs);
+
+        // add this 1 line to all recorded games
+        stickIn1Line(myGames,thisGame);
+
+        String allGames=listToStr();
+
+        File sdcard=Environment.getExternalStorageDirectory();
+        File dir=new File(sdcard.getAbsolutePath()+"/tmp/");
+        dir.mkdir();
+        File file=new File(dir,"output.txt");
+        FileOutputStream os=new FileOutputStream(file);
+        os.write(allGames.getBytes());
+        os.close();
+        }catch(Exception e){
+        System.out.println("exception in save");
+        }
+        }
+
+public void load(){
         String input;
-        try {
-            File sdcard = Environment.getExternalStorageDirectory();
-            File file = new File(sdcard, "/tmp/output.txt");
-            StringBuilder text = new StringBuilder();
+        try{
+        File sdcard=Environment.getExternalStorageDirectory();
+        File file=new File(sdcard,"/tmp/output.txt");
+        StringBuilder text=new StringBuilder();
 
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            while ((input = br.readLine()) != null) {
-                Log.i("load", "input = " + input);
-                stickIn1Line(myGames, input);
-            }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("exception in load");
+        BufferedReader br=new BufferedReader(new FileReader(file));
+        while((input=br.readLine())!=null){
+        Log.i("load","input = "+input);
+        stickIn1Line(myGames,input);
         }
-    }
-
-    /**
-     * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
-     * @param empty blank array list to be loaded up with data (myGames)
-     * @param line 1 line of text from output.txt
-     */
-    public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
-        System.out.println("line: " + line);
-        String[] strArr = line.split(",");
-        String[] movements = strArr[4].split("~");
-        ArrayList<Pair> moves = new ArrayList<Pair>();
-        for (int i = 0; i < movements.length; i++) {
-            int r1 = Character.getNumericValue(movements[i].charAt(0));
-            int c1 = Character.getNumericValue(movements[i].charAt(1));
-            int r2 = Character.getNumericValue(movements[i].charAt(3));
-            int c2 = Character.getNumericValue(movements[i].charAt(4));
-            moves.add(new Pair(r1, c1, r2, c2));
+        br.close();
+        }catch(Exception e){
+        System.out.println("exception in load");
         }
-        empty.add(new RecordedGame(strArr[0], Integer.parseInt(strArr[1]), Integer.parseInt(strArr[2]), Integer.parseInt(strArr[3]), moves));
-    }
+        }
 
-    public String toCoord(int r, int c) {
-        char[] lets = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-        int[] nums = {8, 7, 6, 5, 4, 3, 2, 1};
-        return lets[c] + "" + nums[r];
-    }
+/**
+ * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
+ * @param empty blank array list to be loaded up with data (myGames)
+ * @param line 1 line of text from output.txt
+ */
+public void stickIn1Line(ArrayList<RecordedGame>empty,String line){
+        System.out.println("line: "+line);
+        String[]strArr=line.split(",");
+        String[]movements=strArr[4].split("~");
+        ArrayList<Pair>moves=new ArrayList<Pair>();
+        for(int i=0;i<movements.length;i++){
+        int r1=Character.getNumericValue(movements[i].charAt(0));
+        int c1=Character.getNumericValue(movements[i].charAt(1));
+        int r2=Character.getNumericValue(movements[i].charAt(3));
+        int c2=Character.getNumericValue(movements[i].charAt(4));
+        moves.add(new Pair(r1,c1,r2,c2));
+        }
+        empty.add(new RecordedGame(strArr[0],Integer.parseInt(strArr[1]),Integer.parseInt(strArr[2]),Integer.parseInt(strArr[3]),moves));
+        }
 
-    public String savedPairsStr(ArrayList<Pair> sp) {
-        String ret = "";
-        for (int i = 0; i < sp.size(); i++) {
-            int r1 = sp.get(i).r1;
-            int c1 = sp.get(i).c1;
-            int r2 = sp.get(i).r2;
-            int c2 = sp.get(i).c2;
-            ret = ret + "" + r1 + ""  + c1 + " " + r2 + "" + c2 + "~";
+public String toCoord(int r,int c){
+        char[]lets={'a','b','c','d','e','f','g','h'};
+        int[]nums={8,7,6,5,4,3,2,1};
+        return lets[c]+""+nums[r];
+        }
+
+public String savedPairsStr(ArrayList<Pair>sp){
+        String ret="";
+        for(int i=0;i<sp.size();i++){
+        int r1=sp.get(i).r1;
+        int c1=sp.get(i).c1;
+        int r2=sp.get(i).r2;
+        int c2=sp.get(i).c2;
+        ret=ret+""+r1+""+c1+" "+r2+""+c2+"~";
         }
         return ret;
-    }
+        }
 
-    public String outString(RecordedGame rg) {
-        return rg.title + "," + rg.year + "," + rg.month + "," + rg.day + "," + savedPairsStr(rg.moves);
-    }
+public String outString(RecordedGame rg){
+        return rg.title+","+rg.year+","+rg.month+","+rg.day+","+savedPairsStr(rg.moves);
+        }
 
-    /**
-     * given myGames (master list of recorded games), make that into a String version
-     * @return String version of myGames
-     */
-    public String listToStr() {
-        String myList = "";
-        for (int i = 0; i < myGames.size(); i++) {
-            myList += outString(myGames.get(i));
-            myList += "\n";
+/**
+ * given myGames (master list of recorded games), make that into a String version
+ * @return String version of myGames
+ */
+public String listToStr(){
+        String myList="";
+        for(int i=0;i<myGames.size();i++){
+        myList+=outString(myGames.get(i));
+        myList+="\n";
         }
         return myList;
-    }
-
-    public String charToStr(char p) {
-        if (p == 'w') {
-            return "White";
-        } else if (p == 'b') {
-            return "Black";
-        } else {
-            // can't happen
-            return "Bogus";
         }
-    }
 
-    public void updateTurn() {
+public String charToStr(char p){
+        if(p=='w'){
+        return"White";
+        }else if(p=='b'){
+        return"Black";
+        }else{
+        // can't happen
+        return"Bogus";
+        }
+        }
+
+public void updateTurn(){
         turn++;
 
-        if (turn % 2 == 0) {
-            // white/blue's turn
-            currP = 'w';
-            oppP = 'b';
-        } else {
-            // black/red's turn
-            currP = 'b';
-            oppP = 'w';
+        if(turn%2==0){
+        // white/blue's turn
+        currP='w';
+        oppP='b';
+        }else{
+        // black/red's turn
+        currP='b';
+        oppP='w';
         }
 
-        Button ai = (Button) findViewById(R.id.bAI);
-        Button resign = (Button) findViewById(R.id.bForward);
+        Button ai=(Button)findViewById(R.id.bAI);
+        Button resign=(Button)findViewById(R.id.bResign);
 
-        ai.setText("AI (" + charToStr(currP) + ")");
-        resign.setText("Resign (" + charToStr(currP) + ")");
+        ai.setText("AI ("+charToStr(currP)+")");
+        resign.setText("Resign ("+charToStr(currP)+")");
 
-        haveJustUndone = false;
+        haveJustUndone=false;
 
-    }
-
-    public void printPairs() {
-        for (int i = 0; i < savedPairs.size(); i++) {
-            int r1 = savedPairs.get(i).r1;
-            int c1 = savedPairs.get(i).c1;
-            int r2 = savedPairs.get(i).r2;
-            int c2 = savedPairs.get(i).c2;
-            System.out.println(toCoord(r1, c1) + " " + toCoord(r2, c2));
-        }
-    }
-
-    public int[] setRC(int id) {
-        int r = -1;
-        int c = -1;
-
-        if (id == R.id.b00) {
-            r = 0;
-            c = 0;
-        }
-        if (id == R.id.b01) {
-            r = 0;
-            c = 1;
-        }
-        if (id == R.id.b02) {
-            r = 0;
-            c = 2;
-        }
-        if (id == R.id.b03) {
-            r = 0;
-            c = 3;
-        }
-        if (id == R.id.b04) {
-            r = 0;
-            c = 4;
-        }
-        if (id == R.id.b05) {
-            r = 0;
-            c = 5;
-        }
-        if (id == R.id.b06) {
-            r = 0;
-            c = 6;
-        }
-        if (id == R.id.b07) {
-            r = 0;
-            c = 7;
-        }
-        if (id == R.id.b10) {
-            r = 1;
-            c = 0;
-        }
-        if (id == R.id.b11) {
-            r = 1;
-            c = 1;
-        }
-        if (id == R.id.b12) {
-            r = 1;
-            c = 2;
-        }
-        if (id == R.id.b13) {
-            r = 1;
-            c = 3;
-        }
-        if (id == R.id.b14) {
-            r = 1;
-            c = 4;
-        }
-        if (id == R.id.b15) {
-            r = 1;
-            c = 5;
-        }
-        if (id == R.id.b16) {
-            r = 1;
-            c = 6;
-        }
-        if (id == R.id.b17) {
-            r = 1;
-            c = 7;
-        }
-        if (id == R.id.b20) {
-            r = 2;
-            c = 0;
-        }
-        if (id == R.id.b21) {
-            r = 2;
-            c = 1;
-        }
-        if (id == R.id.b22) {
-            r = 2;
-            c = 2;
-        }
-        if (id == R.id.b23) {
-            r = 2;
-            c = 3;
-        }
-        if (id == R.id.b24) {
-            r = 2;
-            c = 4;
-        }
-        if (id == R.id.b25) {
-            r = 2;
-            c = 5;
-        }
-        if (id == R.id.b26) {
-            r = 2;
-            c = 6;
-        }
-        if (id == R.id.b27) {
-            r = 2;
-            c = 7;
-        }
-        if (id == R.id.b30) {
-            r = 3;
-            c = 0;
-        }
-        if (id == R.id.b31) {
-            r = 3;
-            c = 1;
-        }
-        if (id == R.id.b32) {
-            r = 3;
-            c = 2;
-        }
-        if (id == R.id.b33) {
-            r = 3;
-            c = 3;
-        }
-        if (id == R.id.b34) {
-            r = 3;
-            c = 4;
-        }
-        if (id == R.id.b35) {
-            r = 3;
-            c = 5;
-        }
-        if (id == R.id.b36) {
-            r = 3;
-            c = 6;
-        }
-        if (id == R.id.b37) {
-            r = 3;
-            c = 7;
-        }
-        if (id == R.id.b40) {
-            r = 4;
-            c = 0;
-        }
-        if (id == R.id.b41) {
-            r = 4;
-            c = 1;
-        }
-        if (id == R.id.b42) {
-            r = 4;
-            c = 2;
-        }
-        if (id == R.id.b43) {
-            r = 4;
-            c = 3;
-        }
-        if (id == R.id.b44) {
-            r = 4;
-            c = 4;
-        }
-        if (id == R.id.b45) {
-            r = 4;
-            c = 5;
-        }
-        if (id == R.id.b46) {
-            r = 4;
-            c = 6;
-        }
-        if (id == R.id.b47) {
-            r = 4;
-            c = 7;
-        }
-        if (id == R.id.b50) {
-            r = 5;
-            c = 0;
-        }
-        if (id == R.id.b51) {
-            r = 5;
-            c = 1;
-        }
-        if (id == R.id.b52) {
-            r = 5;
-            c = 2;
-        }
-        if (id == R.id.b53) {
-            r = 5;
-            c = 3;
-        }
-        if (id == R.id.b54) {
-            r = 5;
-            c = 4;
-        }
-        if (id == R.id.b55) {
-            r = 5;
-            c = 5;
-        }
-        if (id == R.id.b56) {
-            r = 5;
-            c = 6;
-        }
-        if (id == R.id.b57) {
-            r = 5;
-            c = 7;
-        }
-        if (id == R.id.b60) {
-            r = 6;
-            c = 0;
-        }
-        if (id == R.id.b61) {
-            r = 6;
-            c = 1;
-        }
-        if (id == R.id.b62) {
-            r = 6;
-            c = 2;
-        }
-        if (id == R.id.b63) {
-            r = 6;
-            c = 3;
-        }
-        if (id == R.id.b64) {
-            r = 6;
-            c = 4;
-        }
-        if (id == R.id.b65) {
-            r = 6;
-            c = 5;
-        }
-        if (id == R.id.b66) {
-            r = 6;
-            c = 6;
-        }
-        if (id == R.id.b67) {
-            r = 6;
-            c = 7;
-        }
-        if (id == R.id.b70) {
-            r = 7;
-            c = 0;
-        }
-        if (id == R.id.b71) {
-            r = 7;
-            c = 1;
-        }
-        if (id == R.id.b72) {
-            r = 7;
-            c = 2;
-        }
-        if (id == R.id.b73) {
-            r = 7;
-            c = 3;
-        }
-        if (id == R.id.b74) {
-            r = 7;
-            c = 4;
-        }
-        if (id == R.id.b75) {
-            r = 7;
-            c = 5;
-        }
-        if (id == R.id.b76) {
-            r = 7;
-            c = 6;
-        }
-        if (id == R.id.b77) {
-            r = 7;
-            c = 7;
         }
 
-        int[] arr = {r, c};
+public void printPairs(){
+        for(int i=0;i<savedPairs.size();i++){
+        int r1=savedPairs.get(i).r1;
+        int c1=savedPairs.get(i).c1;
+        int r2=savedPairs.get(i).r2;
+        int c2=savedPairs.get(i).c2;
+        System.out.println(toCoord(r1,c1)+" "+toCoord(r2,c2));
+        }
+        }
+
+public int[]setRC(int id){
+        int r=-1;
+        int c=-1;
+
+        if(id==R.id.b00){
+        r=0;
+        c=0;
+        }
+        if(id==R.id.b01){
+        r=0;
+        c=1;
+        }
+        if(id==R.id.b02){
+        r=0;
+        c=2;
+        }
+        if(id==R.id.b03){
+        r=0;
+        c=3;
+        }
+        if(id==R.id.b04){
+        r=0;
+        c=4;
+        }
+        if(id==R.id.b05){
+        r=0;
+        c=5;
+        }
+        if(id==R.id.b06){
+        r=0;
+        c=6;
+        }
+        if(id==R.id.b07){
+        r=0;
+        c=7;
+        }
+        if(id==R.id.b10){
+        r=1;
+        c=0;
+        }
+        if(id==R.id.b11){
+        r=1;
+        c=1;
+        }
+        if(id==R.id.b12){
+        r=1;
+        c=2;
+        }
+        if(id==R.id.b13){
+        r=1;
+        c=3;
+        }
+        if(id==R.id.b14){
+        r=1;
+        c=4;
+        }
+        if(id==R.id.b15){
+        r=1;
+        c=5;
+        }
+        if(id==R.id.b16){
+        r=1;
+        c=6;
+        }
+        if(id==R.id.b17){
+        r=1;
+        c=7;
+        }
+        if(id==R.id.b20){
+        r=2;
+        c=0;
+        }
+        if(id==R.id.b21){
+        r=2;
+        c=1;
+        }
+        if(id==R.id.b22){
+        r=2;
+        c=2;
+        }
+        if(id==R.id.b23){
+        r=2;
+        c=3;
+        }
+        if(id==R.id.b24){
+        r=2;
+        c=4;
+        }
+        if(id==R.id.b25){
+        r=2;
+        c=5;
+        }
+        if(id==R.id.b26){
+        r=2;
+        c=6;
+        }
+        if(id==R.id.b27){
+        r=2;
+        c=7;
+        }
+        if(id==R.id.b30){
+        r=3;
+        c=0;
+        }
+        if(id==R.id.b31){
+        r=3;
+        c=1;
+        }
+        if(id==R.id.b32){
+        r=3;
+        c=2;
+        }
+        if(id==R.id.b33){
+        r=3;
+        c=3;
+        }
+        if(id==R.id.b34){
+        r=3;
+        c=4;
+        }
+        if(id==R.id.b35){
+        r=3;
+        c=5;
+        }
+        if(id==R.id.b36){
+        r=3;
+        c=6;
+        }
+        if(id==R.id.b37){
+        r=3;
+        c=7;
+        }
+        if(id==R.id.b40){
+        r=4;
+        c=0;
+        }
+        if(id==R.id.b41){
+        r=4;
+        c=1;
+        }
+        if(id==R.id.b42){
+        r=4;
+        c=2;
+        }
+        if(id==R.id.b43){
+        r=4;
+        c=3;
+        }
+        if(id==R.id.b44){
+        r=4;
+        c=4;
+        }
+        if(id==R.id.b45){
+        r=4;
+        c=5;
+        }
+        if(id==R.id.b46){
+        r=4;
+        c=6;
+        }
+        if(id==R.id.b47){
+        r=4;
+        c=7;
+        }
+        if(id==R.id.b50){
+        r=5;
+        c=0;
+        }
+        if(id==R.id.b51){
+        r=5;
+        c=1;
+        }
+        if(id==R.id.b52){
+        r=5;
+        c=2;
+        }
+        if(id==R.id.b53){
+        r=5;
+        c=3;
+        }
+        if(id==R.id.b54){
+        r=5;
+        c=4;
+        }
+        if(id==R.id.b55){
+        r=5;
+        c=5;
+        }
+        if(id==R.id.b56){
+        r=5;
+        c=6;
+        }
+        if(id==R.id.b57){
+        r=5;
+        c=7;
+        }
+        if(id==R.id.b60){
+        r=6;
+        c=0;
+        }
+        if(id==R.id.b61){
+        r=6;
+        c=1;
+        }
+        if(id==R.id.b62){
+        r=6;
+        c=2;
+        }
+        if(id==R.id.b63){
+        r=6;
+        c=3;
+        }
+        if(id==R.id.b64){
+        r=6;
+        c=4;
+        }
+        if(id==R.id.b65){
+        r=6;
+        c=5;
+        }
+        if(id==R.id.b66){
+        r=6;
+        c=6;
+        }
+        if(id==R.id.b67){
+        r=6;
+        c=7;
+        }
+        if(id==R.id.b70){
+        r=7;
+        c=0;
+        }
+        if(id==R.id.b71){
+        r=7;
+        c=1;
+        }
+        if(id==R.id.b72){
+        r=7;
+        c=2;
+        }
+        if(id==R.id.b73){
+        r=7;
+        c=3;
+        }
+        if(id==R.id.b74){
+        r=7;
+        c=4;
+        }
+        if(id==R.id.b75){
+        r=7;
+        c=5;
+        }
+        if(id==R.id.b76){
+        r=7;
+        c=6;
+        }
+        if(id==R.id.b77){
+        r=7;
+        c=7;
+        }
+
+        int[]arr={r,c};
         return arr;
-    }
+        }
 
-    public int getImage(int r, int c) {
-        if (board[r][c].toString().equals("bp")) {
-            return R.drawable.rpawn;
+public int getImage(int r,int c){
+        if(board[r][c].toString().equals("bp")){
+        return R.drawable.rpawn;
         }
-        if (board[r][c].toString().equals("bN")) {
-            return R.drawable.rknight;
+        if(board[r][c].toString().equals("bN")){
+        return R.drawable.rknight;
         }
-        if (board[r][c].toString().equals("bB")) {
-            return R.drawable.rbishop;
+        if(board[r][c].toString().equals("bB")){
+        return R.drawable.rbishop;
         }
-        if (board[r][c].toString().equals("bR")) {
-            return R.drawable.rrook;
+        if(board[r][c].toString().equals("bR")){
+        return R.drawable.rrook;
         }
-        if (board[r][c].toString().equals("bQ")) {
-            return R.drawable.rqueen;
+        if(board[r][c].toString().equals("bQ")){
+        return R.drawable.rqueen;
         }
-        if (board[r][c].toString().equals("bK")) {
-            return R.drawable.rking;
+        if(board[r][c].toString().equals("bK")){
+        return R.drawable.rking;
         }
-        if (board[r][c].toString().equals("wp")) {
-            return R.drawable.bpawn;
+        if(board[r][c].toString().equals("wp")){
+        return R.drawable.bpawn;
         }
-        if (board[r][c].toString().equals("wN")) {
-            return R.drawable.bknight;
+        if(board[r][c].toString().equals("wN")){
+        return R.drawable.bknight;
         }
-        if (board[r][c].toString().equals("wB")) {
-            return R.drawable.bbishop;
+        if(board[r][c].toString().equals("wB")){
+        return R.drawable.bbishop;
         }
-        if (board[r][c].toString().equals("wR")) {
-            return R.drawable.brook;
+        if(board[r][c].toString().equals("wR")){
+        return R.drawable.brook;
         }
-        if (board[r][c].toString().equals("wQ")) {
-            return R.drawable.bqueen;
+        if(board[r][c].toString().equals("wQ")){
+        return R.drawable.bqueen;
         }
-        if (board[r][c].toString().equals("wK")) {
-            return R.drawable.bking;
+        if(board[r][c].toString().equals("wK")){
+        return R.drawable.bking;
         }
-        if (board[r][c].toString().equals("  ")) {
-            return R.drawable.blank;
+        if(board[r][c].toString().equals("  ")){
+        return R.drawable.blank;
         }
-        if (board[r][c].toString().equals("##")) {
-            return R.drawable.blank;
+        if(board[r][c].toString().equals("##")){
+        return R.drawable.blank;
         }
 
         // shouldn't get down to here
         return R.drawable.rbishop;
-    }
+        }
 
-    public int makeButtonId(int r, int c) {
-        if (r == 0 && c == 0) {
-            return R.id.b00;
+public int makeButtonId(int r,int c){
+        if(r==0&&c==0){
+        return R.id.b00;
         }
-        if (r == 0 && c == 1) {
-            return R.id.b01;
+        if(r==0&&c==1){
+        return R.id.b01;
         }
-        if (r == 0 && c == 2) {
-            return R.id.b02;
+        if(r==0&&c==2){
+        return R.id.b02;
         }
-        if (r == 0 && c == 3) {
-            return R.id.b03;
+        if(r==0&&c==3){
+        return R.id.b03;
         }
-        if (r == 0 && c == 4) {
-            return R.id.b04;
+        if(r==0&&c==4){
+        return R.id.b04;
         }
-        if (r == 0 && c == 5) {
-            return R.id.b05;
+        if(r==0&&c==5){
+        return R.id.b05;
         }
-        if (r == 0 && c == 6) {
-            return R.id.b06;
+        if(r==0&&c==6){
+        return R.id.b06;
         }
-        if (r == 0 && c == 7) {
-            return R.id.b07;
+        if(r==0&&c==7){
+        return R.id.b07;
         }
-        if (r == 1 && c == 0) {
-            return R.id.b10;
+        if(r==1&&c==0){
+        return R.id.b10;
         }
-        if (r == 1 && c == 1) {
-            return R.id.b11;
+        if(r==1&&c==1){
+        return R.id.b11;
         }
-        if (r == 1 && c == 2) {
-            return R.id.b12;
+        if(r==1&&c==2){
+        return R.id.b12;
         }
-        if (r == 1 && c == 3) {
-            return R.id.b13;
+        if(r==1&&c==3){
+        return R.id.b13;
         }
-        if (r == 1 && c == 4) {
-            return R.id.b14;
+        if(r==1&&c==4){
+        return R.id.b14;
         }
-        if (r == 1 && c == 5) {
-            return R.id.b15;
+        if(r==1&&c==5){
+        return R.id.b15;
         }
-        if (r == 1 && c == 6) {
-            return R.id.b16;
+        if(r==1&&c==6){
+        return R.id.b16;
         }
-        if (r == 1 && c == 7) {
-            return R.id.b17;
+        if(r==1&&c==7){
+        return R.id.b17;
         }
-        if (r == 2 && c == 0) {
-            return R.id.b20;
+        if(r==2&&c==0){
+        return R.id.b20;
         }
-        if (r == 2 && c == 1) {
-            return R.id.b21;
+        if(r==2&&c==1){
+        return R.id.b21;
         }
-        if (r == 2 && c == 2) {
-            return R.id.b22;
+        if(r==2&&c==2){
+        return R.id.b22;
         }
-        if (r == 2 && c == 3) {
-            return R.id.b23;
+        if(r==2&&c==3){
+        return R.id.b23;
         }
-        if (r == 2 && c == 4) {
-            return R.id.b24;
+        if(r==2&&c==4){
+        return R.id.b24;
         }
-        if (r == 2 && c == 5) {
-            return R.id.b25;
+        if(r==2&&c==5){
+        return R.id.b25;
         }
-        if (r == 2 && c == 6) {
-            return R.id.b26;
+        if(r==2&&c==6){
+        return R.id.b26;
         }
-        if (r == 2 && c == 7) {
-            return R.id.b27;
+        if(r==2&&c==7){
+        return R.id.b27;
         }
-        if (r == 3 && c == 0) {
-            return R.id.b30;
+        if(r==3&&c==0){
+        return R.id.b30;
         }
-        if (r == 3 && c == 1) {
-            return R.id.b31;
+        if(r==3&&c==1){
+        return R.id.b31;
         }
-        if (r == 3 && c == 2) {
-            return R.id.b32;
+        if(r==3&&c==2){
+        return R.id.b32;
         }
-        if (r == 3 && c == 3) {
-            return R.id.b33;
+        if(r==3&&c==3){
+        return R.id.b33;
         }
-        if (r == 3 && c == 4) {
-            return R.id.b34;
+        if(r==3&&c==4){
+        return R.id.b34;
         }
-        if (r == 3 && c == 5) {
-            return R.id.b35;
+        if(r==3&&c==5){
+        return R.id.b35;
         }
-        if (r == 3 && c == 6) {
-            return R.id.b36;
+        if(r==3&&c==6){
+        return R.id.b36;
         }
-        if (r == 3 && c == 7) {
-            return R.id.b37;
+        if(r==3&&c==7){
+        return R.id.b37;
         }
-        if (r == 4 && c == 0) {
-            return R.id.b40;
+        if(r==4&&c==0){
+        return R.id.b40;
         }
-        if (r == 4 && c == 1) {
-            return R.id.b41;
+        if(r==4&&c==1){
+        return R.id.b41;
         }
-        if (r == 4 && c == 2) {
-            return R.id.b42;
+        if(r==4&&c==2){
+        return R.id.b42;
         }
-        if (r == 4 && c == 3) {
-            return R.id.b43;
+        if(r==4&&c==3){
+        return R.id.b43;
         }
-        if (r == 4 && c == 4) {
-            return R.id.b44;
+        if(r==4&&c==4){
+        return R.id.b44;
         }
-        if (r == 4 && c == 5) {
-            return R.id.b45;
+        if(r==4&&c==5){
+        return R.id.b45;
         }
-        if (r == 4 && c == 6) {
-            return R.id.b46;
+        if(r==4&&c==6){
+        return R.id.b46;
         }
-        if (r == 4 && c == 7) {
-            return R.id.b47;
+        if(r==4&&c==7){
+        return R.id.b47;
         }
-        if (r == 5 && c == 0) {
-            return R.id.b50;
+        if(r==5&&c==0){
+        return R.id.b50;
         }
-        if (r == 5 && c == 1) {
-            return R.id.b51;
+        if(r==5&&c==1){
+        return R.id.b51;
         }
-        if (r == 5 && c == 2) {
-            return R.id.b52;
+        if(r==5&&c==2){
+        return R.id.b52;
         }
-        if (r == 5 && c == 3) {
-            return R.id.b53;
+        if(r==5&&c==3){
+        return R.id.b53;
         }
-        if (r == 5 && c == 4) {
-            return R.id.b54;
+        if(r==5&&c==4){
+        return R.id.b54;
         }
-        if (r == 5 && c == 5) {
-            return R.id.b55;
+        if(r==5&&c==5){
+        return R.id.b55;
         }
-        if (r == 5 && c == 6) {
-            return R.id.b56;
+        if(r==5&&c==6){
+        return R.id.b56;
         }
-        if (r == 5 && c == 7) {
-            return R.id.b57;
+        if(r==5&&c==7){
+        return R.id.b57;
         }
-        if (r == 6 && c == 0) {
-            return R.id.b60;
+        if(r==6&&c==0){
+        return R.id.b60;
         }
-        if (r == 6 && c == 1) {
-            return R.id.b61;
+        if(r==6&&c==1){
+        return R.id.b61;
         }
-        if (r == 6 && c == 2) {
-            return R.id.b62;
+        if(r==6&&c==2){
+        return R.id.b62;
         }
-        if (r == 6 && c == 3) {
-            return R.id.b63;
+        if(r==6&&c==3){
+        return R.id.b63;
         }
-        if (r == 6 && c == 4) {
-            return R.id.b64;
+        if(r==6&&c==4){
+        return R.id.b64;
         }
-        if (r == 6 && c == 5) {
-            return R.id.b65;
+        if(r==6&&c==5){
+        return R.id.b65;
         }
-        if (r == 6 && c == 6) {
-            return R.id.b66;
+        if(r==6&&c==6){
+        return R.id.b66;
         }
-        if (r == 6 && c == 7) {
-            return R.id.b67;
+        if(r==6&&c==7){
+        return R.id.b67;
         }
-        if (r == 7 && c == 0) {
-            return R.id.b70;
+        if(r==7&&c==0){
+        return R.id.b70;
         }
-        if (r == 7 && c == 1) {
-            return R.id.b71;
+        if(r==7&&c==1){
+        return R.id.b71;
         }
-        if (r == 7 && c == 2) {
-            return R.id.b72;
+        if(r==7&&c==2){
+        return R.id.b72;
         }
-        if (r == 7 && c == 3) {
-            return R.id.b73;
+        if(r==7&&c==3){
+        return R.id.b73;
         }
-        if (r == 7 && c == 4) {
-            return R.id.b74;
+        if(r==7&&c==4){
+        return R.id.b74;
         }
-        if (r == 7 && c == 5) {
-            return R.id.b75;
+        if(r==7&&c==5){
+        return R.id.b75;
         }
-        if (r == 7 && c == 6) {
-            return R.id.b76;
+        if(r==7&&c==6){
+        return R.id.b76;
         }
-        if (r == 7 && c == 7) {
-            return R.id.b77;
+        if(r==7&&c==7){
+        return R.id.b77;
         }
 
         // shouldn't get to down here anyway
         return R.id.b00;
-    }
+        }
 
 
-}
+        }

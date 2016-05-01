@@ -802,28 +802,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Draw"
-        android:id="@+id/bDraw"
-        android:background="@color/colorPrimary"
-        android:onClick="draw"
-        android:layout_alignTop="@+id/bForward"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="Resign (white)"
-        android:id="@+id/bForward"
-        android:background="@color/colorPrimary"
-        android:onClick="resign"
-        android:layout_above="@+id/message"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
         android:text="White&apos;s turn!"
         android:id="@+id/message"
         android:background="@color/background_material_light"
@@ -832,5 +810,27 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Draw"
+        android:id="@+id/bDraw"
+        android:layout_above="@+id/message"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorAccent3"
+        android:onClick="draw" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Resign (White)"
+        android:id="@+id/bResign"
+        android:layout_above="@+id/message"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorAccent3"
+        android:onClick="resign" />
 
 </RelativeLayout>
