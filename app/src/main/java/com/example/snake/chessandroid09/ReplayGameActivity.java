@@ -79,7 +79,7 @@ public class ReplayGameActivity extends AppCompatActivity {
     }
 
     public void hit(View v) {
-
+        Toast.makeText(getApplicationContext(), "You can't manipulate the board when you're in replay game mode", Toast.LENGTH_SHORT).show();
     }
 
     public void recordedGames(View v) {

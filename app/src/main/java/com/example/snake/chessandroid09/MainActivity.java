@@ -39,18 +39,16 @@ public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
 - prompt user for draw (need pop up)
-- prompt user for piece to promote pawn to (need pop up)
 - prompt user for game title (need text field)
 - list recorded games (popup from "recorded games" button on replay activity, still to do)
 - sort games (have implemented, need to call)
 - playback a game one move at a time (good for first game, but need user to choose which game is good)
 
 Front end remaining:
-1) text field for game title at end of game
-2) list of recorded games
-3) 2 buttons to sort games
-4) prompt for pawn promotion
-5) draw prompt
+1) text field for game title at end of game (most important)
+2) list of recorded games (second most important)
+3) 2 buttons to sort games (third most important, need other 2 to be done first)
+4) draw prompt (optional, only if we have time at the end)
 
 
 Chess
@@ -283,6 +281,8 @@ Game playback (30 pts)
 
     public void gameOver() {
         isOver = true;
+
+        // here is where we put the code for the save game popup
 
         Calendar c = new GregorianCalendar();
         c.set(Calendar.MILLISECOND, 0);
@@ -574,13 +574,7 @@ Game playback (30 pts)
         if (promoted == true) {
             // Piece was a pawn and reached far end of board, change name of P to Q
             board[r2][c2] = new Piece(one.color, promo, one.numMoves + 1, i);
-//            if (one.color == 'w') {
-//                destButton.setImageResource(R.drawable.bqueen);
-//            } else {
-//                destButton.setImageResource(R.drawable.rqueen);
-//            }
             destButton.setImageResource(getPromoPiece(one.color));
-
 
             board[r1][c1] = new Piece(' ', ' ', 0, -1);
             srcButton.setImageResource(R.drawable.blank);
