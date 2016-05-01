@@ -26,16 +26,28 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ *
+ * @author Brian Wong, Laszlo Glant
+ * Main Activity screen
+ *
+ */
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
-- save using text file input (saving properly, need to load all games back in)
 - prompt user for draw (need pop up)
 - prompt user for piece to promote pawn to (need pop up)
 - prompt user for game title (need text field)
 - list recorded games (popup from "recorded games" button on replay activity, still to do)
 - sort games (have implemented, need to call)
-- playback a game one move at a time
+- playback a game one move at a time (good for first game, but need user to choose which game is good)
+
+Front end remaining:
+1) text field for game title at end of game
+2) list of recorded games
+3) 2 buttons to sort games
+4) prompt for pawn promotion
+5) draw prompt
 
 
 Chess
