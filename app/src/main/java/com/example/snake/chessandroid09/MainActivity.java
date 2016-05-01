@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -226,7 +228,7 @@ Game playback (30 pts)
                 if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, Black wins");
-                    gameOver();
+                    //gameOver();
                 } else {
                     message.setText("White in Check");
                 }
@@ -234,7 +236,7 @@ Game playback (30 pts)
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, White wins");
-                    gameOver();
+                    //gameOver();
                 } else {
                     message.setText("Black in Check");
                 }
@@ -258,7 +260,7 @@ Game playback (30 pts)
 
         Button message = (Button) findViewById(R.id.message);
 
-        gameOver();
+        //gameOver();
 
         message.setText("Draw");
     }
@@ -271,12 +273,130 @@ Game playback (30 pts)
         Button message = (Button) findViewById(R.id.message);
 
 
-        gameOver();
+        saveGame();
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
 
-    public void gameOver() {
+
+    /*public void drawPopup(){
+        AlertDialog.Builder drawAlert = new AlertDialog.Builder(MainActivity.this);
+        drawAlert.setTitle("Draw?");
+        if (currP == 'b') {
+            drawAlert
+                    .setMessage("Red has requested a draw. Blue, would you like to call it a draw?");
+        } else {
+            drawAlert
+                    .setMessage("Blue has requested a draw. Red, would you like to call it a draw?");
+        }
+        drawAlert.setNegativeButton(getResources().getString(R.string.no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert);
+        drawAlert.setPositiveButton(getResources().getString(R.string.yesDraw),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // GAME OVER DISPLAY
+                        AlertDialog.Builder draw = new AlertDialog.Builder(MainActivity.this); //initiate a new popup
+                        draw.setTitle("Game Over");
+                        draw.setMessage("It's a draw!");
+                        draw.setPositiveButton(getResources().getString(R.string.savegame),
+                                new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // SAVE GAME POPUP, ENTER GAME TITLE
+                                    }
+                                }
+                    }
+                }
+
+    }*/
+
+    /*        final Dialog commentDialog = new Dialog(MainActivity.this);
+        commentDialog.setTitle("Save Game");
+        commentDialog.setContentView(R.layout.save_game);
+        Button buttonOK = (Button) commentDialog.findViewById(R.id.ok);
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Create entry for new game
+                EditText gameTitle = (EditText) commentDialog.findViewById(R.id.body);
+
+                RecordedGame(String title, int year, int month, int day, ArrayList<Pair> moves)
+                Node newt = new Node(gameTitle.getText().toString(),
+                        moveList);
+                MainActivity.gamesList   .add(newt);
+
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                commentDialog.dismiss();
+            }
+        });
+        Button cancelBtn = (Button) commentDialog
+                .findViewById(R.id.cancel);
+        cancelBtn
+                .setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getApplicationContext(),
+                                MainActivity.class));
+                        commentDialog.dismiss();
+                    }
+                });
+        commentDialog.show();
+    }
+                                });
+                        draw.setNegativeButton(
+                                getResources().getString(R.string.home),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Go to home screen
+                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    }
+                                }).setIcon(android.R.drawable.ic_dialog_alert);
+                        draw.show();
+                    }
+                });
+        drawAlert.show();
+        }}*/
+
+    public void saveGame(){
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        View promptView = layoutInflater.inflate(R.layout.save_game, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton(getResources().getString(
+                        R.string.savegame), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String gameTitle = editText.getText().toString();
+                        gameOver(gameTitle);
+                        //gameTitle.setText("Hello, " + editText.getText());
+
+                    }
+                })
+                .setNegativeButton(getResources().getString(
+                        R.string.canc),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+
+    public void gameOver(String gameTitle) {
         isOver = true;
 
         // here is where we put the code for the save game popup
@@ -287,7 +407,7 @@ Game playback (30 pts)
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        myGames.add(new RecordedGame("myGame", year, month, day, savedPairs));
+        myGames.add(new RecordedGame(gameTitle, year, month, day, savedPairs));
         printPairs();
 
         save();
@@ -357,7 +477,7 @@ Game playback (30 pts)
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, Black wins");
-                            gameOver();
+                            //gameOver();
                         } else {
                             message.setText("White in Check");
                         }
@@ -365,7 +485,7 @@ Game playback (30 pts)
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, White wins");
-                            gameOver();
+                            //gameOver();
                         } else {
                             message.setText("Black in Check");
                         }
