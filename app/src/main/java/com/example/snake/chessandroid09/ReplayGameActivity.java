@@ -29,6 +29,8 @@ public class ReplayGameActivity extends AppCompatActivity {
         setContentView(R.layout.replay_game);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        MainActivity.inReplay = true;
     }
 
     @Override
@@ -62,6 +64,11 @@ public class ReplayGameActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void hit(View v) {
+
+    }
+
     public void recordedGames(View v) {
         Toast.makeText(getApplicationContext(), "This should open the list of recorded games!", Toast.LENGTH_SHORT).show();
 

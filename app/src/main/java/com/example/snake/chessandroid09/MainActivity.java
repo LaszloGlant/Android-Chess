@@ -29,12 +29,12 @@ import java.util.GregorianCalendar;
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
-- save using text file input (good with sample string, now do with real data)
+- save using text file input (saving properly, need to load all games back in)
 - prompt user for draw (need pop up)
 - prompt user for piece to promote pawn to (need pop up)
 - prompt user for game title (need text field)
 - list recorded games (popup from "recorded games" button on replay activity, still to do)
-- sort games (need myGames to be loaded properly first)
+- sort games (have implemented, need to call)
 - playback a game one move at a time
 
 
@@ -77,6 +77,8 @@ Game playback (30 pts)
 
     boolean isOver = false;
     boolean haveJustUndone = false;
+
+    static boolean inReplay = false;
 
     Piece[][] board = new Piece[8][8];
     Piece[][] boardCopy = new Piece[8][8];
@@ -281,6 +283,11 @@ Game playback (30 pts)
     public void hit(View v) {
         if (isOver) {
             // game is over, just return so that user cannot move any pieces
+            return;
+        }
+
+        if (inReplay) {
+            // replaying a game, disallow moving any pieces in this mode
             return;
         }
 
