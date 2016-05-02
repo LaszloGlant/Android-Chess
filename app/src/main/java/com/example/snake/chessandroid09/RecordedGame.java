@@ -2,6 +2,7 @@ package com.example.snake.chessandroid09;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Brian on 4/25/2016.
@@ -9,26 +10,22 @@ import java.util.ArrayList;
  */
 public class RecordedGame implements Serializable {
     String title;
-    int year, month, day;
+    Calendar cal;
     ArrayList<Pair> moves = new ArrayList<Pair>();
 
     public RecordedGame() {
         this.title = "";
-        this.year = 0;
-        this.month = 0;
-        this.day = 0;
+        cal = Calendar.getInstance();
         this.moves = null;
     }
 
-    public RecordedGame(String title, int year, int month, int day, ArrayList<Pair> moves) {
+    public RecordedGame(String title, ArrayList<Pair> moves) {
         this.title = title;
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        cal = Calendar.getInstance();
         this.moves = moves;
     }
 
     public String toString() {
-        return this.title + " : " + this.year + "/" + this.month + "/" + this.day;
+        return this.title + " : " + this.cal.getTime();
     }
 }

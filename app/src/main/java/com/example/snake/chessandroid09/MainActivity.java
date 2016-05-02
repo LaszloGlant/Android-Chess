@@ -16,9 +16,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * @author Brian Wong, Laszlo Glant
@@ -735,13 +737,13 @@ Game playback (30 pts)
 
     public void save(String title) {
         try {
-            Calendar c = new GregorianCalendar();
-            c.set(Calendar.MILLISECOND, 0);
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH) + 1;
-            int day = c.get(Calendar.DAY_OF_MONTH);
+//            Calendar c = new GregorianCalendar();
+//            c.set(Calendar.MILLISECOND, 0);
+//            int year = c.get(Calendar.YEAR);
+//            int month = c.get(Calendar.MONTH) + 1;
+//            int day = c.get(Calendar.DAY_OF_MONTH);
 
-            String thisGame = title + "," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
+            String thisGame = title + "," + Calendar.getInstance() + "," + savedPairsStr(savedPairs);
 
             // add this 1 line to all recorded games
             System.out.println("number of games: " + myGames.size());
@@ -755,6 +757,7 @@ Game playback (30 pts)
             File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
             dir.mkdir();
             File file = new File(dir, "output.txt");
+            System.out.println("have created new output.txt");
             FileOutputStream os = new FileOutputStream(file);
             os.write(allGames.getBytes());
             os.close();
@@ -797,7 +800,10 @@ Game playback (30 pts)
             int c2 = Character.getNumericValue(movements[i].charAt(4));
             moves.add(new Pair(r1, c1, r2, c2));
         }
-        empty.add(new RecordedGame(strArr[0], Integer.parseInt(strArr[1]), Integer.parseInt(strArr[2]), Integer.parseInt(strArr[3]), moves));
+
+        SimpleDateFormat sdf = new SimpleDateFormat(strArr[1], Locale.ENGLISH);
+        Calendar c = sdf.getCalendar();
+        empty.add(new RecordedGame(strArr[0], moves));
     }
 
     public String toCoord(int r, int c) {
@@ -819,7 +825,7 @@ Game playback (30 pts)
     }
 
     public String outString(RecordedGame rg) {
-        return rg.title + "," + rg.year + "," + rg.month + "," + rg.day + "," + savedPairsStr(rg.moves);
+        return rg.title + "," + rg.cal + "," + savedPairsStr(rg.moves);
     }
 
     /**
