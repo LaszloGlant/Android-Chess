@@ -1,6 +1,8 @@
 package com.example.snake.chessandroid09;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,12 +12,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 
 /**
@@ -24,11 +36,13 @@ import java.util.GregorianCalendar;
  * Replay Game Activity screen
  *
  */
-public class ReplayGameActivity extends AppCompatActivity {
+public class ReplayGameActivity extends AppCompatActivity{
 
     int pbIndex = 0;
     int gameIndex = 0;
     int currImage;
+    private ListView list;
+    ArrayAdapter<RecordedGame> nAdapter;
 
     Piece[][] board = new Piece[8][8];
 
@@ -60,7 +74,7 @@ public class ReplayGameActivity extends AppCompatActivity {
         switch (id) {
             case R.id.play:
                 finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 Toast.makeText(getApplicationContext(), "Returning to play chess mode!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.main:
@@ -79,7 +93,62 @@ public class ReplayGameActivity extends AppCompatActivity {
     }
 
     public void recordedGames(View v) {
-        Toast.makeText(getApplicationContext(), "This should open the list of recorded games!", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getApplicationContext(), "This should open the list of recorded games!", Toast.LENGTH_SHORT).show();
+        // get prompts.xml view
+
+        final Dialog commentDialog = new Dialog(ReplayGameActivity.this);
+        commentDialog.setTitle("Load Game");
+        commentDialog.setContentView(R.layout.game_list);
+
+        //SPINNER SELECTOR
+
+
+/*        Spinner sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.sortBy, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(adapter);
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0) { // Sort by Date
+
+
+                   Toast.makeText(getApplicationContext(), "selected option 0", Toast.LENGTH_SHORT).show();
+                } else if (position == 1) {// Sort by Title
+
+                    Toast.makeText(getApplicationContext(), "selected option 1", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // doesn't happen
+            }
+
+        });
+*/
+
+        //LIST VIEW STARTS HERE
+
+
+/*        this.list = (ListView) findViewById(R.id.listView);
+        nAdapter = new ArrayAdapter<RecordedGame>(this,
+                android.R.layout.simple_list_item_1, MainActivity.myGames);
+        list.setAdapter(nAdapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+
+                gameIndex = arg2; //click on selected will load the game to be replayed
+                commentDialog.dismiss();
+            }
+
+        });
+*/
+
+
+        commentDialog.show();
 
     }
 

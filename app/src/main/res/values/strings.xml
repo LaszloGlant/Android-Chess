@@ -11,4 +11,12 @@
     <string name="no">NO</string>
     <string name="yesDraw">Draw Accepted</string>
     <string name="canc">Cancel</string>
+    <string name="ok">OK</string>
+
+    <!-- For Spinner -->
+    <string-array name = "sortBy">
+        <item >Sort by Date</item>
+        <item >Sort by Title</item>
+    </string-array>
+
 </resources>
