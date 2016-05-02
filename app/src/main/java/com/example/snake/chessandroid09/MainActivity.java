@@ -1,35 +1,22 @@
 package com.example.snake.chessandroid09;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.os.Environment;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -41,15 +28,12 @@ public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
 - prompt user for draw (need pop up)
-- prompt user for game title (need text field)
 - list recorded games (popup from "recorded games" button on replay activity, still to do)
 - sort games (have implemented, need to call)
-- playback a game one move at a time (good for first game, but need user to choose which game is good)
+
 
 Front end remaining:
-1) text field for game title at end of game (most important)
 2) list of recorded games (second most important)
-3) 2 buttons to sort games (third most important, need other 2 to be done first)
 4) draw prompt (optional, only if we have time at the end)
 
 
@@ -98,7 +82,7 @@ Game playback (30 pts)
     Piece[][] boardCopy = new Piece[8][8];  // secondary back end board, needed to undo a move
 
     static ArrayList<RecordedGame> myGames = new ArrayList<RecordedGame>();     // master list of games
-    ArrayList<Pair> savedPairs = new ArrayList<Pair>();     // list of moves that the user has done for this current game
+    static ArrayList<Pair> savedPairs = new ArrayList<Pair>();     // list of moves that the user has done for this current game
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,37 +99,6 @@ Game playback (30 pts)
         Board.initBoard(board);
 
         copy(board, boardCopy);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.play:
-
-                Toast.makeText(getApplicationContext(), "You are in play chess mode!", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.main:
-                Toast.makeText(getApplicationContext(), "THIS MENU IS PROBALY NOT NEEDED! WILL SEE!", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.replay:
-                startActivity(new Intent(getApplicationContext(), ReplayGameActivity.class));
-                Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -171,6 +124,11 @@ Game playback (30 pts)
                 b.setImageResource(image);
             }
         }
+    }
+
+    public void goToGameList(View v){
+        startActivity(new Intent(getApplicationContext(), GameList.class));
+        Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
     }
 
     public void undo(View v) {

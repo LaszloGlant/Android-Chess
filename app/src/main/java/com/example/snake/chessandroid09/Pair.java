@@ -8,7 +8,7 @@ import java.io.Serializable;
  * A Pair is a set of 2 coordinates (ex. e2 e4), but in integer format
  *
  */
-public class Pair implements Serializable{
+public class Pair{
     int r1;
     int c1;
     int r2;
@@ -26,5 +26,9 @@ public class Pair implements Serializable{
         this.c1 = c1;
         this.r2 = r2;
         this.c2 = c2;
+    }
+
+    public String toString() {
+        return r1 + "" + c1 + " " + r2 + "" + c2;
     }
 }

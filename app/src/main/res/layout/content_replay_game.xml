@@ -780,9 +780,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="Recorded Games"
-        android:id="@+id/bRecordedGames"
-        android:onClick="recordedGames"
+        android:text="Back to List"
+        android:id="@+id/bBackToList"
+        android:onClick="goToList"
         android:background="#43a5c6"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -795,7 +795,7 @@
         android:id="@+id/bForward"
         android:background="@color/colorPrimary"
         android:onClick="forward"
-        android:layout_alignTop="@+id/bRecordedGames"
+        android:layout_alignTop="@+id/bBackToList"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

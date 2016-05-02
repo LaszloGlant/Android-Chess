@@ -844,8 +844,9 @@
         android:scaleType="fitCenter"
         android:background="#00000000"
         android:padding="3dp"
-        android:layout_alignBottom="@+id/bStartPlay"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/bStartPlay"
+        android:layout_toEndOf="@+id/bStartPlay" />
 
     <ImageButton
         android:layout_width="30dp"
@@ -858,9 +859,9 @@
         android:scaleType="fitCenter"
         android:background="#00000000"
         android:padding="3dp"
-        android:layout_alignTop="@+id/promoQ"
-        android:layout_toLeftOf="@+id/promoQ"
-        android:layout_toStartOf="@+id/promoQ" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/promoN"
+        android:layout_toStartOf="@+id/promoN" />
 
     <ImageButton
         android:layout_width="30dp"
@@ -873,9 +874,9 @@
         android:scaleType="fitCenter"
         android:background="#00000000"
         android:padding="3dp"
-        android:layout_below="@+id/promoQ"
-        android:layout_toLeftOf="@+id/promoQ"
-        android:layout_toStartOf="@+id/promoQ" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/bAI"
+        android:layout_toStartOf="@+id/bAI" />
 
     <ImageButton
         android:layout_width="30dp"
@@ -888,7 +889,20 @@
         android:scaleType="fitCenter"
         android:background="#00000000"
         android:padding="3dp"
-        android:layout_below="@+id/promoQ"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/promoQ"
+        android:layout_toEndOf="@+id/promoQ" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/replayGame"
+        android:id="@+id/bReplay"
+        android:layout_alignTop="@+id/bDraw"
+        android:background="@color/colorAccent2"
+        android:layout_toLeftOf="@+id/bResign"
+        android:layout_alignLeft="@+id/promoQ"
+        android:layout_alignStart="@+id/promoQ"
+        android:onClick="goToGameList" />
 
 </RelativeLayout>
