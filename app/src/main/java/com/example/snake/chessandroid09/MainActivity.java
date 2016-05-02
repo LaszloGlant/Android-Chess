@@ -228,7 +228,7 @@ Game playback (30 pts)
                 if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, Black wins");
-                    //gameOver();
+                    saveGame();
                 } else {
                     message.setText("White in Check");
                 }
@@ -236,7 +236,7 @@ Game playback (30 pts)
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate
                     message.setText("Checkmate, White wins");
-                    //gameOver();
+                    saveGame();
                 } else {
                     message.setText("Black in Check");
                 }
@@ -260,7 +260,7 @@ Game playback (30 pts)
 
         Button message = (Button) findViewById(R.id.message);
 
-        //gameOver();
+        saveGame();
 
         message.setText("Draw");
     }
@@ -432,16 +432,16 @@ Game playback (30 pts)
 
         // here is where we put the code for the save game popup
 
-        Calendar c = new GregorianCalendar();
-        c.set(Calendar.MILLISECOND, 0);
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH) + 1;
-        int day = c.get(Calendar.DAY_OF_MONTH);
+//        Calendar c = new GregorianCalendar();
+//        c.set(Calendar.MILLISECOND, 0);
+//        int year = c.get(Calendar.YEAR);
+//        int month = c.get(Calendar.MONTH) + 1;
+//        int day = c.get(Calendar.DAY_OF_MONTH);
+//
+//        myGames.add(new RecordedGame(gameTitle, year, month, day, savedPairs));
+//        printPairs();
 
-        myGames.add(new RecordedGame(gameTitle, year, month, day, savedPairs));
-        printPairs();
-
-        save();
+        save(gameTitle);
     }
 
     public void hit(View v) {
@@ -508,7 +508,7 @@ Game playback (30 pts)
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, Black wins");
-                            //gameOver();
+                            saveGame();
                         } else {
                             message.setText("White in Check");
                         }
@@ -516,7 +516,7 @@ Game playback (30 pts)
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate
                             message.setText("Checkmate, White wins");
-                            //gameOver();
+                            saveGame();
                         } else {
                             message.setText("Black in Check");
                         }
@@ -790,7 +790,7 @@ Game playback (30 pts)
         return -1;
     }
 
-    public void save() {
+    public void save(String title) {
         try {
             Calendar c = new GregorianCalendar();
             c.set(Calendar.MILLISECOND, 0);
@@ -798,12 +798,14 @@ Game playback (30 pts)
             int month = c.get(Calendar.MONTH) + 1;
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            String thisGame = "this game," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
+            String thisGame = title + "," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
 
             // add this 1 line to all recorded games
             stickIn1Line(myGames, thisGame);
 
             String allGames = listToStr();
+            System.out.println("allGames:" + allGames);
+            System.out.println("done printing allGames");
 
             File sdcard = Environment.getExternalStorageDirectory();
             File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
@@ -841,7 +843,6 @@ Game playback (30 pts)
      * @param line  1 line of text from output.txt
      */
     public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
-        System.out.println("line: " + line);
         String[] strArr = line.split(",");
         String[] movements = strArr[4].split("~");
         ArrayList<Pair> moves = new ArrayList<Pair>();
@@ -923,6 +924,7 @@ Game playback (30 pts)
 
         haveJustUndone = false;
 
+        setPromoPics();
     }
 
     public void selectPromo(View v) {
@@ -949,33 +951,64 @@ Game playback (30 pts)
         ImageButton promoB = (ImageButton) findViewById(R.id.promoB);
         ImageButton promoN = (ImageButton) findViewById(R.id.promoN);
 
-        if (promo == 'Q') {
-            promoQ.setImageResource(R.drawable.selbqueen);
+        if (currP == 'w') {
+            if (promo == 'Q') {
+                promoQ.setImageResource(R.drawable.selbqueen);
 
-            promoR.setImageResource(R.drawable.brook);
-            promoB.setImageResource(R.drawable.bbishop);
-            promoN.setImageResource(R.drawable.bknight);
-        }
-        if (promo == 'R') {
-            promoR.setImageResource(R.drawable.selbrook);
+                promoR.setImageResource(R.drawable.brook);
+                promoB.setImageResource(R.drawable.bbishop);
+                promoN.setImageResource(R.drawable.bknight);
+            }
+            if (promo == 'R') {
+                promoR.setImageResource(R.drawable.selbrook);
 
-            promoQ.setImageResource(R.drawable.bqueen);
-            promoB.setImageResource(R.drawable.bbishop);
-            promoN.setImageResource(R.drawable.bknight);
-        }
-        if (promo == 'B') {
-            promoB.setImageResource(R.drawable.selbbishop);
+                promoQ.setImageResource(R.drawable.bqueen);
+                promoB.setImageResource(R.drawable.bbishop);
+                promoN.setImageResource(R.drawable.bknight);
+            }
+            if (promo == 'B') {
+                promoB.setImageResource(R.drawable.selbbishop);
 
-            promoQ.setImageResource(R.drawable.bqueen);
-            promoR.setImageResource(R.drawable.brook);
-            promoN.setImageResource(R.drawable.bknight);
-        }
-        if (promo == 'N') {
-            promoN.setImageResource(R.drawable.selbknight);
+                promoQ.setImageResource(R.drawable.bqueen);
+                promoR.setImageResource(R.drawable.brook);
+                promoN.setImageResource(R.drawable.bknight);
+            }
+            if (promo == 'N') {
+                promoN.setImageResource(R.drawable.selbknight);
 
-            promoQ.setImageResource(R.drawable.bqueen);
-            promoR.setImageResource(R.drawable.brook);
-            promoB.setImageResource(R.drawable.bbishop);
+                promoQ.setImageResource(R.drawable.bqueen);
+                promoR.setImageResource(R.drawable.brook);
+                promoB.setImageResource(R.drawable.bbishop);
+            }
+        } else {
+            if (promo == 'Q') {
+                promoQ.setImageResource(R.drawable.selrqueen);
+
+                promoR.setImageResource(R.drawable.rrook);
+                promoB.setImageResource(R.drawable.rbishop);
+                promoN.setImageResource(R.drawable.rknight);
+            }
+            if (promo == 'R') {
+                promoR.setImageResource(R.drawable.selrrook);
+
+                promoQ.setImageResource(R.drawable.rqueen);
+                promoB.setImageResource(R.drawable.rbishop);
+                promoN.setImageResource(R.drawable.rknight);
+            }
+            if (promo == 'B') {
+                promoB.setImageResource(R.drawable.selrbishop);
+
+                promoQ.setImageResource(R.drawable.rqueen);
+                promoR.setImageResource(R.drawable.rrook);
+                promoN.setImageResource(R.drawable.rknight);
+            }
+            if (promo == 'N') {
+                promoN.setImageResource(R.drawable.selrknight);
+
+                promoQ.setImageResource(R.drawable.rqueen);
+                promoR.setImageResource(R.drawable.rrook);
+                promoB.setImageResource(R.drawable.rbishop);
+            }
         }
     }
 
