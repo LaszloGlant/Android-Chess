@@ -100,6 +100,7 @@ public class ReplayGameActivity extends AppCompatActivity{
         commentDialog.setTitle("Load Game");
         commentDialog.setContentView(R.layout.game_list);
 
+
         //SPINNER SELECTOR
 
 
