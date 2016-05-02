@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -27,7 +28,7 @@ public class GameList extends AppCompatActivity {
     private ListView list;
     private boolean sortbyTitle = false;
     ArrayAdapter<RecordedGame> nAdapter;
-    int target = 0;
+    //ArrayAdapter<String> nAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,25 +60,12 @@ public class GameList extends AppCompatActivity {
 
                 TextView text = (TextView) view;
                 if (position == 0) {
-/*                    // Sort by Date
-                    Collections.sort(MainActivity.gamesList,
-                            new Comparator<Node>() {
-
-                                @Override
-                                public int compare(Node lhs, Node rhs) {
-                                    // TODO Auto-generated method stub
-                                    return lhs.cal.compareTo(rhs.cal);
-                                }
-
-                            });
-
-                    nAdapter.notifyDataSetChanged();
-*/
+                    // Sort by Date
+                    Sort.sortByDate(MainActivity.myGames);
                     Toast.makeText(getApplicationContext(), "Clicked sort by date", Toast.LENGTH_SHORT).show();
                 } else if (position == 1) {
                     // Sort by Title
-//                    Collections.sort(MainActivity.gamesList);
-//                    nAdapter.notifyDataSetChanged();
+                    Sort.sortByTitle(MainActivity.myGames);
                     Toast.makeText(getApplicationContext(), "Clicked sort by title", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -88,16 +76,20 @@ public class GameList extends AppCompatActivity {
 
         });
 
+//        ArrayList<String> myList = new ArrayList<>();
+//        myList.add("item1");
+//        myList.add("item2");
+
         this.list = (ListView) findViewById(R.id.listView);
-        nAdapter = new ArrayAdapter<RecordedGame>(this,
-                android.R.layout.simple_list_item_1, MainActivity.myGames);
+        nAdapter = new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames);
+        //nAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myList);
+
         list.setAdapter(nAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
 
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
                 ReplayGameActivity.gameIndex = arg2; //click on selected will load the game to be replayed
             }

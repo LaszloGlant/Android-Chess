@@ -27,4 +27,8 @@ public class RecordedGame implements Serializable {
         this.day = day;
         this.moves = moves;
     }
+
+    public String toString() {
+        return this.title + " : " + this.year + "/" + this.month + "/" + this.day;
+    }
 }

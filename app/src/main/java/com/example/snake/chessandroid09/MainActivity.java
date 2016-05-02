@@ -28,12 +28,8 @@ public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
 - prompt user for draw (need pop up)
-- list recorded games (popup from "recorded games" button on replay activity, still to do)
-- sort games (have implemented, need to call)
-
 
 Front end remaining:
-2) list of recorded games (second most important)
 4) draw prompt (optional, only if we have time at the end)
 
 
