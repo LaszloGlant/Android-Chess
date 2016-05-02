@@ -760,6 +760,7 @@ Game playback (30 pts)
             System.out.println("have created new output.txt");
             FileOutputStream os = new FileOutputStream(file);
             os.write(allGames.getBytes());
+            System.out.println("have writeten " + allGames.getBytes() + " bytes");
             os.close();
         } catch (Exception e) {
             System.out.println("exception in save");
@@ -790,8 +791,9 @@ Game playback (30 pts)
      * @param line  1 line of text from output.txt
      */
     public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
+        System.out.println("have started stickIn1Line");
         String[] strArr = line.split(",");
-        String[] movements = strArr[4].split("~");
+        String[] movements = strArr[2].split("~");
         ArrayList<Pair> moves = new ArrayList<Pair>();
         for (int i = 0; i < movements.length; i++) {
             int r1 = Character.getNumericValue(movements[i].charAt(0));
@@ -800,10 +802,13 @@ Game playback (30 pts)
             int c2 = Character.getNumericValue(movements[i].charAt(4));
             moves.add(new Pair(r1, c1, r2, c2));
         }
-
-        SimpleDateFormat sdf = new SimpleDateFormat(strArr[1], Locale.ENGLISH);
-        Calendar c = sdf.getCalendar();
+        System.out.println("before sdf");
+//        SimpleDateFormat sdf = new SimpleDateFormat(strArr[1], Locale.ENGLISH);
+//        Calendar c = sdf.getCalendar();
+        System.out.println("strArr[0] " + strArr[0]);
+        System.out.println("strArr[2] " + strArr[2]);
         empty.add(new RecordedGame(strArr[0], moves));
+        System.out.println("have completed stickIn1Line");
     }
 
     public String toCoord(int r, int c) {
