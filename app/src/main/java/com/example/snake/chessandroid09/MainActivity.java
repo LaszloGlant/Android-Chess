@@ -384,18 +384,6 @@ Game playback (30 pts)
 
     public void gameOver(String gameTitle) {
         isOver = true;
-
-        // here is where we put the code for the save game popup
-
-//        Calendar c = new GregorianCalendar();
-//        c.set(Calendar.MILLISECOND, 0);
-//        int year = c.get(Calendar.YEAR);
-//        int month = c.get(Calendar.MONTH) + 1;
-//        int day = c.get(Calendar.DAY_OF_MONTH);
-//
-//        myGames.add(new RecordedGame(gameTitle, year, month, day, savedPairs));
-//        printPairs();
-
         save(gameTitle);
     }
 
