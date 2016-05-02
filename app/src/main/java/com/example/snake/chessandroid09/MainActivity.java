@@ -364,6 +364,7 @@ Game playback (30 pts)
         }}*/
 
     public void saveGame(){
+        System.out.println("in saveGame");
         // get prompts.xml view
 
             final Dialog commentDialog = new Dialog(MainActivity.this);
@@ -801,6 +802,7 @@ Game playback (30 pts)
             String thisGame = title + "," + year + "," + month + "," + day + "," + savedPairsStr(savedPairs);
 
             // add this 1 line to all recorded games
+            System.out.println("number of games: " + myGames.size());
             stickIn1Line(myGames, thisGame);
 
             String allGames = listToStr();

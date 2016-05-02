@@ -104,34 +104,33 @@ public class ReplayGameActivity extends AppCompatActivity{
         //SPINNER SELECTOR
 
 
-/*        Spinner sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.sortBy, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(adapter);
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        Spinner sortSpinner = (Spinner) findViewById(R.id.sortSpinner);
+//        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.sortBy, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        sortSpinner.setAdapter(adapter);
+//        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//
+//                if (position == 0) { // Sort by Date
+//
+//
+//                   Toast.makeText(getApplicationContext(), "selected option 0", Toast.LENGTH_SHORT).show();
+//                } else if (position == 1) {// Sort by Title
+//
+//                    Toast.makeText(getApplicationContext(), "selected option 1", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // doesn't happen
+//            }
+//
+//        });
 
-                if (position == 0) { // Sort by Date
-
-
-                   Toast.makeText(getApplicationContext(), "selected option 0", Toast.LENGTH_SHORT).show();
-                } else if (position == 1) {// Sort by Title
-
-                    Toast.makeText(getApplicationContext(), "selected option 1", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-                // doesn't happen
-            }
-
-        });
-*/
 
         //LIST VIEW STARTS HERE
 
-
-/*        this.list = (ListView) findViewById(R.id.listView);
+        this.list = (ListView) findViewById(R.id.listView);
         nAdapter = new ArrayAdapter<RecordedGame>(this,
                 android.R.layout.simple_list_item_1, MainActivity.myGames);
         list.setAdapter(nAdapter);
@@ -146,7 +145,7 @@ public class ReplayGameActivity extends AppCompatActivity{
             }
 
         });
-*/
+
 
 
         commentDialog.show();
@@ -165,8 +164,6 @@ public class ReplayGameActivity extends AppCompatActivity{
             message.setText("Replay has finished. Play another game or select another game to replay");
             return;
         }
-
-        System.out.println("number of moves this game: " + MainActivity.myGames.get(gameIndex).moves.size());
 
         int r1 = MainActivity.myGames.get(gameIndex).moves.get(pbIndex).r1;
         int c1 = MainActivity.myGames.get(gameIndex).moves.get(pbIndex).c1;
@@ -200,7 +197,6 @@ public class ReplayGameActivity extends AppCompatActivity{
      * @return negative number if move is bad, positive number if move is good
      */
     public int execute(char p, int r1, int c1, int r2, int c2, int i) {
-        System.out.printf("%d %d %d %d\n", r1, c1, r2, c2);
         Button message = (Button) findViewById(R.id.message);
 
         currImage = getImage(r1, c1);
