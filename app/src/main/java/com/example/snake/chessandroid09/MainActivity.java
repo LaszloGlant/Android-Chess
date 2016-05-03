@@ -31,10 +31,16 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
-- prompt user for draw (need pop up)
-
-Front end remaining:
-4) draw prompt (optional, only if we have time at the end)
+DEBUGGING
+replay game >>> button crashes the app
+should restrict of replay button if no games to replay
+once resigned and popup displayed after hitting no the board should be reset
+after clicking draw and the opponent accepts the draw on the Game Over popup if hitting NO should reset the board
+in list view the selection should be displayed until new item is selected
+make sure sorting works
+saveGame should reset the board or better yet have a method that does that so we can call it where we have to
+save game just crash while testing it was running an infinite loop
+save should not be allowed with no title
 
 
 Chess
@@ -264,11 +270,30 @@ Game playback (30 pts)
         if (isOver) {
             return;
         }
+        AlertDialog drawAlert = new AlertDialog.Builder(MainActivity.this).create();
+        drawAlert.setTitle("Resign");
+        if (currP == 'b'){
+            drawAlert.setMessage("Red has resigned!\nBlue is the winner!\n\nWant to save the game?");
+        }
+        else {
+            drawAlert.setMessage("Blue has resigned!\nRed is the winner!\n\nWant to save the game?");
+        }
+        drawAlert.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                //Reset the board
+            }
+        });
 
+        drawAlert.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.save), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which) {//inform of darw and offer two buttons that can save or not
+                saveGame();
+            }
+        });
+        drawAlert.show();
         Button message = (Button) findViewById(R.id.message);
 
 
-        saveGame();
+        //saveGame();
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
