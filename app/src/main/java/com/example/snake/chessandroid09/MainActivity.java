@@ -304,20 +304,6 @@ Game playback (30 pts)
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
-    public boolean contains(CharSequence s){
-
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i)== '%') {
-                System.out.println("****************************in contains if");
-                return true;
-            } else {
-                System.out.println("*****************************in contains else");
-                return false;
-            }
-        }
-        System.out.println("**************************************in contains after for");
-        return true;
-    }
 
     public void saveGame(){
         System.out.println("in saveGame");
@@ -335,11 +321,8 @@ Game playback (30 pts)
 
                     EditText et = (EditText) commentDialog.findViewById(R.id.body);
                     String gameTitle = et.getText().toString();
-                    while(contains(gameTitle)){
-                        Toast.makeText(getApplicationContext(), "CAN NOT USE % SYMBOL!", Toast.LENGTH_SHORT).show();
-                    }
                     gameOver(gameTitle);
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                    initializeBoard();
                     commentDialog.dismiss();
                 }
             });
@@ -357,6 +340,11 @@ Game playback (30 pts)
 
     public void gameOver(String gameTitle) {
         isOver = true;
+//        while(gameTitle.contains("%")){
+//            System.out.println("in game over while");
+//            Toast.makeText(getApplicationContext(), "CAN NOT USE % SYMBOL!", Toast.LENGTH_SHORT).show();
+//            saveGame();
+//        }
         save(gameTitle);
     }
 
