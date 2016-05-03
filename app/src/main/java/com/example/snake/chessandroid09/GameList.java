@@ -1,13 +1,14 @@
 package com.example.snake.chessandroid09;
 
+/**
+ * @author Laszlo Glant, Brian Wong
+ *         GameList Activity screen
+ */
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,10 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 public class GameList extends AppCompatActivity {
     private Button backbutton;
     private Button playbackbutton;
@@ -28,7 +25,6 @@ public class GameList extends AppCompatActivity {
     private ListView list;
     private boolean sortbyTitle = false;
     ArrayAdapter<RecordedGame> nAdapter;
-    //ArrayAdapter<String> nAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,35 +69,23 @@ public class GameList extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
                 // doesn't happen
             }
-
         });
-
-//        ArrayList<String> myList = new ArrayList<>();
-//        myList.add("item1");
-//        myList.add("item2");
 
         this.list = (ListView) findViewById(R.id.listView);
         nAdapter = new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames);
-        //nAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myList);
-
         list.setAdapter(nAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
                 ReplayGameActivity.gameIndex = arg2; //click on selected will load the game to be replayed
             }
-
         });
-
     }
 
     public void goToPlay1(View v) {
         finish();
-        //Toast.makeText(getApplicationContext(), "Going to play chess", Toast.LENGTH_SHORT).show();
-        //startActivity(new Intent(getApplicationContext(), MainActivity.class));
         Toast.makeText(getApplicationContext(), "Hit play chess menu item", Toast.LENGTH_SHORT).show();
     }
 
