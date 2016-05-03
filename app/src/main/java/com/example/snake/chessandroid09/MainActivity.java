@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
 DEBUGGING
-store list of games in text file correctly
 in list view the selection should be displayed until new item is selected
 make sure sorting works
 save should not be allowed with no title
@@ -351,13 +350,6 @@ Game playback (30 pts)
 
     public void gameOver(String gameTitle) {
         isOver = true;
-        if (gameTitle.contains("%")) {
-            Toast.makeText(getApplicationContext(), "I told you not to use the % symbol in a game title!", Toast.LENGTH_SHORT).show();
-            System.exit(0);
-//            System.out.println("in game over while");
-//            Toast.makeText(getApplicationContext(), "CAN NOT USE % SYMBOL!", Toast.LENGTH_SHORT).show();
-//            saveGame();
-        }
         save(gameTitle);
     }
 
