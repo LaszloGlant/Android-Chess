@@ -31,12 +31,9 @@ public class MainActivity extends AppCompatActivity {
 Remaining Tasks:
 DEBUGGING
 store list of games in text file correctly
-should restrict of replay button if no games to replay
 in list view the selection should be displayed until new item is selected
 make sure sorting works
-save game just crash while testing it was running an infinite loop
 save should not be allowed with no title
-reject game title with ,
 
 
 Chess
@@ -103,10 +100,22 @@ Game playback (30 pts)
         copy(board, boardCopy);
     }
 
-    public void initializeBoard(){
+    public void initializeBoard() {
         Board.initWhite(board);
         Board.initBoard(board);
         drawBoard();
+
+        isOver = false;
+        haveJustUndone = false;
+
+        currP = 'w';
+        oppP = 'b';
+
+        numHits = 0;
+        turn = 0;
+
+        Button message = (Button) findViewById(R.id.message);
+        message.setText("White's Turn");
     }
 
     /**
@@ -340,11 +349,13 @@ Game playback (30 pts)
 
     public void gameOver(String gameTitle) {
         isOver = true;
-//        while(gameTitle.contains("%")){
+        if (gameTitle.contains("%")) {
+            Toast.makeText(getApplicationContext(), "I told you not to use the % symbol in a game title!", Toast.LENGTH_SHORT).show();
+            System.exit(0);
 //            System.out.println("in game over while");
 //            Toast.makeText(getApplicationContext(), "CAN NOT USE % SYMBOL!", Toast.LENGTH_SHORT).show();
 //            saveGame();
-//        }
+        }
         save(gameTitle);
     }
 
