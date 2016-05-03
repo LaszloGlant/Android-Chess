@@ -31,13 +31,9 @@ public class MainActivity extends AppCompatActivity {
 Remaining Tasks:
 DEBUGGING
 store list of games in text file correctly
-replay game >>> button crashes the app
 should restrict of replay button if no games to replay
-once resigned and popup displayed after hitting no the board should be reset
-after clicking draw and the opponent accepts the draw on the Game Over popup if hitting NO should reset the board
 in list view the selection should be displayed until new item is selected
 make sure sorting works
-saveGame should reset the board or better yet have a method that does that so we can call it where we have to
 save game just crash while testing it was running an infinite loop
 save should not be allowed with no title
 reject game title with ,
@@ -105,6 +101,12 @@ Game playback (30 pts)
         Board.initBoard(board);
 
         copy(board, boardCopy);
+    }
+
+    public void initializeBoard(){
+        Board.initWhite(board);
+        Board.initBoard(board);
+        drawBoard();
     }
 
     /**
@@ -246,7 +248,7 @@ Game playback (30 pts)
                     public void onClick(DialogInterface dialog, int which) {
                         // Return to play activity and reset the board
                         //TO DO HERE RESET THE BOARD AND CLOSE THE ALERT
-
+                        initializeBoard();
                     }
                 });
 
@@ -281,6 +283,7 @@ Game playback (30 pts)
         drawAlert.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 //Reset the board
+                initializeBoard();
             }
         });
 
@@ -324,7 +327,8 @@ Game playback (30 pts)
                 @Override
                 public void onClick(View v) {
                    //startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            commentDialog.dismiss();
+                    initializeBoard();
+                    commentDialog.dismiss();
                 }
             });
             commentDialog.show();
