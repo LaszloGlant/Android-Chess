@@ -114,6 +114,8 @@ Game playback (30 pts)
         numHits = 0;
         turn = 0;
 
+        savedPairs.clear();
+
         Button message = (Button) findViewById(R.id.message);
         message.setText("White's Turn");
     }
