@@ -2,6 +2,7 @@ package com.example.snake.chessandroid09;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
 DEBUGGING
+store list of games in text file correctly
 replay game >>> button crashes the app
 should restrict of replay button if no games to replay
 once resigned and popup displayed after hitting no the board should be reset
@@ -38,6 +40,7 @@ make sure sorting works
 saveGame should reset the board or better yet have a method that does that so we can call it where we have to
 save game just crash while testing it was running an infinite loop
 save should not be allowed with no title
+reject game title with ,
 
 
 Chess
@@ -685,7 +688,7 @@ Game playback (30 pts)
 //            int month = c.get(Calendar.MONTH) + 1;
 //            int day = c.get(Calendar.DAY_OF_MONTH);
 
-            String thisGame = title + "," + Calendar.getInstance() + "," + savedPairsStr(savedPairs);
+            String thisGame = title + "%" + Calendar.getInstance() + "%" + savedPairsStr(savedPairs);
 
             // add this 1 line to all recorded games
             System.out.println("number of games: " + myGames.size());
@@ -699,10 +702,10 @@ Game playback (30 pts)
             File dir = new File(sdcard.getAbsolutePath() + "/tmp/");
             dir.mkdir();
             File file = new File(dir, "output.txt");
-            System.out.println("have created new output.txt");
             FileOutputStream os = new FileOutputStream(file);
+            file.createNewFile();
             os.write(allGames.getBytes());
-            System.out.println("have writeten " + allGames.getBytes() + " bytes");
+            System.out.println("have written " + allGames.getBytes() + " bytes");
             os.close();
         } catch (Exception e) {
             System.out.println("exception in save");
@@ -727,14 +730,14 @@ Game playback (30 pts)
     }
 
     /**
-     * given one line (ex. myGame,2016,4,25,e2 e4), add the appropriate info to empty
+     * given one line (ex. myGame%calendar%60 40), add the appropriate info to empty
      *
      * @param empty blank array list to be loaded up with data (myGames)
      * @param line  1 line of text from output.txt
      */
     public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
         System.out.println("have started stickIn1Line");
-        String[] strArr = line.split(",");
+        String[] strArr = line.split("%");
         String[] movements = strArr[2].split("~");
         ArrayList<Pair> moves = new ArrayList<Pair>();
         for (int i = 0; i < movements.length; i++) {
