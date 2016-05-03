@@ -1,6 +1,8 @@
 package com.example.snake.chessandroid09;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -213,10 +215,47 @@ Game playback (30 pts)
         if (isOver) {
             return;
         }
+        AlertDialog drawAlert = new AlertDialog.Builder(MainActivity.this).create();
+        drawAlert.setTitle("Draw?");
+        if (currP == 'b'){
+            drawAlert.setMessage("Red has requested a draw. Blue, would you like to call it a draw?");
+        }
+        else {
+            drawAlert.setMessage("Blue has requested a draw. Red, would you like to call it a draw?");
+        }
+        drawAlert.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                //Draw not accepted the game continues, nothing else to do
 
+            }
+        });
+
+        drawAlert.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.draw), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which) {//inform of darw and offer two buttons that can save or not
+                AlertDialog draw = new AlertDialog.Builder(MainActivity.this).create();
+                draw.setTitle("Game Over");
+                draw.setMessage("It's a draw!\nWant to save the game?");
+
+                draw.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Return to play activity and reset the board
+                        //TO DO HERE RESET THE BOARD AND CLOSE THE ALERT
+
+                    }
+                });
+
+                draw.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.save), new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which){
+                        saveGame();
+                    }
+                });
+                draw.show();
+            }
+        });
+        drawAlert.show();
         Button message = (Button) findViewById(R.id.message);
 
-        saveGame();
+        //saveGame();
 
         message.setText("Draw");
     }
@@ -336,9 +375,7 @@ Game playback (30 pts)
                     EditText et = (EditText) commentDialog.findViewById(R.id.body);
                     String gameTitle = et.getText().toString();
                     gameOver(gameTitle);
-                    startActivity(new Intent(
-                            getApplicationContext(),
-                            MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
                     commentDialog.dismiss();
                 }
             });

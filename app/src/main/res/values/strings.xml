@@ -10,11 +10,13 @@
     <string name="save">Save</string>
     <string name="no">NO</string>
     <string name="yesDraw">Draw Accepted</string>
+    <string name="draw">Accept</string>
     <string name="canc">Cancel</string>
     <string name="ok">OK</string>
     <string name="playback">Play Back Game</string>
     <string name="replayGame">Replay Game</string>
     <string name="back">Play Chess</string>
+
 
 
     <!-- For Spinner -->
