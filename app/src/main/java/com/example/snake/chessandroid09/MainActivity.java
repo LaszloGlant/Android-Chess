@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 /**
  * @author Brian Wong, Laszlo Glant
@@ -660,41 +661,162 @@ Game playback (30 pts)
      */
     public int AI(Piece[][] board, char p, int i) {
         copy(board, boardCopy);
-        for (int r1 = 0; r1 < 8; r1++) {
-            for (int c1 = 0; c1 < 8; c1++) {
-                if (board[r1][c1].color == p) {
-                    // own piece
+        Random rand = new Random();
+        int n = rand.nextInt(4);
+        if (n == 0) {
+            for (int r1 = 0; r1 < 8; r1++) {
+                for (int c1 = 0; c1 < 8; c1++) {
+                    if (board[r1][c1].color == p) {
+                        // own piece
 
-                    for (int r2 = 0; r2 < 8; r2++) {
-                        for (int c2 = 0; c2 < 8; c2++) {
+                        for (int r2 = 0; r2 < 8; r2++) {
+                            for (int c2 = 0; c2 < 8; c2++) {
 
-                            if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
-                                // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
-                                int ret = move(p, r1, c1, r2, c2, i);
+                                if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                    // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                    int ret = move(p, r1, c1, r2, c2, i);
 
-                                if (Conditions.isCheck(board, p, i)) {
-                                    // this move will put self in check, take back
-                                    copy(boardCopy, board);
-                                    drawBoard();
+                                    if (Conditions.isCheck(board, p, i)) {
+                                        // this move will put self in check, take back
+                                        copy(boardCopy, board);
+                                        drawBoard();
 
-                                    // skip this move, still looking for something legal to do
-                                    continue;
+                                        // skip this move, still looking for something legal to do
+                                        continue;
+                                    } else {
+                                        // not in check, this move is good
+                                        savedPairs.add(new Pair(r1, c1, r2, c2));
+                                        return 1;
+                                    }
+
                                 } else {
-                                    // not in check, this move is good
-                                    savedPairs.add(new Pair(r1, c1, r2, c2));
-                                    return 1;
+                                    // not a legal move, don't attempt to do this
+                                    continue;
                                 }
-
-                            } else {
-                                // not a legal move, don't attempt to do this
-                                continue;
                             }
                         }
-                    }
 
-                } else {
-                    // not own piece, don't attempt to move this one
-                    continue;
+                    } else {
+                        // not own piece, don't attempt to move this one
+                        continue;
+                    }
+                }
+            }
+        } else if (n == 1) {
+            for (int r1 = 7; r1 >= 0; r1--) {
+                for (int c1 = 0; c1 < 8; c1++) {
+                    if (board[r1][c1].color == p) {
+                        // own piece
+
+                        for (int r2 = 0; r2 < 8; r2++) {
+                            for (int c2 = 0; c2 < 8; c2++) {
+
+                                if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                    // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                    int ret = move(p, r1, c1, r2, c2, i);
+
+                                    if (Conditions.isCheck(board, p, i)) {
+                                        // this move will put self in check, take back
+                                        copy(boardCopy, board);
+                                        drawBoard();
+
+                                        // skip this move, still looking for something legal to do
+                                        continue;
+                                    } else {
+                                        // not in check, this move is good
+                                        savedPairs.add(new Pair(r1, c1, r2, c2));
+                                        return 1;
+                                    }
+
+                                } else {
+                                    // not a legal move, don't attempt to do this
+                                    continue;
+                                }
+                            }
+                        }
+
+                    } else {
+                        // not own piece, don't attempt to move this one
+                        continue;
+                    }
+                }
+            }
+        } else if (n == 2) {
+            for (int r1 = 0; r1 < 8; r1++) {
+                for (int c1 = 7; c1 >= 0; c1--) {
+                    if (board[r1][c1].color == p) {
+                        // own piece
+
+                        for (int r2 = 0; r2 < 8; r2++) {
+                            for (int c2 = 0; c2 < 8; c2++) {
+
+                                if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                    // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                    int ret = move(p, r1, c1, r2, c2, i);
+
+                                    if (Conditions.isCheck(board, p, i)) {
+                                        // this move will put self in check, take back
+                                        copy(boardCopy, board);
+                                        drawBoard();
+
+                                        // skip this move, still looking for something legal to do
+                                        continue;
+                                    } else {
+                                        // not in check, this move is good
+                                        savedPairs.add(new Pair(r1, c1, r2, c2));
+                                        return 1;
+                                    }
+
+                                } else {
+                                    // not a legal move, don't attempt to do this
+                                    continue;
+                                }
+                            }
+                        }
+
+                    } else {
+                        // not own piece, don't attempt to move this one
+                        continue;
+                    }
+                }
+            }
+        } else {
+            for (int r1 = 7; r1 >= 0; r1--) {
+                for (int c1 = 7; c1 >= 0; c1--) {
+                    if (board[r1][c1].color == p) {
+                        // own piece
+
+                        for (int r2 = 0; r2 < 8; r2++) {
+                            for (int c2 = 0; c2 < 8; c2++) {
+
+                                if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                    // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                    int ret = move(p, r1, c1, r2, c2, i);
+
+                                    if (Conditions.isCheck(board, p, i)) {
+                                        // this move will put self in check, take back
+                                        copy(boardCopy, board);
+                                        drawBoard();
+
+                                        // skip this move, still looking for something legal to do
+                                        continue;
+                                    } else {
+                                        // not in check, this move is good
+                                        savedPairs.add(new Pair(r1, c1, r2, c2));
+                                        return 1;
+                                    }
+
+                                } else {
+                                    // not a legal move, don't attempt to do this
+                                    continue;
+                                }
+                            }
+                        }
+
+                    } else {
+                        // not own piece, don't attempt to move this one
+                        continue;
+                    }
                 }
             }
         }
@@ -703,11 +825,6 @@ Game playback (30 pts)
 
     public void save(String title) {
         try {
-//            Calendar c = new GregorianCalendar();
-//            c.set(Calendar.MILLISECOND, 0);
-//            int year = c.get(Calendar.YEAR);
-//            int month = c.get(Calendar.MONTH) + 1;
-//            int day = c.get(Calendar.DAY_OF_MONTH);
 
             String thisGame = title + "%" + Calendar.getInstance() + "%" + savedPairsStr(savedPairs);
 
