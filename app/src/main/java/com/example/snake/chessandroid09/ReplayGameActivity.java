@@ -38,7 +38,7 @@ public class ReplayGameActivity extends AppCompatActivity{
     public void goToList(View v) {
         finish();
         //startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        Toast.makeText(getApplicationContext(), "Hit list menu item", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Hit list menu item", Toast.LENGTH_SHORT).show();
     }
 
     public void hit(View v) {

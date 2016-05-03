@@ -70,7 +70,7 @@ public class GameList extends AppCompatActivity {
 
                     //list.setAdapter(new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames));
 
-                    Toast.makeText(getApplicationContext(), "Clicked sort by date", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked sort by date", Toast.LENGTH_SHORT).show();
                 } else if (position == 1) {
                     // Sort by Title
 
@@ -86,7 +86,7 @@ public class GameList extends AppCompatActivity {
 
                     //list.setAdapter(new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames));
 
-                    Toast.makeText(getApplicationContext(), "Clicked sort by title", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked sort by title", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -110,11 +110,11 @@ public class GameList extends AppCompatActivity {
 
     public void goToPlay1(View v) {
         finish();
-        Toast.makeText(getApplicationContext(), "Hit play chess menu item", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Hit play chess menu item", Toast.LENGTH_SHORT).show();
     }
 
     public void goToReplay(View v) {
         startActivity(new Intent(getApplicationContext(), ReplayGameActivity.class));
-        Toast.makeText(getApplicationContext(), "Hit replay chess menu item", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Hit replay chess menu item", Toast.LENGTH_SHORT).show();
     }
 }

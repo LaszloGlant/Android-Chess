@@ -30,12 +30,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
-After game ends, don't revert back to original state, should leave as is until user does something
-AI should perform random move if not in check at beginning of turn
 
 DEBUGGING
 in list view the selection should be displayed until new item is selected
-make sure list displays correctly after sorting
 save should not be allowed with no title
 
 
@@ -120,7 +117,7 @@ Game playback (30 pts)
         savedPairs.clear();
 
         Button message = (Button) findViewById(R.id.message);
-        message.setText("White's Turn");
+        message.setText("Blue's Turn");
     }
 
     /**
@@ -158,6 +155,7 @@ Game playback (30 pts)
     }
 
     public void undo(View v) {
+        String current;
         if (isOver) {
             return;
         }
@@ -183,12 +181,19 @@ Game playback (30 pts)
         }
 
         updateTurn();
+        if (currP == 'w'){
+            current = "Blue";
+        }
+        else {
+            current = "Red";
+        }
 
-        message.setText("Have undone last move, " + charToStr(currP) + " to play");
+        message.setText("Have undone last move, " + current + " to play");
         haveJustUndone = true;
     }
 
     public void ai(View v) {
+        String current;
         if (isOver) {
             return;
         }
@@ -201,7 +206,8 @@ Game playback (30 pts)
 
         if (statusAI < 0) {
             // no legal move for AI to do
-            message.setText("Checkmate for " + charToStr(oppP));
+            checkmatePopup(oppP);
+            //message.setText("Checkmate for " + charToStr(oppP));
             isOver = true;
             return;
         }
@@ -211,22 +217,30 @@ Game playback (30 pts)
             if (oppP == 'w') {
                 if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                     // checkmate
-                    message.setText("Checkmate, Black wins");
-                    saveGame();
+                    checkmatePopup(oppP);
+                    //message.setText("Checkmate, Black wins");
+
                 } else {
-                    message.setText("White in Check");
+                    message.setText("Blue is in Check");
                 }
             } else {
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate
-                    message.setText("Checkmate, White wins");
-                    saveGame();
+                    checkmatePopup(oppP);
+                   // message.setText("Checkmate, White wins");
+
                 } else {
-                    message.setText("Black in Check");
+                    message.setText("Red is in Check");
                 }
             }
         } else {
-            message.setText("AI has made a move for " + charToStr(currP));
+            if (currP == 'b'){
+                current = "Red";
+            }
+            else {
+                current = "Blue";
+            }
+            message.setText("AI has made a move for " + current);
         }
 
         updateTurn();
@@ -283,7 +297,31 @@ Game playback (30 pts)
 
         //saveGame();
 
-        message.setText("Draw");
+        //message.setText("Draw");
+    }
+
+    public void checkmatePopup(char oppP){
+        AlertDialog drawAlert = new AlertDialog.Builder(MainActivity.this).create();
+        drawAlert.setTitle("Checkmate!");
+        if (oppP == 'w'){
+            drawAlert.setMessage("Red is the winner!\n\nWant to save the game?");
+        }
+        else {
+            drawAlert.setMessage("Blue is the winner!\n\nWant to save the game?");
+        }
+        drawAlert.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                //Reset the board
+                initializeBoard();
+            }
+        });
+
+        drawAlert.setButton(AlertDialog.BUTTON_POSITIVE, getResources().getString(R.string.save), new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which) {//inform of darw and offer two buttons that can save or not
+                saveGame();
+            }
+        });
+        drawAlert.show();
     }
 
     public void resign(View v) {
@@ -316,7 +354,7 @@ Game playback (30 pts)
 
         //saveGame();
 
-        message.setText("Resign: " + charToStr(oppP) + " wins!");
+        //message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
 
     public void saveGame(){
@@ -358,6 +396,16 @@ Game playback (30 pts)
     }
 
     public void hit(View v) {
+        String current;
+        String opponent;
+        if (currP == 'b'){
+            current = "Red";
+            opponent = "Blue";
+        }
+        else {
+            current = "Blue";
+            opponent = "Red";
+        }
         if (isOver) {
             // game is over, just return so that user cannot move any pieces
             return;
@@ -374,13 +422,13 @@ Game playback (30 pts)
 
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
-                message.setText("Click on a " + charToStr(currP) + " piece");
+                message.setText("Click on a " + current + " piece");
                 return;
             }
 
             if (board[r][c].color != currP) {
                 // wrong color, shouldn't be moving this piece
-                message.setText("You can't move a " + charToStr(oppP) + " piece");
+                message.setText("You can't move a " + opponent + " piece");
                 return;
             }
 
@@ -420,18 +468,20 @@ Game playback (30 pts)
                     if (oppP == 'w') {
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
                             // checkmate
-                            message.setText("Checkmate, Black wins");
+                            checkmatePopup(oppP);
+                            //message.setText("Checkmate, Black wins");
                             saveGame();
                         } else {
-                            message.setText("White in Check");
+                            message.setText("Blue is in Check");
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate
-                            message.setText("Checkmate, White wins");
+                            checkmatePopup(oppP);
+                            //message.setText("Checkmate, White wins");
                             saveGame();
                         } else {
-                            message.setText("Black in Check");
+                            message.setText("Red is in Check");
                         }
                     }
                 }
@@ -932,9 +982,9 @@ Game playback (30 pts)
 
     public String charToStr(char p) {
         if (p == 'w') {
-            return "White";
+            return "Blue";
         } else if (p == 'b') {
-            return "Black";
+            return "Red";
         } else {
             // can't happen
             return "Bogus";
