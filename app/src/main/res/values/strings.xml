@@ -6,7 +6,7 @@
     <string name="list">List Menu</string>
     <string name="title_activity_replay_game">ReplayGameActivity</string>
     <string name="title_activity_main_menu">Main Menu</string>
-    <string name="savegame">Enter game title without commas!</string>
+    <string name="savegame">Enter game title without %!</string>
     <string name="save">Save</string>
     <string name="no">NO</string>
     <string name="yesDraw">Draw Accepted</string>

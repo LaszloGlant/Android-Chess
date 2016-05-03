@@ -135,8 +135,12 @@ Game playback (30 pts)
     }
 
     public void goToGameList(View v){
+        if (myGames.size() == 0){
+            Toast.makeText(getApplicationContext(), "You have no games to replay!", Toast.LENGTH_LONG).show();
+        }
+        else {
         startActivity(new Intent(getApplicationContext(), GameList.class));
-        Toast.makeText(getApplicationContext(), "Hit Replay menu item", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void undo(View v) {
@@ -300,6 +304,20 @@ Game playback (30 pts)
 
         message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
+    public boolean contains(CharSequence s){
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i)== '%') {
+                System.out.println("****************************in contains if");
+                return true;
+            } else {
+                System.out.println("*****************************in contains else");
+                return false;
+            }
+        }
+        System.out.println("**************************************in contains after for");
+        return true;
+    }
 
     public void saveGame(){
         System.out.println("in saveGame");
@@ -317,6 +335,9 @@ Game playback (30 pts)
 
                     EditText et = (EditText) commentDialog.findViewById(R.id.body);
                     String gameTitle = et.getText().toString();
+                    while(contains(gameTitle)){
+                        Toast.makeText(getApplicationContext(), "CAN NOT USE % SYMBOL!", Toast.LENGTH_SHORT).show();
+                    }
                     gameOver(gameTitle);
                     startActivity(new Intent(getApplicationContext(),MainActivity.class));
                     commentDialog.dismiss();
@@ -779,7 +800,7 @@ Game playback (30 pts)
     }
 
     public String outString(RecordedGame rg) {
-        return rg.title + "," + rg.cal + "," + savedPairsStr(rg.moves);
+        return rg.title + "%" + rg.cal + "%" + savedPairsStr(rg.moves);
     }
 
     /**
