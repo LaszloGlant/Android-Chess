@@ -16,7 +16,7 @@
     <string name="playback">Play Back Game</string>
     <string name="replayGame">Replay Game</string>
     <string name="back">Play Chess</string>
-    <string name="valid">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789</string>
+    <string name="valid">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&#160;</string>
 
 
 

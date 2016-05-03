@@ -63,7 +63,7 @@ public class GameList extends AppCompatActivity {
 //                    }
 
                     Sort.sortByDate(MainActivity.myGames);
-
+                    nAdapter.notifyDataSetChanged();
 //                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
 //                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
 //                    }
@@ -79,7 +79,7 @@ public class GameList extends AppCompatActivity {
 //                    }
 
                     Sort.sortByTitle(MainActivity.myGames);
-
+                    nAdapter.notifyDataSetChanged();
 //                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
 //                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
 //                    }
