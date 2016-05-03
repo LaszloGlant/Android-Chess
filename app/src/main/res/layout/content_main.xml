@@ -802,7 +802,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="White&apos;s turn!"
+        android:text="Blue&apos;s turn!"
         android:id="@+id/message"
         android:background="@color/background_material_light"
         android:layout_above="@+id/imageView"

@@ -172,7 +172,6 @@ Game playback (30 pts)
         Button message = (Button) findViewById(R.id.message);
 
         copy(boardCopy, board);
-        //Board.displayBoard(board);
         drawBoard();
 
         if (savedPairs.size() > 0) {
@@ -205,9 +204,8 @@ Game playback (30 pts)
         int statusAI = AI(board, currP, turn);     // make AI move
 
         if (statusAI < 0) {
-            // no legal move for AI to do
+            // no legal move for AI to do checkmate
             checkmatePopup(oppP);
-            //message.setText("Checkmate for " + charToStr(oppP));
             isOver = true;
             return;
         }
@@ -216,19 +214,15 @@ Game playback (30 pts)
             // have put opponent in check
             if (oppP == 'w') {
                 if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
-                    // checkmate
+                    // checkmate Red wins
                     checkmatePopup(oppP);
-                    //message.setText("Checkmate, Black wins");
-
                 } else {
                     message.setText("Blue is in Check");
                 }
             } else {
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
-                    // checkmate
+                    // checkmate Blue wins
                     checkmatePopup(oppP);
-                   // message.setText("Checkmate, White wins");
-
                 } else {
                     message.setText("Red is in Check");
                 }
@@ -279,7 +273,6 @@ Game playback (30 pts)
                 draw.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Return to play activity and reset the board
-                        //TO DO HERE RESET THE BOARD AND CLOSE THE ALERT
                         initializeBoard();
                     }
                 });
@@ -294,10 +287,6 @@ Game playback (30 pts)
         });
         drawAlert.show();
         Button message = (Button) findViewById(R.id.message);
-
-        //saveGame();
-
-        //message.setText("Draw");
     }
 
     public void checkmatePopup(char oppP){
@@ -350,11 +339,6 @@ Game playback (30 pts)
         });
         drawAlert.show();
         Button message = (Button) findViewById(R.id.message);
-
-
-        //saveGame();
-
-        //message.setText("Resign: " + charToStr(oppP) + " wins!");
     }
 
     public void saveGame(){
@@ -382,7 +366,6 @@ Game playback (30 pts)
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     initializeBoard();
                     commentDialog.dismiss();
                 }
@@ -467,19 +450,15 @@ Game playback (30 pts)
                     // in check
                     if (oppP == 'w') {
                         if (Conditions.isCheckmate(board, 'w', Piece.whiteKing[0], Piece.whiteKing[1], turn)) {
-                            // checkmate
+                            // checkmate Red wins
                             checkmatePopup(oppP);
-                            //message.setText("Checkmate, Black wins");
-                            saveGame();
                         } else {
                             message.setText("Blue is in Check");
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
-                            // checkmate
+                            // checkmate Blue wins
                             checkmatePopup(oppP);
-                            //message.setText("Checkmate, White wins");
-                            saveGame();
                         } else {
                             message.setText("Red is in Check");
                         }
