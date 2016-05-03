@@ -12,6 +12,8 @@
         android:layout_gravity="center"
         android:hint="@string/savegame"
         android:lines="3"
+        android:digits="@string/valid"
+
         android:textColor="#000000" />
 
     <LinearLayout
