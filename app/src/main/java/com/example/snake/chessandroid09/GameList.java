@@ -57,11 +57,35 @@ public class GameList extends AppCompatActivity {
                 TextView text = (TextView) view;
                 if (position == 0) {
                     // Sort by Date
+
+//                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
+//                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
+//                    }
+
                     Sort.sortByDate(MainActivity.myGames);
+
+//                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
+//                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
+//                    }
+
+                    //list.setAdapter(new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames));
+
                     Toast.makeText(getApplicationContext(), "Clicked sort by date", Toast.LENGTH_SHORT).show();
                 } else if (position == 1) {
                     // Sort by Title
+
+//                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
+//                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
+//                    }
+
                     Sort.sortByTitle(MainActivity.myGames);
+
+//                    for (int i = 0; i < MainActivity.myGames.size(); i++) {
+//                        System.out.println(i + "-" + MainActivity.myGames.get(i).title);
+//                    }
+
+                    //list.setAdapter(new ArrayAdapter<RecordedGame>(this, android.R.layout.simple_list_item_1, MainActivity.myGames));
+
                     Toast.makeText(getApplicationContext(), "Clicked sort by title", Toast.LENGTH_SHORT).show();
                 }
             }

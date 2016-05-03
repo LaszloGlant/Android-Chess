@@ -29,9 +29,12 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     /*
 Remaining Tasks:
+After game ends, don't revert back to original state, should leave as is until user does something
+AI should perform random move if not in check at beginning of turn
+
 DEBUGGING
 in list view the selection should be displayed until new item is selected
-make sure sorting works
+make sure list displays correctly after sorting
 save should not be allowed with no title
 
 
