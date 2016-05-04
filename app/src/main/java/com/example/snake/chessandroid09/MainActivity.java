@@ -19,8 +19,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -859,7 +861,7 @@ Game playback (30 pts)
 
             // add this 1 line to all recorded games
             System.out.println("number of games: " + myGames.size());
-            stickIn1Line(myGames, thisGame);
+            stickIn1SAVE(myGames, thisGame);
 
             String allGames = listToStr();
             System.out.println("allGames:" + allGames);
@@ -888,7 +890,7 @@ Game playback (30 pts)
             BufferedReader br = new BufferedReader(new FileReader(file));
             while ((input = br.readLine()) != null) {
                 Log.i("load", "input = " + input);
-                stickIn1Line(myGames, input);
+                stickInLOAD(myGames, input);
             }
             br.close();
         } catch (Exception e) {
@@ -902,7 +904,7 @@ Game playback (30 pts)
      * @param empty blank array list to be loaded up with data (myGames)
      * @param line  1 line of text from output.txt
      */
-    public void stickIn1Line(ArrayList<RecordedGame> empty, String line) {
+    public void stickIn1SAVE(ArrayList<RecordedGame> empty, String line) {
         System.out.println("have started stickIn1Line");
         String[] strArr = line.split("%");
         String[] movements = strArr[2].split("~");
@@ -915,12 +917,34 @@ Game playback (30 pts)
             moves.add(new Pair(r1, c1, r2, c2));
         }
         System.out.println("before sdf");
-//        SimpleDateFormat sdf = new SimpleDateFormat(strArr[1], Locale.ENGLISH);
-//        Calendar c = sdf.getCalendar();
+        //SimpleDateFormat sdf = new SimpleDateFormat(strArr[1], Locale.ENGLISH);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String formattedDate = sdf.format(c.getTime());
+        //Calendar c = sdf.getCalendar();
         System.out.println("strArr[0] " + strArr[0]);
         System.out.println("strArr[2] " + strArr[2]);
-        empty.add(new RecordedGame(strArr[0], moves));
+        empty.add(new RecordedGame (strArr[0], formattedDate, moves));
         System.out.println("have completed stickIn1Line");
+    }
+    /**
+     * given one line (ex. myGame%calendar%60 40), add the appropriate info to empty
+     *
+     * @param empty blank array list to be loaded up with data (myGames)
+     * @param line  1 line of text from output.txt
+     */
+    public void stickInLOAD(ArrayList<RecordedGame> empty, String line) {
+        String[] strArr = line.split("%");
+        String[] movements = strArr[2].split("~");
+        ArrayList<Pair> moves = new ArrayList<Pair>();
+        for (int i = 0; i < movements.length; i++) {
+            int r1 = Character.getNumericValue(movements[i].charAt(0));
+            int c1 = Character.getNumericValue(movements[i].charAt(1));
+            int r2 = Character.getNumericValue(movements[i].charAt(3));
+            int c2 = Character.getNumericValue(movements[i].charAt(4));
+            moves.add(new Pair(r1, c1, r2, c2));
+        }
+        empty.add(new RecordedGame (strArr[0], strArr[1], moves));
     }
 
     public String toCoord(int r, int c) {
