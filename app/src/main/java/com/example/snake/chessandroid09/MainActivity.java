@@ -157,7 +157,6 @@ Game playback (30 pts)
     }
 
     public void undo(View v) {
-        String current;
         if (isOver) {
             return;
         }
@@ -182,19 +181,17 @@ Game playback (30 pts)
         }
 
         updateTurn();
-        if (currP == 'w'){
-            current = "Blue";
-        }
-        else {
-            current = "Red";
-        }
 
-        message.setText("Have undone last move, " + current + " to play");
+        if (Conditions.isCheck(board, currP, turn)) {
+            // in check after hitting undo
+            message.setText(charToStr(currP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+        } else {
+            message.setText("Have undone last move, " + charToStr(currP) + " to play");
+        }
         haveJustUndone = true;
     }
 
     public void ai(View v) {
-        String current;
         if (isOver) {
             return;
         }
@@ -203,10 +200,20 @@ Game playback (30 pts)
 
         copy(board, boardCopy);
 
-        int statusAI = AI(board, currP, turn);     // make AI move
+        int statusAI;
+        if (Conditions.isCheck(board, currP, turn)) {
+            // if currently in check, then get out of check
+            statusAI = escapeCheckAI(board, currP, turn);
+            message.setText(charToStr(currP) + " has escaped check");
+        } else {
+            // not currently in check, any legal move will do
+            statusAI = AI(board, currP, turn);
+            message.setText(charToStr(currP) + " has made a move via AI");
+        }
 
         if (statusAI < 0) {
             // no legal move for AI to do checkmate
+            message.setText("No legal move for AI to do");
             checkmatePopup(oppP);
             isOver = true;
             return;
@@ -219,24 +226,16 @@ Game playback (30 pts)
                     // checkmate Red wins
                     checkmatePopup(oppP);
                 } else {
-                    message.setText("Blue is in Check");
+                    message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                 }
             } else {
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate Blue wins
                     checkmatePopup(oppP);
                 } else {
-                    message.setText("Red is in Check");
+                    message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                 }
             }
-        } else {
-            if (currP == 'b'){
-                current = "Red";
-            }
-            else {
-                current = "Blue";
-            }
-            message.setText("AI has made a move for " + current);
         }
 
         updateTurn();
@@ -381,16 +380,6 @@ Game playback (30 pts)
     }
 
     public void hit(View v) {
-        String current;
-        String opponent;
-        if (currP == 'b'){
-            current = "Red";
-            opponent = "Blue";
-        }
-        else {
-            current = "Blue";
-            opponent = "Red";
-        }
         if (isOver) {
             // game is over, just return so that user cannot move any pieces
             return;
@@ -402,18 +391,23 @@ Game playback (30 pts)
         int r = setRC(id)[0];
         int c = setRC(id)[1];
 
+        if (Conditions.isCheck(board, currP, turn)) {
+            // current player is in check
+            message.setText("You are in check, " + charToStr(currP) + " due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+        }
+
         if (numHits % 2 == 0) {
             // hitting source
 
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
-                message.setText("Click on a " + current + " piece");
+                message.setText("Click on a " + charToStr(currP) + " piece");
                 return;
             }
 
             if (board[r][c].color != currP) {
                 // wrong color, shouldn't be moving this piece
-                message.setText("You can't move a " + opponent + " piece");
+                message.setText("You can't move a " + charToStr(oppP) + " piece");
                 return;
             }
 
@@ -455,14 +449,14 @@ Game playback (30 pts)
                             // checkmate Red wins
                             checkmatePopup(oppP);
                         } else {
-                            message.setText("Blue is in Check");
+                            message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate Blue wins
                             checkmatePopup(oppP);
                         } else {
-                            message.setText("Red is in Check");
+                            message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                         }
                     }
                 }
@@ -680,6 +674,55 @@ Game playback (30 pts)
         promoted = false;
         message.setText("Have moved " + board[r2][c2] + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2));
         return isValid;
+    }
+
+    /**
+     * p is in check, do any legal move under one condition: get out of check at the end of this turn
+     * @param board 2D array of pieces
+     * @param p w or b
+     * @param i turn number
+     * @return positive number if got out of check, negative number if nothing to do
+     */
+    public int escapeCheckAI(Piece[][] board, char p, int i) {
+        for (int r1 = 0; r1 < 8; r1++) {
+            for (int c1 = 0; c1 < 8; c1++) {
+                if (board[r1][c1].color == p) {
+                    // own piece
+
+                    for (int r2 = 0; r2 < 8; r2++) {
+                        for (int c2 = 0; c2 < 8; c2++) {
+
+                            if (Move.movePiece(board, p, r1, c1, r2, c2, i)) {
+                                // one of our pieces has this legal move (r1, c1) to (r2, c2), execute that move
+                                int ret = move(p, r1, c1, r2, c2, i);
+
+                                if (Conditions.isCheck(board, p, i)) {
+                                    // this move will put self in check, take back
+                                    copy(boardCopy, board);
+                                    drawBoard();
+
+                                    // skip this move, still looking for something legal to do
+                                    continue;
+                                } else {
+                                    // not in check, this move is good
+                                    savedPairs.add(new Pair(r1, c1, r2, c2));
+                                    return 1;
+                                }
+
+                            } else {
+                                // not a legal move, don't attempt to do this
+                                continue;
+                            }
+                        }
+                    }
+
+                } else {
+                    // not own piece, don't attempt to move this one
+                    continue;
+                }
+            }
+        }
+        return -1;
     }
 
     /**
@@ -1016,6 +1059,8 @@ Game playback (30 pts)
         haveJustUndone = false;
 
         setPromoPics();
+
+        Board.displayBoard(board);
     }
 
     public void selectPromo(View v) {

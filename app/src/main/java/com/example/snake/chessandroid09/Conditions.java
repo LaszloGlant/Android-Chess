@@ -45,6 +45,7 @@ public class Conditions {
                         attacker[0]=r;
                         attacker[1]=c;
                         kingAttacked = true;
+                        System.out.println("Piece at " + board[r][c].toString() + " attacking the King");
                     } else {
                         continue;
                     }

@@ -75,7 +75,7 @@ public class ReplayGameActivity extends AppCompatActivity{
         int ret = execute(p, r1, c1, r2, c2, pbIndex);
         pbIndex++;
 
-        message.setText("Move " + pbIndex);
+        message.setText("Move " + pbIndex + "/" + MainActivity.myGames.get(gameIndex).moves.size());
     }
 
     /**
