@@ -30,38 +30,6 @@ import java.util.Random;
  *         Main Activity screen
  */
 public class MainActivity extends AppCompatActivity {
-    /*
-Remaining Tasks:
-
-DEBUGGING
-in list view the selection should be displayed until new item is selected
-save should not be allowed with no title
-
-
-Chess
-Port the terminal-based Chess program to Android: a chess app that lets two people play chess with each other on the phone. You may reuse any code from your chess assignment that you like.
-You have to implement all the moves for all the pieces, determination of check, checkmate, and illegal moves (including any that puts the mover's King in check), but you are not required
-to implement stalemate.
-
-Your app should have a Home activity that lets you choose from the following three other activities:
-Playing chess (120 pts)
-•  30 pts Two humans can use your app to play a game of Chess. (good, but maybe can fix checkmate at the end if have time)
-•  20 pts Your app must draw the board with icons and correctly shaded squares. (done)
-•  20 pts Players must move their pieces using touch input - either dragging a piece or touching first the piece's original square and then its destination. (done)
-•  10 pts Provide an 'undo' button that will undo the last move (but no farther). (done)
-•  10 pts Provide an 'AI' button that will choose a move for the current player. Choosing randomly from the set of legal moves is sufficient. (done)
-•  20 pts Provide functional 'draw' and 'resign' buttons. (done)
-•  10 pts When the game is over, report the outcome. (done)
-
-Recording games (50 pts)
-•  20 pts Record all games as they're being played. (good)
-•  10 pts At the conclusion of a game, offer to store it and prompt the user for a game title. (still need prompt user for game title)
-•  20 pts List all recorded games, sorted by both date and by title (user can select which view to choose). (need buttons and to list them out)
-
-Game playback (30 pts)
-•  A button that allows the user to play a selected game. The selected game should be playable one move at a time, per player.
-
-*/
 
     int numHits = 0;    // the number of times the user has clicked on a piece on the board, even for src, odd for dest
     int turn = 0;       // the current turn number, even for white, odd for black
@@ -119,7 +87,7 @@ Game playback (30 pts)
         savedPairs.clear();
 
         Button message = (Button) findViewById(R.id.message);
-        message.setText("Blue's Turn");
+        message.setText(turn + " Blue's Turn");
     }
 
     /**
@@ -181,12 +149,16 @@ Game playback (30 pts)
         }
 
         updateTurn();
+        turn -= 2;
 
         if (Conditions.isCheck(board, currP, turn)) {
             // in check after hitting undo
-            message.setText(charToStr(currP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+            message.setText(turn + " " + charToStr(currP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+        } else if (Conditions.isCheck(board, currP, turn)) {
+            // opp in check
+            message.setText(turn + " " + charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
         } else {
-            message.setText("Have undone last move, " + charToStr(currP) + " to play");
+            message.setText(turn + " Have undone last move, " + charToStr(currP) + " to play");
         }
         haveJustUndone = true;
     }
@@ -204,16 +176,16 @@ Game playback (30 pts)
         if (Conditions.isCheck(board, currP, turn)) {
             // if currently in check, then get out of check
             statusAI = escapeCheckAI(board, currP, turn);
-            message.setText(charToStr(currP) + " has escaped check");
+            message.setText(turn + " " + charToStr(currP) + " has escaped check");
         } else {
             // not currently in check, any legal move will do
             statusAI = AI(board, currP, turn);
-            message.setText(charToStr(currP) + " has made a move via AI");
+            message.setText(turn + " " + charToStr(currP) + " has made a move via AI");
         }
 
         if (statusAI < 0) {
             // no legal move for AI to do checkmate
-            message.setText("No legal move for AI to do");
+            message.setText(turn + " No legal move for AI to do");
             checkmatePopup(oppP);
             isOver = true;
             return;
@@ -226,14 +198,14 @@ Game playback (30 pts)
                     // checkmate Red wins
                     checkmatePopup(oppP);
                 } else {
-                    message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+                    message.setText(turn + " " + charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                 }
             } else {
                 if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                     // checkmate Blue wins
                     checkmatePopup(oppP);
                 } else {
-                    message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+                    message.setText(turn + " " + charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                 }
             }
         }
@@ -393,7 +365,7 @@ Game playback (30 pts)
 
         if (Conditions.isCheck(board, currP, turn)) {
             // current player is in check
-            message.setText("You are in check, " + charToStr(currP) + " due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+            message.setText(turn + " You are in check, " + charToStr(currP) + " due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
         }
 
         if (numHits % 2 == 0) {
@@ -401,13 +373,13 @@ Game playback (30 pts)
 
             if (Board.isOccupied(board, r, c) == false) {
                 // clicking on a square with no piece on it
-                message.setText("Click on a " + charToStr(currP) + " piece");
+                message.setText(turn + " Click on a " + charToStr(currP) + " piece");
                 return;
             }
 
             if (board[r][c].color != currP) {
                 // wrong color, shouldn't be moving this piece
-                message.setText("You can't move a " + charToStr(oppP) + " piece");
+                message.setText(turn + " You can't move a " + charToStr(oppP) + " piece");
                 return;
             }
 
@@ -415,7 +387,7 @@ Game playback (30 pts)
             prevC = c;
 
             currImage = getImage(r, c);
-            message.setText("Now select destination for " + board[r][c].toString() + " at " + toCoord(r, c));
+            message.setText(turn + " Now select destination for " + board[r][c].toString() + " at " + toCoord(r, c));
 
         } else {
             // hitting destination
@@ -435,7 +407,7 @@ Game playback (30 pts)
 
                 copy(boardCopy, board);
                 drawBoard();
-                message.setText("You can't end your turn in check, try again");
+                message.setText(turn + " You can't end your turn in check, try again");
                 numHits++;
                 return;
             } else {
@@ -449,14 +421,14 @@ Game playback (30 pts)
                             // checkmate Red wins
                             checkmatePopup(oppP);
                         } else {
-                            message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+                            message.setText(turn + " " + charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                         }
                     } else {
                         if (Conditions.isCheckmate(board, 'b', Piece.blackKing[0], Piece.blackKing[1], turn)) {
                             // checkmate Blue wins
                             checkmatePopup(oppP);
                         } else {
-                            message.setText(charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
+                            message.setText(turn + " " + charToStr(oppP) + " in check due to " + toCoord(Conditions.attacker[0], Conditions.attacker[1]));
                         }
                     }
                 }
@@ -500,7 +472,7 @@ Game playback (30 pts)
 
         // if not moving piece at all, error
         if (r1 == r2 && c1 == c2) {
-            message.setText("Can't move piece to same square");
+            message.setText(turn + " Can't move piece to same square");
             return -10;
         }
 
@@ -508,7 +480,7 @@ Game playback (30 pts)
         if (Board.isOccupied(board, r2, c2)) {
             // destination is occupied
             if (board[r2][c2].color == p) {
-                message.setText("Destination is occupied by own piece");
+                message.setText(turn + " Destination is occupied by own piece");
                 return -12;
             }
         }
@@ -543,7 +515,7 @@ Game playback (30 pts)
                     captured.setImageResource(R.drawable.blank);
                 }
 
-                message.setText(charToStr(p) + " has performed en passant");
+                message.setText(turn + " " + charToStr(p) + " has performed en passant");
                 return 3;
             }
             isValid = Move.movePawn(board, p, r1, c1, r2, c2, i);
@@ -652,7 +624,7 @@ Game playback (30 pts)
 
         if (isValid < 0) {
             // not ok move
-            message.setText(board[r1][c1].toString() + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2) + " is invalid");
+            message.setText(turn + " " + board[r1][c1].toString() + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2) + " is invalid");
             return -1;
         }
 
@@ -672,7 +644,7 @@ Game playback (30 pts)
             srcButton.setImageResource(R.drawable.blank);
         }
         promoted = false;
-        message.setText("Have moved " + board[r2][c2] + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2));
+        message.setText(turn + " Have moved " + board[r2][c2] + " from " + toCoord(r1, c1) + " to " + toCoord(r2, c2));
         return isValid;
     }
 

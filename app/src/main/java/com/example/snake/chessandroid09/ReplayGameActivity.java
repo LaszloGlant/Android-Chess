@@ -54,7 +54,7 @@ public class ReplayGameActivity extends AppCompatActivity{
         if (pbIndex < MainActivity.myGames.get(gameIndex).moves.size()) {
 
         } else {
-            message.setText("Replay has finished. Play another game or select another game to replay");
+            message.setText("Replay has finished. Go back to list");
             return;
         }
 
